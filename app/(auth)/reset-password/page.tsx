@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,6 +58,16 @@ const ResetPasswordPage: React.FC = () => {
             Travely Manager
           </CardTitle>
           <CardDescription>Restablecer contraseña</CardDescription>
+          <div className="relative w-full max-w-4xl mx-auto">
+            <Image
+              src={"/images/bus.png"}
+              alt={"Autobús viajando"}
+              layout="responsive"
+              width={600}
+              height={600}
+              className="mx-auto"
+            />
+          </div>
         </CardHeader>
         <CardContent>
           <form

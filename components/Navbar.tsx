@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between fixed z-50 w-full bg-travely-400 px-6 py-4 lg:px-10">
+    <nav className="flex items-center justify-between z-50 w-full bg-travely-500 px-6 py-4 lg:px-10 sticky">
       <Link href="/" className="flex items-center gap-1">
         <FaBusAlt color="#fff" size={25} />
         <p className="text-[26px] font-extrabold text-white max-sm:hidden">

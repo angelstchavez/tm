@@ -24,6 +24,7 @@ const config = {
           200: "#0f55be",
           300: "#134b95",
           400: "#0f3c77",
+          500: "#0a2953",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

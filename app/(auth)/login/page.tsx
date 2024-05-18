@@ -54,7 +54,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-travely-300 w-full h-screen flex justify-center items-center">
+    <div className="bg-travely-400 w-full h-screen flex justify-center items-center">
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle className="font-bold text-travely-300">Travely Manager</CardTitle>

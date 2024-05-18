@@ -57,13 +57,13 @@ const LoginPage: React.FC = () => {
     <div className="bg-travely-300 w-full h-screen flex justify-center items-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Travely Manager</CardTitle>
+          <CardTitle className="font-bold text-travely-300">Travely Manager</CardTitle>
           <CardDescription>Bienvenido</CardDescription>
         </CardHeader>
         <CardContent>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid w-full gap-4"
+            className="grid w-full gap-3"
           >
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="email">Correo electrónico</Label>

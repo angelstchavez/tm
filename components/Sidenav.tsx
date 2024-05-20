@@ -1,14 +1,17 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { SIDENAV_ITEMS } from "@/utilities/constants";
 import { SideNavItem } from "@/utilities/types";
 import { FaChevronDown } from "react-icons/fa";
+import { useAuthContext } from "@/contexts/AuthContext";
 
-const SideNav = () => {
+const SideNav: React.FC = () => {
+  const { role } = useAuthContext(); // Obtén el rol del usuario desde el contexto de autenticación
+
+  const pathname = usePathname();
+
   return (
     <div className="md:w-60 h-screen flex-1 fixed hidden md:flex">
       <div className="flex flex-col space-y-6 w-full bg-white">
@@ -22,8 +25,16 @@ const SideNav = () => {
         </Link>
 
         <div className="flex flex-col space-y-2 md:px-6 ">
-          {SIDENAV_ITEMS.map((item, idx) => {
-            return <MenuItem key={idx} item={item} />;
+          {SIDENAV_ITEMS.map((item: SideNavItem, idx: number) => {
+            // Verifica si el rol del usuario está permitido para este elemento
+            if (
+              !item.allowedRoles ||
+              (role && item.allowedRoles.includes(role)) // Utiliza el rol del usuario obtenido del contexto
+            ) {
+              return <MenuItem key={idx} item={item} />;
+            } else {
+              return null; // Oculta el elemento del menú si el rol del usuario no está permitido
+            }
           })}
         </div>
       </div>
@@ -31,11 +42,9 @@ const SideNav = () => {
   );
 };
 
-export default SideNav;
-
-const MenuItem = ({ item }: { item: SideNavItem }) => {
+const MenuItem: React.FC<{ item: SideNavItem }> = ({ item }) => {
   const pathname = usePathname();
-  const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const [subMenuOpen, setSubMenuOpen] = React.useState<boolean>(false);
   const toggleSubMenu = () => {
     setSubMenuOpen(!subMenuOpen);
   };
@@ -64,7 +73,7 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
 
           {subMenuOpen && (
             <div className="my-2 ml-4 flex text-sm flex-col space-y-2 text-tm">
-              {item.subMenuItems?.map((subItem, idx) => {
+              {item.subMenuItems?.map((subItem: SideNavItem, idx: number) => {
                 return (
                   <Link
                     key={idx}
@@ -86,7 +95,9 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
         <Link
           href={item.path}
           className={`flex flex-row space-x-4 items-center p-2 rounded-lg ${
-            item.path === pathname ? "bg-travely-200 text-white" : "hover:bg-zinc-100"
+            item.path === pathname
+              ? "bg-travely-200 text-white"
+              : "hover:bg-zinc-100"
           }`}
         >
           {item.icon}
@@ -96,3 +107,5 @@ const MenuItem = ({ item }: { item: SideNavItem }) => {
     </div>
   );
 };
+
+export default SideNav;

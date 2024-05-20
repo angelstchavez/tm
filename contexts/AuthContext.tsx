@@ -1,14 +1,6 @@
-"use client";
+"use client"
 
-import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import Cookies from "js-cookie";
 
 type AuthTokens = {
@@ -17,44 +9,53 @@ type AuthTokens = {
 };
 
 type AuthContextType = {
-  login: (authTokens: AuthTokens) => void;
+  login: (authTokens: AuthTokens, role: string) => void;
   logout: () => void;
+  role: string | null;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType>({
+  login: (authTokens: AuthTokens, role: string) => {},
+  logout: () => {},
+  role: null,
+});
 
-export default function AuthContextProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const login = useCallback((authTokens: AuthTokens) => {
+export default function AuthContextProvider({ children }: { children: ReactNode; }) {
+  const [role, setRole] = useState<string | null>(null);
+
+  const login = useCallback(function (authTokens: AuthTokens, role: string) {
     Cookies.set("authTokens", JSON.stringify(authTokens));
+    Cookies.set("role", role);
+    setRole(role);
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(function () {
     Cookies.remove("authTokens");
+    Cookies.remove("role");
+    setRole(null);
   }, []);
 
   const value = useMemo(
     () => ({
       login,
       logout,
+      role,
     }),
-    [login, logout]
+    [login, logout, role]
   );
+
+  useEffect(() => {
+    const roleFromCookie = Cookies.get("role");
+    if (roleFromCookie) {
+      setRole(roleFromCookie);
+    }
+  }, []);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuthContext() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error(
-      "useAuthContext must be used within an AuthContextProvider"
-    );
-  }
-  return context;
+  return useContext(AuthContext);
 }
 
 export function useAuthToken() {
@@ -64,7 +65,7 @@ export function useAuthToken() {
     const authToken = Cookies.get("authTokens");
     if (authToken) {
       const parsedToken = JSON.parse(authToken);
-      const tokenFromData = parsedToken?.token;
+      const tokenFromData = parsedToken.data?.token;
       if (tokenFromData) {
         setToken(tokenFromData);
       }

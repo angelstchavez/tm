@@ -8,6 +8,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     title: "Inicio",
     path: "/admin",
     icon: <FaHome size={24} />,
+    allowedRoles: ["Administrador", "Vendedor", "Conductor"],
   },
   {
     title: "Procesos",
@@ -21,6 +22,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
         path: "/admin/processes/register-reservation",
       },
     ],
+    allowedRoles: ["Administrador", "Vendedor"],
   },
   {
     title: "Registros",
@@ -34,6 +36,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: "Vehiculos", path: "/admin/registers/vehicles" },
       { title: "Terminales", path: "/admin/registers/transport-terminals" },
     ],
+    allowedRoles: ["Administrador"],
   },
   {
     title: "Administrador",
@@ -45,6 +48,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: "Empleados", path: "/admin/administrator/employees" },
       { title: "Usuarios", path: "/admin/administrator/users" },
     ],
+    allowedRoles: ["Administrador"],
   },
   {
     title: "Cerrar sesión",

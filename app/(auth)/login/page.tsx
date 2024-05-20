@@ -56,8 +56,8 @@ const LoginPage: React.FC = () => {
         throw new Error(responseData.data || "Error al iniciar sesión.");
       }
 
-      const tokens = responseData;
-      login(tokens);
+      const { data: userData, ...tokens } = responseData; // Extrae el objeto de usuario de la propiedad 'data' de la respuesta
+      login(tokens, userData.role);
       router.push("/admin");
     } catch (error: any) {
       setErrorDescription(error.message || "Error al iniciar sesión.");

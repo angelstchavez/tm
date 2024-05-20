@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { FaBusAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 const Navbar: React.FC = () => {
   const router = useRouter();

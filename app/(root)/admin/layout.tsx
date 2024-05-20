@@ -1,10 +1,10 @@
 "use client";
 
-import Header from "@/components/Header";
-import HeaderMobile from "@/components/HeaderMobile";
-import MarginWidthWrapper from "@/components/MarginWifthWrapper";
-import PageWrapper from "@/components/PageWrapper";
-import SideNav from "@/components/Sidenav";
+import Header from "@/components/utils/Header";
+import HeaderMobile from "@/components/utils/HeaderMobile";
+import MarginWidthWrapper from "@/components/utils/MarginWifthWrapper";
+import PageWrapper from "@/components/utils/PageWrapper";
+import SideNav from "@/components/utils/Sidenav";
 import { ReactNode } from "react";
 
 function Layout({ children }: { children: ReactNode }) {

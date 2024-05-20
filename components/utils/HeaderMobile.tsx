@@ -7,7 +7,8 @@ import { motion, useCycle } from "framer-motion";
 
 import { SIDENAV_ITEMS } from "@/utilities/constants";
 import { SideNavItem } from "@/utilities/types";
-import { FaChevronDown } from "react-icons/fa"; // Importar ícono para submenú
+import { FaChevronDown } from "react-icons/fa";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 type MenuItemWithSubMenuProps = {
   item: SideNavItem;
@@ -38,6 +39,7 @@ const HeaderMobile = () => {
   const containerRef = useRef(null);
   const { height } = useDimensions(containerRef);
   const [isOpen, toggleOpen] = useCycle(false, true);
+  const { role } = useAuthContext();
 
   return (
     <motion.nav
@@ -58,31 +60,38 @@ const HeaderMobile = () => {
         className="absolute grid w-full gap-3 px-10 py-16"
       >
         {SIDENAV_ITEMS.map((item, idx) => {
-          const isLastItem = idx === SIDENAV_ITEMS.length - 1; // Check if it's the last item
+          if (
+            !item.allowedRoles ||
+            (role && item.allowedRoles.includes(role))
+          ) {
+            const isLastItem = idx === SIDENAV_ITEMS.length - 1;
 
-          return (
-            <div key={idx}>
-              {item.submenu ? (
-                <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
-              ) : (
-                <MenuItem>
-                  <Link
-                    href={item.path}
-                    onClick={() => toggleOpen()}
-                    className={`flex w-full text-xl ${
-                      item.path === pathname ? "font-bold" : ""
-                    }`}
-                  >
-                    {item.title}
-                  </Link>
-                </MenuItem>
-              )}
+            return (
+              <div key={idx}>
+                {item.submenu ? (
+                  <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
+                ) : (
+                  <MenuItem>
+                    <Link
+                      href={item.path}
+                      onClick={() => toggleOpen()}
+                      className={`flex w-full text-xl ${
+                        item.path === pathname ? "font-bold" : ""
+                      }`}
+                    >
+                      {item.title}
+                    </Link>
+                  </MenuItem>
+                )}
 
-              {!isLastItem && (
-                <MenuItem className="my-3 h-px w-full bg-zinc-300" />
-              )}
-            </div>
-          );
+                {!isLastItem && (
+                  <MenuItem className="my-3 h-px w-full bg-zinc-300" />
+                )}
+              </div>
+            );
+          } else {
+            return null;
+          }
         })}
       </motion.ul>
       <MenuToggle toggle={toggleOpen} />

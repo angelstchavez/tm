@@ -1,14 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { FaClock, FaSearch, FaTicketAlt } from "react-icons/fa";
-import CustomTitleIcon from "@/components/utils/CustomTitleIcon";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
 import DataTable, { TableColumn } from "react-data-table-component";
+import { FaClock, FaTicketAlt } from "react-icons/fa";
 
 interface Trip {
   id: number;
@@ -36,15 +32,11 @@ interface Trip {
   };
 }
 
-const RegisterSalePage: React.FC = () => {
+const SearchTripSale = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [filteredTrips, setFilteredTrips] = useState<Trip[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [origin, setOrigin] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
   const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
   const token = cookieData?.data?.token;
@@ -78,9 +70,7 @@ const RegisterSalePage: React.FC = () => {
         }
 
         setTrips(responseData.data);
-
         setFilteredTrips(responseData.data);
-
         setLoading(false);
       } catch (error) {
         if (typeof error === "string") {
@@ -95,29 +85,9 @@ const RegisterSalePage: React.FC = () => {
     fetchData();
   }, [token]);
 
-  useEffect(() => {
-    if (origin || date || time) {
-      setIsButtonDisabled(false);
-    } else {
-      setIsButtonDisabled(true);
-    }
-  }, [origin, date, time]);
-
-  useEffect(() => {
-    const filtered = trips
-      .filter(
-        (trip) =>
-          trip.travelRoute.departureCity.name
-            .toLowerCase()
-            .includes(origin.toLowerCase()) ||
-          trip.travelRoute.destinationCity.name
-            .toLowerCase()
-            .includes(origin.toLowerCase())
-      )
-      .filter((trip) => trip.travelDate === date)
-      .filter((trip) => trip.travelTime === time);
-    setFilteredTrips(filtered);
-  }, [origin, date, time, trips]);
+  const handleViewSeats = (id: number) => {
+    console.log(`Ver sillas del viaje con ID: ${id}`);
+  };
 
   const columns: TableColumn<Trip>[] = [
     {
@@ -205,58 +175,20 @@ const RegisterSalePage: React.FC = () => {
     },
     {
       name: "Ver Sillas",
-      cell: (row) => <Button variant={"travely"}>Ver sillas</Button>,
+      cell: (row) => (
+        <button
+          className="bg-tm20 hover:bg-tm10 text-white font-semibold py-2 px-4 rounded"
+          onClick={() => handleViewSeats(row.id)}
+        >
+          Ver sillas
+        </button>
+      ),
     },
   ];
 
   return (
-    <>
-      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
-        <CustomTitleIcon icon={FaSearch} text="Consultar viajes disponibles" />
-        <div className="flex flex-col md:flex-row w-full max-w-4xl items-center gap-4 py-4">
-          <div className="w-full md:w-auto">
-            <Label htmlFor="origin">Origen o destino</Label>
-            <Input
-              type="text"
-              id="origin"
-              placeholder="Origen o destino"
-              value={origin}
-              onChange={(e) => setOrigin(e.target.value)}
-              className="w-full md:w-auto"
-            />
-          </div>
-          <div className="w-full md:w-auto">
-            <Label htmlFor="date">Fecha de viaje</Label>
-            <Input
-              type="date"
-              id="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full md:w-auto"
-            />
-          </div>
-          <div className="w-full md:w-auto">
-            <Label htmlFor="time">Hora de viaje</Label>
-            <Input
-              type="time"
-              id="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="w-full md:w-auto"
-            />
-          </div>
-        </div>
-        <div className="flex items-end h-full pb-2 w-full md:w-auto">
-          <Button
-            variant="travely"
-            className="w-full md:w-auto"
-            disabled={isButtonDisabled}
-          >
-            Consultar
-          </Button>
-        </div>
-      </section>
-      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
+    <div>
+      <div className="grid grid-col-1 border rounded">
         <DataTable
           columns={columns}
           data={filteredTrips}
@@ -266,9 +198,9 @@ const RegisterSalePage: React.FC = () => {
           progressPending={loading}
           progressComponent={<Loading />}
         />
-      </section>
-    </>
+      </div>
+    </div>
   );
 };
 
-export default RegisterSalePage;
+export default SearchTripSale;

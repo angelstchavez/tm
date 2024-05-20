@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { FaUser } from "react-icons/fa";
-import CustomAlertDialog from "@/components/CustomAlertDialog";
+import CustomAlertDialog from "@/components/utils/CustomAlertDialog";
 
 const FormSchema = z
   .object({
@@ -44,7 +44,6 @@ const ProfilePage: React.FC = () => {
   });
 
   useEffect(() => {
-    // Ocultar el mensaje de error cuando el formulario es válido
     if (form.formState.isValid) {
       setErrorDescription("");
     }

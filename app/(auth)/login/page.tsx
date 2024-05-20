@@ -91,11 +91,11 @@ const LoginPage: React.FC = () => {
           <CardDescription>Bienvenido</CardDescription>
           <div className="relative w-full max-w-4xl mx-auto">
             <Image
-              src={"/images/bus.png"}
-              alt={"Autobús viajando"}
-              layout="responsive"
+              src="/images/bus.png"
+              alt="Autobús viajando"
               width={600}
               height={600}
+              priority
               className="mx-auto"
             />
           </div>

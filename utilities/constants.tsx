@@ -2,6 +2,7 @@ import { FaHome, FaPowerOff } from "react-icons/fa";
 import { MdFolder } from "react-icons/md";
 
 import { SideNavItem } from "./types";
+import { IoPerson } from "react-icons/io5";
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
   {
@@ -49,6 +50,12 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: "Usuarios", path: "/admin/administrator/users" },
     ],
     allowedRoles: ["Administrador"],
+  },
+  {
+    title: "Mi perfil",
+    path: "/admin/profile",
+    icon: <IoPerson size={24} />,
+    allowedRoles: ["Administrador", "Vendedor", "Conductor"],
   },
   {
     title: "Cerrar sesión",

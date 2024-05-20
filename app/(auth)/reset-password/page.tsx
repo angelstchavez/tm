@@ -60,11 +60,11 @@ const ResetPasswordPage: React.FC = () => {
           <CardDescription>Restablecer contraseña</CardDescription>
           <div className="relative w-full max-w-4xl mx-auto">
             <Image
-              src={"/images/bus.png"}
-              alt={"Autobús viajando"}
-              layout="responsive"
+              src="/images/bus.png"
+              alt="Autobús viajando"
               width={600}
               height={600}
+              priority
               className="mx-auto"
             />
           </div>
@@ -88,21 +88,25 @@ const ResetPasswordPage: React.FC = () => {
                 {form.formState.errors.email.message}
               </span>
             )}
+            <Button
+              variant={"travely"}
+              className="w-full"
+              type="submit"
+              onClick={form.handleSubmit(onSubmit)}
+            >
+              Envíar correo de restablecimiento
+            </Button>
           </form>
         </CardContent>
         <CardFooter>
           <Button
-            variant={"travely"}
+            variant={"link"}
+            onClick={handleLoginClick}
             className="w-full"
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
           >
-            Envíar correo de restablecimiento
+            Regresar
           </Button>
         </CardFooter>
-        <Button variant={"link"} onClick={handleLoginClick} className="w-full">
-          Regresar
-        </Button>
       </Card>
     </div>
   );

@@ -61,7 +61,6 @@ const LoginPage: React.FC = () => {
       login(tokens);
 
       return router.push("/admin");
-
     } catch (error: any) {
       setErrorDescription(error.message || "Error al iniciar sesión.");
     }
@@ -92,16 +91,6 @@ const LoginPage: React.FC = () => {
             Travely Manager
           </CardTitle>
           <CardDescription>Bienvenido</CardDescription>
-          <div className="relative w-full max-w-4xl mx-auto">
-            <Image
-              src="/images/bus.png"
-              alt="Autobús viajando"
-              width={600}
-              height={600}
-              priority
-              className="mx-auto"
-            />
-          </div>
         </CardHeader>
         <CardContent>
           <form

@@ -58,16 +58,6 @@ const ResetPasswordPage: React.FC = () => {
             Travely Manager
           </CardTitle>
           <CardDescription>Restablecer contraseña</CardDescription>
-          <div className="relative w-full max-w-4xl mx-auto">
-            <Image
-              src="/images/bus.png"
-              alt="Autobús viajando"
-              width={600}
-              height={600}
-              priority
-              className="mx-auto"
-            />
-          </div>
         </CardHeader>
         <CardContent>
           <form

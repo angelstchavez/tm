@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
 import DataTable, { TableColumn } from "react-data-table-component";
 import TripSaleMainNavigation from "@/components/general/register-sale/TripSaleMainSection";
+import TripPassengerDetails from "@/components/general/register-sale/TripPassengerDetails";
 
 interface Trip {
   id: number;
@@ -130,6 +131,10 @@ const RegisterSalePage: React.FC = () => {
     setSelectedTripId(id);
   };
 
+  const handleCancel = () => {
+    setSelectedTripId(null); // Destruir el componente TripSaleMainNavigation
+  };
+
   const columns: TableColumn<Trip>[] = [
     {
       name: "Origen",
@@ -245,9 +250,17 @@ const RegisterSalePage: React.FC = () => {
         />
       </section>
       {selectedTripId && (
-        <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
-          <TripSaleMainNavigation tripId={selectedTripId}></TripSaleMainNavigation>
-        </section>
+        <>
+          <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
+            <TripSaleMainNavigation
+              tripId={selectedTripId}
+              onCancel={handleCancel}
+            ></TripSaleMainNavigation>
+          </section>
+          <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
+            <TripPassengerDetails></TripPassengerDetails>
+          </section>
+        </>
       )}
     </>
   );

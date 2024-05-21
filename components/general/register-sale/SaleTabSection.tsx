@@ -13,7 +13,7 @@ const SaleTabSection = () => {
         </TabsList>
         <TabsContent value="seats">Bus</TabsContent>
         <TabsContent value="passengers">
-          <PassengerForm></PassengerForm>
+          <PassengerForm seatNumber={0}></PassengerForm>
         </TabsContent>
         <TabsContent value="payment">Pago</TabsContent>
       </Tabs>

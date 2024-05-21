@@ -49,6 +49,7 @@ const RegisterSalePage: React.FC = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
+  const [viewSeatsEnabled, setViewSeatsEnabled] = useState<boolean>(true); // Estado para habilitar/deshabilitar el botón "Ver sillas"
   const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
   const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
   const token = cookieData?.data?.token;
@@ -129,10 +130,12 @@ const RegisterSalePage: React.FC = () => {
 
   const handleViewSeats = (id: number) => {
     setSelectedTripId(id);
+    setViewSeatsEnabled(false); // Deshabilitar el botón "Ver sillas"
   };
 
   const handleCancel = () => {
     setSelectedTripId(null); // Destruir el componente TripSaleMainNavigation
+    setViewSeatsEnabled(true); // Habilitar el botón "Ver sillas"
   };
 
   const columns: TableColumn<Trip>[] = [
@@ -192,7 +195,11 @@ const RegisterSalePage: React.FC = () => {
     {
       name: "Ver Sillas",
       cell: (row) => (
-        <Button variant={"travely"} onClick={() => handleViewSeats(row.id)}>
+        <Button
+          variant={"travely"}
+          onClick={() => handleViewSeats(row.id)}
+          disabled={!viewSeatsEnabled} // Deshabilitar el botón si viewSeatsEnabled es falso
+        >
           Ver sillas
         </Button>
       ),

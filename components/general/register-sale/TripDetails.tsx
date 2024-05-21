@@ -99,13 +99,13 @@ const TripDetails: React.FC<TripDetailsProps> = ({ tripId }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2">
-        <p className="bg-travely-200/20 text-travely-200 rounded-sm p-1 flex items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 border rounded-lg p-4">
+        <p className="bg-travely-200/30 text-travely-200 rounded-sm p-1 flex items-center font-bold">
           <FaLocationDot className="mr-1" />
           {trip.travelRoute.departureCity.name} -{" "}
           {trip.travelRoute.destinationCity.name}
         </p>
-        <p className="bg-green-700/20 text-green-700 rounded-sm p-1 flex items-center">
+        <p className="bg-green-700/30 text-green-700 rounded-sm p-1 flex items-center font-bold">
           {trip.ticketPrice.toLocaleString("es-CO", {
             style: "currency",
             currency: "COP",

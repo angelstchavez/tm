@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
 import DataTable, { TableColumn } from "react-data-table-component";
+import TabSaleNavigation from "@/components/general/register-sale/TabSaleNavigation";
 
 interface Trip {
   id: number;
@@ -36,6 +37,8 @@ interface Trip {
   };
 }
 
+const NoDataComponent = () => <p>No se encuentran resultados de tu búsqueda</p>;
+
 const RegisterSalePage: React.FC = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [filteredTrips, setFilteredTrips] = useState<Trip[]>([]);
@@ -44,7 +47,7 @@ const RegisterSalePage: React.FC = () => {
   const [origin, setOrigin] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
   const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
   const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
   const token = cookieData?.data?.token;
@@ -93,16 +96,9 @@ const RegisterSalePage: React.FC = () => {
   }, [token]);
 
   useEffect(() => {
-    if (origin || date || time) {
-      setIsButtonDisabled(false);
-    } else {
-      setIsButtonDisabled(true);
-    }
-  }, [origin, date, time]);
-
-  useEffect(() => {
     const filtered = trips.filter((trip) => {
       let match = true;
+
       if (origin) {
         match =
           match &&
@@ -113,16 +109,26 @@ const RegisterSalePage: React.FC = () => {
               .toLowerCase()
               .includes(origin.toLowerCase()));
       }
+
       if (date) {
-        match = match && trip.travelDate === date;
+        const tripDate = trip.travelDate.split("T")[0];
+        match = match && tripDate === date;
       }
+
       if (time) {
-        match = match && trip.travelTime === time;
+        const tripTime = trip.travelTime.slice(0, 5); // Formato HH:MM
+        match = match && tripTime === time;
       }
+
       return match;
     });
+
     setFilteredTrips(filtered);
   }, [origin, date, time, trips]);
+
+  const handleViewSeats = (id: number) => {
+    setSelectedTripId(id);
+  };
 
   const columns: TableColumn<Trip>[] = [
     {
@@ -144,7 +150,7 @@ const RegisterSalePage: React.FC = () => {
     {
       name: "Fecha de Viaje",
       sortable: true,
-      selector: (row) => row.travelDate,
+      selector: (row) => row.travelDate.split("T")[0], // Mostrar solo la fecha
       style: {
         fontSize: 14,
       },
@@ -152,40 +158,10 @@ const RegisterSalePage: React.FC = () => {
     {
       name: "Hora de Viaje",
       sortable: true,
-      selector: (row) => row.travelTime,
+      selector: (row) => row.travelTime.slice(0, 5), // Formato HH:MM
       style: {
         fontSize: 14,
       },
-    },
-    {
-      name: "Duración",
-      sortable: true,
-      style: {
-        fontSize: 14,
-      },
-      cell: (row) => (
-        <div className="py-1 p-1 flex items-center rounded bg-zinc-100 text-zinc-800 font-semibold">
-          <span className="mr-1">
-            <FaClock />
-          </span>
-          <span>{row.travelRoute.durationHours} horas</span>
-        </div>
-      ),
-    },
-    {
-      name: "Distancia",
-      sortable: true,
-      style: {
-        fontSize: 14,
-      },
-      cell: (row) => (
-        <div className="py-1 p-1 flex items-center rounded bg-zinc-100 text-zinc-800 font-semibold">
-          <span className="mr-1">
-            <FaClock />
-          </span>
-          <span>{row.travelRoute.distanceKilometers} Km</span>
-        </div>
-      ),
     },
     {
       name: "Precio del Boleto",
@@ -210,7 +186,11 @@ const RegisterSalePage: React.FC = () => {
     },
     {
       name: "Ver Sillas",
-      cell: (row) => <Button variant={"travely"}>Ver sillas</Button>,
+      cell: (row) => (
+        <Button variant={"travely"} onClick={() => handleViewSeats(row.id)}>
+          Ver sillas
+        </Button>
+      ),
     },
   ];
 
@@ -251,15 +231,6 @@ const RegisterSalePage: React.FC = () => {
             />
           </div>
         </div>
-        <div className="flex items-end h-full pb-2 w-full md:w-auto">
-          <Button
-            variant="travely"
-            className="w-full md:w-auto"
-            disabled={isButtonDisabled}
-          >
-            Consultar
-          </Button>
-        </div>
       </section>
       <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 grid grid-col-1">
         <DataTable
@@ -270,8 +241,14 @@ const RegisterSalePage: React.FC = () => {
           fixedHeader
           progressPending={loading}
           progressComponent={<Loading />}
+          noDataComponent={<NoDataComponent />}
         />
       </section>
+      {selectedTripId && (
+        <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
+          <TabSaleNavigation tripId={selectedTripId}></TabSaleNavigation>
+        </section>
+      )}
     </>
   );
 };

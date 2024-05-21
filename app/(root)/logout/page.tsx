@@ -15,7 +15,7 @@ export default function Page() {
   }, [logout, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen space-y-4 bg-travely-300">
+    <div className="flex flex-col items-center justify-center h-screen space-y-4 bg-travely-500">
       <div className="text-lg font-semibold text-white">Cerrando sesión...</div>
       <Loading />
     </div>

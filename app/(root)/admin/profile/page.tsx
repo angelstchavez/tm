@@ -90,19 +90,21 @@ const ProfilePage: React.FC = () => {
 
   const isFormValid = form.formState.isValid;
 
+  const { userData } = useAuthContext();
+
   return (
     <>
       <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col justify-center items-center">
         <h1 className="font-bold text-xl mb-4">Mi Perfil</h1>
         <h1 className="font-bold text-xl mb-4">
-          Rol: <span className="font-normal">Administrador</span>
+          Rol: <span className="font-normal">{userData.role}</span>
         </h1>
         <div className="flex flex-col items-center mb-4">
           <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center">
             <FaUser className="text-4xl text-gray-600" />
           </div>
-          <p className="mt-4 text-lg font-semibold">Nombre del Usuario</p>
-          <p className="text-gray-600">usuario@correo.com</p>
+          <p className="mt-4 text-lg font-semibold">{userData.username}</p>
+          <p className="text-gray-600">{userData.email}</p>
         </div>
       </section>
       <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col justify-center items-center">

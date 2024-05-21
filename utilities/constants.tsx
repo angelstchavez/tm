@@ -20,7 +20,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: "Registrar venta", path: "/admin/processes/register-sale" },
       {
         title: "Consultar histórico",
-        path: "/admin/processes/register-reservation",
+        path: "/admin/processes/search-historic",
       },
     ],
     allowedRoles: ["Administrador", "Vendedor"],
@@ -48,6 +48,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: "Asignaciones", path: "/admin/administrator/assignments" },
       { title: "Empleados", path: "/admin/administrator/employees" },
       { title: "Usuarios", path: "/admin/administrator/users" },
+      { title: "Reportes", path: "/admin/administrator/reports" },
     ],
     allowedRoles: ["Administrador"],
   },

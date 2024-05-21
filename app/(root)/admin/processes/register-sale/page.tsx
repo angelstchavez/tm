@@ -78,9 +78,6 @@ const RegisterSalePage: React.FC = () => {
         }
 
         setTrips(responseData.data);
-
-        setFilteredTrips(responseData.data);
-
         setLoading(false);
       } catch (error) {
         if (typeof error === "string") {
@@ -104,18 +101,26 @@ const RegisterSalePage: React.FC = () => {
   }, [origin, date, time]);
 
   useEffect(() => {
-    const filtered = trips
-      .filter(
-        (trip) =>
-          trip.travelRoute.departureCity.name
+    const filtered = trips.filter((trip) => {
+      let match = true;
+      if (origin) {
+        match =
+          match &&
+          (trip.travelRoute.departureCity.name
             .toLowerCase()
             .includes(origin.toLowerCase()) ||
-          trip.travelRoute.destinationCity.name
-            .toLowerCase()
-            .includes(origin.toLowerCase())
-      )
-      .filter((trip) => trip.travelDate === date)
-      .filter((trip) => trip.travelTime === time);
+            trip.travelRoute.destinationCity.name
+              .toLowerCase()
+              .includes(origin.toLowerCase()));
+      }
+      if (date) {
+        match = match && trip.travelDate === date;
+      }
+      if (time) {
+        match = match && trip.travelTime === time;
+      }
+      return match;
+    });
     setFilteredTrips(filtered);
   }, [origin, date, time, trips]);
 
@@ -256,7 +261,7 @@ const RegisterSalePage: React.FC = () => {
           </Button>
         </div>
       </section>
-      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
+      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 grid grid-col-1">
         <DataTable
           columns={columns}
           data={filteredTrips}

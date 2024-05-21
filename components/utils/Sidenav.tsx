@@ -8,10 +8,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { useAuthContext } from "@/contexts/AuthContext";
 
 const SideNav: React.FC = () => {
-  const { role } = useAuthContext(); // Obtén el rol del usuario desde el contexto de autenticación
-
-  const pathname = usePathname();
-
+  const { userData } = useAuthContext();
   return (
     <div className="md:w-60 h-screen flex-1 fixed hidden md:flex">
       <div className="flex flex-col space-y-6 w-full bg-white">
@@ -26,14 +23,13 @@ const SideNav: React.FC = () => {
 
         <div className="flex flex-col space-y-2 md:px-6 ">
           {SIDENAV_ITEMS.map((item: SideNavItem, idx: number) => {
-            // Verifica si el rol del usuario está permitido para este elemento
             if (
               !item.allowedRoles ||
-              (role && item.allowedRoles.includes(role)) // Utiliza el rol del usuario obtenido del contexto
+              (userData.role && item.allowedRoles.includes(userData.role))
             ) {
               return <MenuItem key={idx} item={item} />;
             } else {
-              return null; // Oculta el elemento del menú si el rol del usuario no está permitido
+              return null;
             }
           })}
         </div>

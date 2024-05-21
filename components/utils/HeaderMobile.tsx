@@ -39,7 +39,7 @@ const HeaderMobile = () => {
   const containerRef = useRef(null);
   const { height } = useDimensions(containerRef);
   const [isOpen, toggleOpen] = useCycle(false, true);
-  const { role } = useAuthContext();
+  const { userData } = useAuthContext();
 
   return (
     <motion.nav
@@ -62,7 +62,7 @@ const HeaderMobile = () => {
         {SIDENAV_ITEMS.map((item, idx) => {
           if (
             !item.allowedRoles ||
-            (role && item.allowedRoles.includes(role))
+            (userData.role && item.allowedRoles.includes(userData.role))
           ) {
             const isLastItem = idx === SIDENAV_ITEMS.length - 1;
 

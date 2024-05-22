@@ -9,8 +9,8 @@ const SelectedSeats: React.FC<SelectedSeatsDisplayProps> = ({
   selectedSeatIds,
 }) => {
   return (
-    <div className="mt-2 bg-white rounded border p-1 overflow-auto">
-      <h2 className="px-1 font-semibold bg-tm20 rounded text-center p-1 text-white">
+    <div className="mt-2 bg-white rounded-lg border p-1 overflow-auto">
+      <h2 className="px-1 font-semibold bg-tm20 rounded-lg text-center p-1 bg-muted">
         Asientos seleccionados
       </h2>
       <div className="flex flex-wrap">

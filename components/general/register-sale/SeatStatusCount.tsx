@@ -48,7 +48,7 @@ const SeatStatusCounts: React.FC<SeatStatusCountsProps> = ({ tripId }) => {
   }, [tripId]);
 
   return (
-    <div className="mb-2 flex justify-center items-center border rounded p-1">
+    <div className="mb-2 flex justify-center items-center border rounded-lg p-1">
       <div>
         <div className="flex justify-center">
           <div className="mr-6 flex flex-col items-center">

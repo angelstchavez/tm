@@ -9,6 +9,8 @@ import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
 import DataTable, { TableColumn } from "react-data-table-component";
 import TripSaleMainNavigation from "@/components/general/register-sale/TripSaleMainSection";
+import CustomTitle from "@/components/utils/CustomTitle";
+import Section from "@/components/ui/Section";
 
 interface Trip {
   id: number;
@@ -224,10 +226,8 @@ const RegisterSalePage: React.FC = () => {
 
   return (
     <>
-      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
-        <h2 className="text-xl font-bold text-gray-800">
-          Consultar viajes disponibles
-        </h2>
+      <Section>
+        <CustomTitle title={"Consultar viajes disponibles"}></CustomTitle>
         <div className="flex flex-col md:flex-row w-full max-w-4xl items-center gap-4 py-2">
           <div className="w-full md:w-auto">
             <Label htmlFor="origin">Origen o destino</Label>
@@ -261,8 +261,8 @@ const RegisterSalePage: React.FC = () => {
             />
           </div>
         </div>
-      </section>
-      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 grid grid-col-1">
+      </Section>
+      <Section>
         <DataTable
           columns={columns}
           data={filteredTrips}
@@ -273,7 +273,7 @@ const RegisterSalePage: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
-      </section>
+      </Section>
       {selectedTripId && (
         <>
           <div className="justify-center items-center flex">

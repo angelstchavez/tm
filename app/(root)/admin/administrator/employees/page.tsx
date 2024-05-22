@@ -1,9 +1,14 @@
 "use client";
 
-import Section from "@/components/ui/Section";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TabsContent } from "@radix-ui/react-tabs";
 import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DriverReport from "@/components/general/driver/DriverReport";
+import DriverTable from "@/components/general/driver/DriverTable";
+import EmployeeForm from "@/components/general/employees/EmployeeForm";
+import EmployeeTable from "@/components/general/employees/EmployeeTable";
+import EmployeReport from "@/components/general/employees/EmployeReport";
+import SellerReport from "@/components/general/seller/SellerReport";
+import SellerTable from "@/components/general/seller/SellerTable";
 
 const EmployeesPage: React.FC = () => {
   return (
@@ -15,40 +20,17 @@ const EmployeesPage: React.FC = () => {
           <TabsTrigger value="driver">Conductores</TabsTrigger>
         </TabsList>
         <TabsContent value="general">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">
-              Registrar empleado
-            </h2>
-            {/* Contenido específico para la sección de empleados */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">empleados</h2>
-            {/* Contenido específico para la sección de empleados */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte</h2>
-            {/* Contenido específico para la sección de empleados */}
-          </Section>
+          <EmployeeForm></EmployeeForm>
+          <EmployeeTable></EmployeeTable>
+          <EmployeReport></EmployeReport>
         </TabsContent>
         <TabsContent value="seller">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Vendedores</h2>
-            {/* Contenido específico para la sección de Vendedores */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte</h2>
-            {/* Contenido específico para la sección de Vendedores */}
-          </Section>
+          <SellerTable></SellerTable>
+          <SellerReport></SellerReport>
         </TabsContent>
         <TabsContent value="driver">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Conductores</h2>
-            {/* Contenido específico para la sección de Conductores */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte</h2>
-            {/* Contenido específico para la sección de Conductores */}
-          </Section>
+          <DriverTable></DriverTable>
+          <DriverReport></DriverReport>
         </TabsContent>
       </Tabs>
     </>

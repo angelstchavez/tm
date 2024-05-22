@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { FaUser } from "react-icons/fa";
 import CustomAlertDialog from "@/components/utils/CustomAlertDialog";
+import Section from "@/components/ui/Section";
+import CustomTitle from "@/components/utils/CustomTitle";
 
 const FormSchema = z
   .object({
@@ -94,23 +96,21 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col justify-center items-center">
-        <h1 className="font-bold text-xl mb-4">Mi Perfil</h1>
+      <Section>
+        <CustomTitle title={"Mi Perfil"}></CustomTitle>
         <h1 className="font-bold text-xl mb-4">
           Rol: <span className="font-normal">{userData.role}</span>
         </h1>
-        <div className="flex flex-col items-center mb-4">
+        <div className="flex flex-col mb-4">
           <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center">
             <FaUser className="text-4xl text-gray-600" />
           </div>
           <p className="mt-4 text-lg font-semibold">{userData.username}</p>
           <p className="text-gray-600">{userData.email}</p>
         </div>
-      </section>
-      <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col justify-center items-center">
-        <h1 className="font-bold text-xl mb-4 text-center">
-          Actualizar contraseña
-        </h1>
+      </Section>
+      <Section>
+        <CustomTitle title={"Actualizar contraseña"}></CustomTitle>
         <form
           onSubmit={form.handleSubmit(changePasswordSubmit)}
           className="flex flex-col items-center w-full max-w-sm gap-3"
@@ -178,7 +178,7 @@ const ProfilePage: React.FC = () => {
             onConfirm={() => changePasswordSubmit(form.getValues())}
           />
         </form>
-      </section>
+      </Section>
     </>
   );
 };

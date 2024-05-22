@@ -1,20 +1,15 @@
-import Section from "@/components/ui/Section";
 import React from "react";
+
+import TripForm from "@/components/general/trip/TripForm";
+import TripReport from "@/components/general/trip/TripReport";
+import TripTable from "@/components/general/trip/TripTable";
 
 const TripsPage = () => {
   return (
     <>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">
-          Registrar viaje
-        </h2>
-      </Section>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Viajes</h2>
-      </Section>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Reportes</h2>
-      </Section>
+      <TripForm></TripForm>
+      <TripTable></TripTable>
+      <TripReport></TripReport>
     </>
   );
 };

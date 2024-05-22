@@ -10,6 +10,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
+import Section from "@/components/ui/Section";
+import CustomTitle from "@/components/utils/CustomTitle";
 
 const FormSchema = z
   .object({
@@ -94,8 +96,8 @@ const UserForm: React.FC = () => {
   };
 
   return (
-    <>
-      <h2 className="text-xl font-bold text-gray-800">Registrar usuario</h2>
+    <Section>
+      <CustomTitle title={"Registrar usuario"}></CustomTitle>
       <div>
         <form
           className="grid w-full gap-3 sm:grid-cols-2"
@@ -177,7 +179,7 @@ const UserForm: React.FC = () => {
           </Button>
         </form>
       </div>
-    </>
+    </Section>
   );
 };
 

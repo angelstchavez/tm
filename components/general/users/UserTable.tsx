@@ -7,6 +7,7 @@ import Loading from "@/components/utils/Loading";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Input } from "@/components/ui/input";
+import Section from "@/components/ui/Section";
 
 interface User {
   id: number;
@@ -136,7 +137,7 @@ const UserTable: React.FC = () => {
   ];
 
   return (
-    <>
+    <Section>
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-800">Usuarios</h2>
         <div className="w-1/2 max-w-md py-2">
@@ -149,7 +150,7 @@ const UserTable: React.FC = () => {
         </div>
       </div>
       {error && <div className="text-red-600 mb-4">Error: {error}</div>}
-      <div className="grid grid-col-1 border rounded">
+      <div className="grid grid-col-1">
         <DataTable
           columns={columns}
           data={users}
@@ -159,7 +160,7 @@ const UserTable: React.FC = () => {
           noDataComponent={<NoDataComponent />}
         />
       </div>
-    </>
+    </Section>
   );
 };
 

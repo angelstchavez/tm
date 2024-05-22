@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { FaClock, FaSearch, FaTicketAlt } from "react-icons/fa";
-import CustomTitleIcon from "@/components/utils/CustomTitleIcon";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,11 @@ interface Trip {
   };
 }
 
-const NoDataComponent = () => <p>No se encuentran resultados de tu búsqueda</p>;
+const NoDataComponent = () => (
+  <p className="text-red-600 font-bold">
+    No se encuentran resultados de tu búsqueda
+  </p>
+);
 
 const RegisterSalePage: React.FC = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -49,7 +52,7 @@ const RegisterSalePage: React.FC = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
-  const [viewSeatsEnabled, setViewSeatsEnabled] = useState<boolean>(true); // Estado para habilitar/deshabilitar el botón "Ver sillas"
+  const [viewSeatsEnabled, setViewSeatsEnabled] = useState<boolean>(true);
   const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
   const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
   const token = cookieData?.data?.token;
@@ -118,7 +121,7 @@ const RegisterSalePage: React.FC = () => {
       }
 
       if (time) {
-        const tripTime = trip.travelTime.slice(0, 5); // Formato HH:MM
+        const tripTime = trip.travelTime.slice(0, 5);
         match = match && tripTime === time;
       }
 
@@ -130,12 +133,12 @@ const RegisterSalePage: React.FC = () => {
 
   const handleViewSeats = (id: number) => {
     setSelectedTripId(id);
-    setViewSeatsEnabled(false); // Deshabilitar el botón "Ver sillas"
+    setViewSeatsEnabled(false);
   };
 
   const handleCancel = () => {
-    setSelectedTripId(null); // Destruir el componente TripSaleMainNavigation
-    setViewSeatsEnabled(true); // Habilitar el botón "Ver sillas"
+    setSelectedTripId(null);
+    setViewSeatsEnabled(true);
   };
 
   const columns: TableColumn<Trip>[] = [
@@ -158,7 +161,14 @@ const RegisterSalePage: React.FC = () => {
     {
       name: "Fecha de Viaje",
       sortable: true,
-      selector: (row) => row.travelDate.split("T")[0], // Mostrar solo la fecha
+      selector: (row) => {
+        const date = new Date(row.travelDate);
+        return date.toLocaleDateString("es-CO", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
+      },
       style: {
         fontSize: 14,
       },
@@ -166,7 +176,14 @@ const RegisterSalePage: React.FC = () => {
     {
       name: "Hora de Viaje",
       sortable: true,
-      selector: (row) => row.travelTime.slice(0, 5), // Formato HH:MM
+      selector: (row) => {
+        const time = new Date(`1970-01-01T${row.travelTime}`);
+        return time.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
       style: {
         fontSize: 14,
       },
@@ -198,7 +215,7 @@ const RegisterSalePage: React.FC = () => {
         <Button
           variant={"travely"}
           onClick={() => handleViewSeats(row.id)}
-          disabled={!viewSeatsEnabled} // Deshabilitar el botón si viewSeatsEnabled es falso
+          disabled={!viewSeatsEnabled}
         >
           Ver sillas
         </Button>
@@ -209,14 +226,16 @@ const RegisterSalePage: React.FC = () => {
   return (
     <>
       <section className="h-auto w-full rounded-md bg-white shadow-md border p-4 flex flex-col">
-        <CustomTitleIcon icon={FaSearch} text="Consultar viajes disponibles" />
-        <div className="flex flex-col md:flex-row w-full max-w-4xl items-center gap-4 py-4">
+        <h2 className="text-xl font-bold text-gray-800">
+          Consultar viajes disponibles
+        </h2>
+        <div className="flex flex-col md:flex-row w-full max-w-4xl items-center gap-4 py-2">
           <div className="w-full md:w-auto">
             <Label htmlFor="origin">Origen o destino</Label>
             <Input
               type="text"
               id="origin"
-              placeholder="Origen o destino"
+              placeholder="Ej. Bogotá"
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
               className="w-full md:w-auto"

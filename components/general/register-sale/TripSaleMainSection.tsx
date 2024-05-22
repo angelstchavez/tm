@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 interface TabSaleNavigationProps {
   tripId: number;
-  onCancel: () => void; // Nuevo prop para manejar la cancelación
+  onCancel: () => void;
 }
 
 const TripSaleMainNavigation: React.FC<TabSaleNavigationProps> = ({

@@ -28,7 +28,7 @@ const TripSaleMainNavigation: React.FC<TabSaleNavigationProps> = ({
       <div className="p-2"></div>
       <TripDetails tripId={tripId} />
       <div className="p-2"></div>
-      <SaleTabSection></SaleTabSection>
+      <SaleTabSection tripId={tripId}></SaleTabSection>
     </div>
   );
 };

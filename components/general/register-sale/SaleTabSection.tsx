@@ -1,8 +1,15 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import SeatStatusCounts from "./SeatStatusCount";
+import Bus from "./Bus";
+import SelectedSeats from "./SelectedSeats";
 
-const SaleTabSection = () => {
+interface SaleTabSectionProps {
+  tripId: number;
+}
+
+const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
   const [activeTab, setActiveTab] = React.useState("seats");
 
   const handleNext = () => {
@@ -37,16 +44,35 @@ const SaleTabSection = () => {
             3. Realizar pago
           </TabsTrigger>
         </TabsList>
+        {/* Asientos */}
         <TabsContent value="seats">
           <h2 className="py-2 text-xl font-bold text-gray-800">
             Seleccione los asientos
           </h2>
+          <div className="">
+            <SeatStatusCounts tripId={tripId}></SeatStatusCounts>
+          </div>
+          <div className="w-[300px] flex justify-center items-center">
+            <Bus
+              tripId={tripId}
+              onSelectedSeatsChange={(selectedSeatData: {
+                id: string;
+                number: number;
+              }): void => {
+                console.log(tripId);
+              }}
+            />
+          </div>
+          <div>
+            <SelectedSeats selectedSeatIds={[]}></SelectedSeats>
+          </div>
           <div className="flex justify-end">
             <Button variant={"travely"} onClick={handleNext}>
               Siguiente
             </Button>
           </div>
         </TabsContent>
+        {/* Pasajeros */}
         <TabsContent value="passengers">
           <h2 className="py-2 text-xl font-bold text-gray-800">
             Registrar pasajeros
@@ -60,6 +86,7 @@ const SaleTabSection = () => {
             </Button>
           </div>
         </TabsContent>
+        {/* Pago */}
         <TabsContent value="payment">
           <h2 className="py-2 text-xl font-bold text-gray-800">
             Finalizar pago

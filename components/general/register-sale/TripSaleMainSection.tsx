@@ -27,8 +27,8 @@ const TripSaleMainNavigation: React.FC<TabSaleNavigationProps> = ({
           <BookingsByTrip tripId={tripId}></BookingsByTrip>
         </div>
         <div className="ml-2">
-          <Button variant={"destructive"} onClick={onCancel}>
-            X
+          <Button variant={"outline"} onClick={onCancel}>
+            Cancelar
           </Button>
         </div>
       </div>

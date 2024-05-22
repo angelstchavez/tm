@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import React from "react";
+import DataTable from "react-data-table-component";
 
 interface PassengersByTripProps {
   tripId: number;
@@ -18,21 +19,20 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"secondary"}>Ver pasajeros</Button>
+        <Button variant={"link"}>Ver pasajeros</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>
-            <h2 className="text-xl font-bold text-gray-800 py-2">
-              Pasajeros
-            </h2>
+            <h2 className="text-xl font-bold text-gray-800 py-2">Pasajeros</h2>
           </DialogTitle>
-          <DialogDescription>{tripId}</DialogDescription>
+          <DialogDescription>
+            <DataTable columns={[]} data={[]}></DataTable>
+          </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">Hola</div>
-        <DialogFooter>
-          <p>Travely Manager</p>
-        </DialogFooter>
+        <div className="justify-end flex">
+          <Button variant={"destructive"}>Descargar PDF</Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

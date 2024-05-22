@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { FaLocationDot } from "react-icons/fa6";
-import { MdAttachMoney } from "react-icons/md";
+import { GrMoney } from "react-icons/gr";
 
 interface TripDetailsProps {
   tripId: number;
@@ -99,14 +99,14 @@ const TripDetails: React.FC<TripDetailsProps> = ({ tripId }) => {
 
   return (
     <div>
-      <div className="w-[500px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 border rounded-lg p-4">
+      <div className="w-[515px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 border rounded-lg p-4">
         <p className="bg-orange-500 text-white rounded-sm p-1 flex items-center font-bold">
           <FaLocationDot className="mr-1 text-orange-300" />
           {trip.travelRoute.departureCity.name} -{" "}
           {trip.travelRoute.destinationCity.name}
         </p>
         <p className="bg-green-700 text-white rounded-sm p-1 flex items-center font-bold">
-          <FaLocationDot className="mr-1 text-green-300" />
+          <GrMoney className="mr-1 text-green-300" />
           {trip.ticketPrice.toLocaleString("es-CO", {
             style: "currency",
             currency: "COP",

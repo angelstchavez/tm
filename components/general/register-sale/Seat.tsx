@@ -46,10 +46,10 @@ const Seat: React.FC<SeatProps> = ({ id, number, status, onSeatClick }) => {
   return (
     <div
       id={id}
-      className={`border border-gray-300 rounded-md flex items-center justify-center transition-colors duration-200 cursor-pointer ${seatColor} ${hoverColor} w-12 h-12`}
+      className={`border border-gray-300 rounded-md flex items-center justify-center transition-colors duration-200 cursor-pointer ${seatColor} ${hoverColor} w-10 h-10`}
       onClick={handleClick}
     >
-      <span className={`font-bold text-xl ${textColor}`}>{number}</span>
+      <span className={`font-bold text-lg ${textColor}`}>{number}</span>
     </div>
   );
 };

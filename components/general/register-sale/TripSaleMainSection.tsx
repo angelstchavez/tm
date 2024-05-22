@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import TripDetails from "./TripDetails";
 import SaleTabSection from "./SaleTabSection";
-import TripPassengerDetails from "./TripPassengerDetails";
 import { Button } from "@/components/ui/button";
+import PassengersByTrip from "./PassengersByTrip";
+import BookingsByTrip from "./bookingsByTrip";
 
 interface TabSaleNavigationProps {
   tripId: number;
@@ -16,12 +17,18 @@ const TripSaleMainNavigation: React.FC<TabSaleNavigationProps> = ({
   return (
     <div>
       <div className="flex justify-between items-center">
-        <div>
+        <div className="flex-grow">
           <h2 className="text-xl font-bold text-gray-800">Registrar venta</h2>
         </div>
-        <div>
-          <Button variant={"outline"} onClick={onCancel}>
-            Cancelar
+        <div className="ml-2">
+          <PassengersByTrip tripId={tripId}></PassengersByTrip>
+        </div>
+        <div className="ml-2">
+          <BookingsByTrip tripId={tripId}></BookingsByTrip>
+        </div>
+        <div className="ml-2">
+          <Button variant={"destructive"} onClick={onCancel}>
+            X
           </Button>
         </div>
       </div>

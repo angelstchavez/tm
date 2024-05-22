@@ -1,6 +1,14 @@
 "use client";
 
-import Section from "@/components/ui/Section";
+import BrandForm from "@/components/general/brands/BrandForm";
+import BrandReport from "@/components/general/brands/BrandReport";
+import BrandTable from "@/components/general/brands/BrandTable";
+import ModelForm from "@/components/general/model/ModelForm";
+import ModelReport from "@/components/general/model/ModelReport";
+import ModelTable from "@/components/general/model/ModelTable";
+import VehicleForm from "@/components/general/vehicles/VehicleForm";
+import VehicleReport from "@/components/general/vehicles/VehicleReport";
+import VehicleTable from "@/components/general/vehicles/VehicleTable";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
 import React from "react";
@@ -15,50 +23,19 @@ const VehiclesPage: React.FC = () => {
           <TabsTrigger value="brand">Marcas</TabsTrigger>
         </TabsList>
         <TabsContent value="vehicle">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">
-              Registrar vehículo
-            </h2>
-            {/* Contenido específico para la sección de vehículos */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Vehículos</h2>
-            {/* Contenido específico para la sección de vehículos */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte</h2>
-            {/* Contenido específico para la sección de vehículos */}
-          </Section>
+          <VehicleForm></VehicleForm>
+          <VehicleTable></VehicleTable>
+          <VehicleReport></VehicleReport>
         </TabsContent>
         <TabsContent value="model">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">
-              Registrar modelo
-            </h2>
-            {/* Contenido específico para la sección de modelos */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Modelos</h2>
-            {/* Contenido específico para la sección de modelos */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte</h2>
-            {/* Contenido específico para la sección de modelos */}
-          </Section>
+          <ModelForm></ModelForm>
+          <ModelTable></ModelTable>
+          <ModelReport></ModelReport>
         </TabsContent>
         <TabsContent value="brand">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Registrar marca</h2>
-            {/* Contenido específico para la sección de marcas */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Marcas</h2>
-            {/* Contenido específico para la sección de marcas */}
-          </Section>
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte</h2>
-            {/* Contenido específico para la sección de marcas */}
-          </Section>
+          <BrandForm></BrandForm>
+          <BrandTable></BrandTable>
+          <BrandReport></BrandReport>
         </TabsContent>
       </Tabs>
     </>

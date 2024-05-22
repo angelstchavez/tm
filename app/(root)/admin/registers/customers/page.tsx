@@ -1,18 +1,14 @@
-import Section from "@/components/ui/Section";
 import React from "react";
+import CustomerForm from "@/components/general/customers/CustomerForm";
+import CustomerReport from "@/components/general/customers/CustomerReport";
+import CustomerTable from "@/components/general/customers/CustomerTable";
 
 const CustomersPage = () => {
   return (
     <>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Registrar cliente</h2>
-      </Section>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Usuarios</h2>
-      </Section>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Reportes</h2>
-      </Section>
+      <CustomerForm></CustomerForm>
+      <CustomerTable></CustomerTable>
+      <CustomerReport></CustomerReport>
     </>
   );
 };

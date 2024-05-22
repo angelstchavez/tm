@@ -1,9 +1,12 @@
 "use client";
 
 import React from "react";
-import Section from "@/components/ui/Section";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
+import TodayReport from "@/components/general/reports/TodayReport";
+import WeeklyReport from "@/components/general/reports/WeeklyReport";
+import MonthlyReport from "@/components/general/reports/MonthlyReport";
+import GeneralReport from "@/components/general/reports/GeneralReport";
 
 const ReportsPage: React.FC = () => {
   return (
@@ -16,28 +19,16 @@ const ReportsPage: React.FC = () => {
           <TabsTrigger value="general">General</TabsTrigger>
         </TabsList>
         <TabsContent value="today">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte del día</h2>
-            {/* Contenido específico para la sección de Conductores */}
-          </Section>
+          <TodayReport></TodayReport>
         </TabsContent>
         <TabsContent value="weekly">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte semanal</h2>
-            {/* Contenido específico para la sección de Conductores */}
-          </Section>
+          <WeeklyReport></WeeklyReport>
         </TabsContent>
         <TabsContent value="monthly">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte mensual</h2>
-            {/* Contenido específico para la sección de Conductores */}
-          </Section>
+          <MonthlyReport></MonthlyReport>
         </TabsContent>
         <TabsContent value="general">
-          <Section>
-            <h2 className="text-xl font-bold text-gray-800">Reporte general</h2>
-            {/* Contenido específico para la sección de Conductores */}
-          </Section>
+          <GeneralReport></GeneralReport>
         </TabsContent>
       </Tabs>
     </>

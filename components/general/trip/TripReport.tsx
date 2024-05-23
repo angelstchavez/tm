@@ -1,7 +1,8 @@
+import GeneralReport from "@/components/utils/GeneralReport";
 import React from "react";
 
 const TripReport = () => {
-  return <div>TripReport</div>;
+  return <GeneralReport entity={"trip"}></GeneralReport>;
 };
 
 export default TripReport;

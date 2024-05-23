@@ -43,7 +43,7 @@ export function DeleteEntityDialog({
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${entity}/delete?${entityCamelCase}Id=${entityId}`, // Corregir el error tipográfico aquí
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${entity}/delete?${entityCamelCase}Id=${entityId}`,
         {
           method: "DELETE",
           headers: {
@@ -59,18 +59,34 @@ export function DeleteEntityDialog({
       } else {
         const responseData = await response.json();
         setIsError(true);
-        setError(responseData.error || `Error al eliminar ${entityName}.`);
+        setError(responseData.data || `Error al eliminar ${entityName}.`);
       }
     } catch (error) {
+      setIsError(true);
       setError(`Error al eliminar ${entityName}.`);
     }
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    setIsError(false);
+    setError(null);
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleClose();
+        } else {
+          setIsOpen(true);
+        }
+      }}
+    >
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">
-          <MdDelete className="text-xl"></MdDelete>
+        <Button variant="destructive" onClick={() => setIsOpen(true)}>
+          <MdDelete className="text-xl" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -85,9 +101,7 @@ export function DeleteEntityDialog({
           {isError && <p className="text-red-600 font-bold">{error}</p>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsOpen(false)}>
-            Cancelar
-          </AlertDialogCancel>
+          <AlertDialogCancel onClick={handleClose}>Cancelar</AlertDialogCancel>
           <Button
             variant={"destructive"}
             onClick={handleDeleteConfirmation}

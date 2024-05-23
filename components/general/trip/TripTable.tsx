@@ -7,7 +7,7 @@ import Loading from "@/components/utils/Loading";
 import { FaEdit } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
-import { DeleteEntityDialog } from "@/components/utils/api/DeleteEntity";
+import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
 
 interface Trip {

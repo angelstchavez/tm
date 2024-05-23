@@ -5,26 +5,29 @@ import Cookies from "js-cookie";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
 import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/utils/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
 
-interface Trip {
+interface City {
+  id: string;
+  name: string;
+}
+
+interface Department {
+  id: string;
+  name: string;
+}
+
+interface TravelRoute {
   id: number;
-  travelDate: string;
-  travelTime: string;
-  ticketPrice: number;
-  isActive: boolean;
-  createdAt: string;
-  travelRoute: {
-    departureCity: {
-      name: string;
-    };
-    destinationCity: {
-      name: string;
-    };
-  };
+  departureCity: City;
+  destinationCity: City;
+  durationHours: number;
+  distanceKilometers: number;
+  department: Department;
 }
 
 const NoDataComponent = () => (
@@ -33,9 +36,9 @@ const NoDataComponent = () => (
   </p>
 );
 
-const TripTable: React.FC = () => {
-  const [trips, setTrips] = useState<Trip[]>([]);
-  const [originalTrips, setOriginalTrips] = useState<Trip[]>([]);
+const TravelRouteTable: React.FC = () => {
+  const [routes, setRoutes] = useState<TravelRoute[]>([]);
+  const [originalRoutes, setOriginalRoutes] = useState<TravelRoute[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -54,7 +57,7 @@ const TripTable: React.FC = () => {
         }
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/trip/get-all`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/travel-route/get-all`,
           {
             method: "GET",
             headers: {
@@ -65,7 +68,7 @@ const TripTable: React.FC = () => {
         );
 
         if (!response.ok) {
-          throw new Error("Error al obtener los viajes.");
+          throw new Error("Error al obtener las rutas de viaje.");
         }
 
         const responseData = await response.json();
@@ -74,9 +77,9 @@ const TripTable: React.FC = () => {
           throw new Error("La respuesta no contiene datos válidos.");
         }
 
-        const fetchedTrips = responseData.data;
-        setTrips(fetchedTrips);
-        setOriginalTrips(fetchedTrips);
+        const fetchedRoutes = responseData.data;
+        setRoutes(fetchedRoutes);
+        setOriginalRoutes(fetchedRoutes);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -89,95 +92,54 @@ const TripTable: React.FC = () => {
 
   useEffect(() => {
     if (searchTerm === "") {
-      setTrips(originalTrips);
+      setRoutes(originalRoutes);
     } else {
-      const filteredTrips = originalTrips.filter((trip) =>
-        `${trip.travelRoute.departureCity.name} ${trip.travelRoute.destinationCity.name}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+      const filteredRoutes = originalRoutes.filter(
+        (route) =>
+          route.departureCity.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          route.destinationCity.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
       );
-      setTrips(filteredTrips);
+      setRoutes(filteredRoutes);
     }
-  }, [searchTerm, originalTrips]);
+  }, [searchTerm, originalRoutes]);
 
-  const handleTripDelete = () => {
+  const handleRouteDelete = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
-  const formatTime = (time: string) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    const period = hours >= 12 ? "PM" : "AM";
-    const formattedHours = hours % 12 || 12;
-    return `${formattedHours}:${
-      minutes < 10 ? `0${minutes}` : minutes
-    } ${period}`;
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-    }).format(amount);
-  };
-
-  const columns: TableColumn<Trip>[] = [
+  const columns: TableColumn<TravelRoute>[] = [
     {
-      name: "Fecha de Viaje",
-      selector: (row) => {
-        const date = new Date(row.travelDate);
-        return date.toLocaleDateString("es-CO", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
+      name: "Ciudad de partida",
+      selector: (row) => row.departureCity.name,
+      sortable: true,
+      style: {
+        fontSize: 14,
+        fontWeight: "bold",
       },
+    },
+    {
+      name: "Ciudad de destino",
+      selector: (row) => row.destinationCity.name,
       sortable: true,
       style: {
         fontSize: 14,
       },
     },
     {
-      name: "Hora de Viaje",
-      selector: (row) => formatTime(row.travelTime),
+      name: "Duración (horas)",
+      selector: (row) => row.durationHours.toString(),
       sortable: true,
       style: {
         fontSize: 14,
       },
     },
     {
-      name: "Precio del Boleto",
-      selector: (row) => formatCurrency(row.ticketPrice),
-      sortable: true,
-      style: {
-        fontSize: 14,
-      },
-    },
-    {
-      name: "Origen",
-      selector: (row) => row.travelRoute.departureCity.name,
-      sortable: true,
-      style: {
-        fontSize: 14,
-      },
-    },
-    {
-      name: "Destino",
-      selector: (row) => row.travelRoute.destinationCity.name,
-      sortable: true,
-      style: {
-        fontSize: 14,
-      },
-    },
-    {
-      name: "Fecha de Registro",
-      selector: (row) => {
-        const date = new Date(row.createdAt);
-        return date.toLocaleDateString("es-CO", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
-      },
+      name: "Distancia (kilómetros)",
+      selector: (row) => row.distanceKilometers.toString(),
       sortable: true,
       style: {
         fontSize: 14,
@@ -192,10 +154,10 @@ const TripTable: React.FC = () => {
           </button>
           <DeleteEntityDialog
             entityId={row.id}
-            entity="trip"
-            entityCamelCase="trip"
-            entityName={`${row.travelRoute.departureCity.name} - ${row.travelRoute.destinationCity.name}`}
-            onComplete={handleTripDelete}
+            entity="travel-route"
+            entityCamelCase="travelRoute"
+            entityName={`${row.departureCity.name} - ${row.destinationCity.name}`}
+            onComplete={handleRouteDelete}
           />
         </div>
       ),
@@ -205,11 +167,11 @@ const TripTable: React.FC = () => {
   return (
     <Section>
       <div className="flex items-center justify-between">
-        <CustomTitle title={"Viajes"} />
+        <CustomTitle title={"Rutas de viaje"} />
         <div className="w-1/2 max-w-md py-2">
           <Input
             type="text"
-            placeholder="Buscar por origen o destino"
+            placeholder="Buscar por ciudad de partida o destino"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -219,7 +181,7 @@ const TripTable: React.FC = () => {
       <div className="grid grid-col-1">
         <DataTable
           columns={columns}
-          data={trips}
+          data={routes}
           pagination
           progressPending={loading}
           progressComponent={<Loading />}
@@ -230,4 +192,4 @@ const TripTable: React.FC = () => {
   );
 };
 
-export default TripTable;
+export default TravelRouteTable;

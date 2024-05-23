@@ -2,12 +2,12 @@ import Section from "@/components/ui/Section";
 import CustomTitle from "@/components/utils/CustomTitle";
 import React from "react";
 
-const AssignmentForm = () => {
+const TravelRouteForm = () => {
   return (
     <Section>
-      <CustomTitle title={"Registrar asignación"}></CustomTitle>
+      <CustomTitle title={"Registrar ruta de viaje"}></CustomTitle>
     </Section>
   );
 };
 
-export default AssignmentForm;
+export default TravelRouteForm;

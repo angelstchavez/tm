@@ -1,18 +1,14 @@
-import Section from "@/components/ui/Section";
+import TransportTerminalForm from "@/components/general/transport-terminal/TransportTerminalForm";
+import TransportTerminalReport from "@/components/general/transport-terminal/TransportTerminalReport";
+import TransportTerminalTable from "@/components/general/transport-terminal/TransportTerminalTable";
 import React from "react";
 
 const TransportTerminalsPage = () => {
   return (
     <>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Registrar terminal</h2>
-      </Section>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Usuarios</h2>
-      </Section>
-      <Section>
-        <h2 className="text-xl font-bold text-gray-800">Reportes</h2>
-      </Section>
+      <TransportTerminalForm></TransportTerminalForm>
+      <TransportTerminalTable></TransportTerminalTable>
+      <TransportTerminalReport></TransportTerminalReport>
     </>
   );
 };

@@ -40,7 +40,6 @@ const BrandForm: React.FC = () => {
     console.log("Entidad creada con éxito");
     setDialogOpen(false);
     setFormData(null);
-    window.location.reload();
   };
 
   const handleError = (error: string) => {

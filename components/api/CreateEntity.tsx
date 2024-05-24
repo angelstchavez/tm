@@ -69,6 +69,7 @@ export function CreateEntityDialog({
       }
 
       onComplete();
+      window.location.reload();
       handleClose();
     } catch (error) {
       const errorMessage =

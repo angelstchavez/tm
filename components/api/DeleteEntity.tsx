@@ -85,7 +85,12 @@ export function DeleteEntityDialog({
       }}
     >
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" onClick={() => setIsOpen(true)}>
+        <Button
+          className="w-9 h-9"
+          size={"icon"}
+          variant="destructive"
+          onClick={() => setIsOpen(true)}
+        >
           <MdDelete className="text-xl" />
         </Button>
       </AlertDialogTrigger>

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import {
   AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -16,23 +17,29 @@ interface EntityAttributes {
 }
 
 interface CreateEntityDialogProps {
+  entity: string;
   entityName: string;
   entityAttributes: EntityAttributes;
-  onSuccess: () => void;
+  onComplete: () => void;
   onError: (error: string) => void;
+  buttonComponent: ReactElement;
 }
 
 export function CreateEntityDialog({
+  entity,
   entityName,
   entityAttributes,
-  onSuccess,
+  onComplete,
   onError,
+  buttonComponent,
 }: CreateEntityDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isError, setIsError] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     try {
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
       const cookieData = JSON.parse(cookieValue);
@@ -43,7 +50,7 @@ export function CreateEntityDialog({
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${entityName}/create`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${entity}/create`,
         {
           method: "POST",
           headers: {
@@ -61,7 +68,8 @@ export function CreateEntityDialog({
         throw new Error(responseData.data || `Error al crear ${entityName}.`);
       }
 
-      onSuccess();
+      onComplete();
+      handleClose();
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -70,25 +78,46 @@ export function CreateEntityDialog({
       setError(errorMessage);
       setIsError(true);
       onError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const handleClose = () => {
+    setIsError(false);
+    setError(null);
+    setIsOpen(false);
+  };
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="travely">Crear</Button>
-      </AlertDialogTrigger>
+    <AlertDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleClose();
+        } else {
+          setIsOpen(true);
+        }
+      }}
+    >
+      <AlertDialogTrigger asChild>{buttonComponent}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Deaa crear a {entityName}?</AlertDialogTitle>
+          <AlertDialogTitle>¿Desea crear {entityName}?</AlertDialogTitle>
           <AlertDialogDescription>
-            Descripción de lo que hace la entidad.
+            Se creará un nuevo registro en el sistema.
           </AlertDialogDescription>
           {isError && <p className="text-red-600 font-bold">{error}</p>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button onClick={() => setIsOpen(false)}>Cancelar</Button>
-          <Button onClick={handleSubmit}>Guardar</Button>
+          <AlertDialogCancel onClick={handleClose}>Cancelar</AlertDialogCancel>
+          <Button
+            onClick={handleSubmit}
+            variant={"confirm"}
+            disabled={isError || isSubmitting}
+          >
+            Guardar
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

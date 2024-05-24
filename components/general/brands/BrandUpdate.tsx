@@ -25,6 +25,14 @@ interface BrandUpdateProps {
   onComplete: () => void;
 }
 
+interface FormValues {
+  name: string;
+}
+
+const initialState: FormValues = {
+  name: "",
+};
+
 const BrandUpdate: React.FC<BrandUpdateProps> = ({
   id,
   entity,
@@ -34,13 +42,14 @@ const BrandUpdate: React.FC<BrandUpdateProps> = ({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<{ name: string }>();
+  } = useForm<FormValues>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(initialState.name);
 
   useEffect(() => {
     const fetchEntityData = async () => {
@@ -86,7 +95,7 @@ const BrandUpdate: React.FC<BrandUpdateProps> = ({
     fetchEntityData();
   }, [id, entity, entityName]);
 
-  const handleUpdate = async (data: { name: string }) => {
+  const handleUpdate = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
@@ -114,7 +123,7 @@ const BrandUpdate: React.FC<BrandUpdateProps> = ({
 
       if (!response.ok || !responseData.success) {
         throw new Error(
-          responseData.message || `Error al actualizar ${entityName}.`
+          responseData.data || `Error al actualizar ${entityName}.`
         );
       }
 
@@ -136,56 +145,65 @@ const BrandUpdate: React.FC<BrandUpdateProps> = ({
     setIsError(false);
     setError(null);
     setIsOpen(false);
+    reset(initialState); // Reset the form to initial state
   };
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger asChild>
-        <Button variant={"update"} className="w-9 h-9" size={"icon"}>
-          <MdModeEdit className="text-xl" />
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            <CustomTitle title={`Actualizar ${entityName}`} />
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Se actualizará el registro en el sistema.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <form
-          onSubmit={handleSubmit(handleUpdate)}
-          className="flex flex-col lg:flex-row"
-        >
-          <div className="lg:flex-grow">
-            <Label htmlFor="name">Nombre de la marca</Label>
-            <Input
-              id="name"
-              placeholder="Ej. Toyota"
-              defaultValue={name}
-              {...register("name", { required: "Introduce un nombre válido." })}
-            />
-            {errors.name && (
-              <span className="text-red-600 text-sm font-semibold">
-                {errors.name.message}
-              </span>
-            )}
-          </div>
-        </form>
-        <div className="flex justify-between mt-4 lg:mt-0">
-          <DialogFooter className="flex-shrink-0">
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <Button type="submit" variant={"update"} disabled={isSubmitting}>
-              Actualizar
-            </Button>
-          </DialogFooter>
+    <>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogTrigger asChild>
+          <Button variant={"update"} className="w-9 h-9" size={"icon"}>
+            <MdModeEdit className="text-xl" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              <CustomTitle title={`Actualizar ${entityName}`} />
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Se actualizará el registro en el sistema.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <form
+            onSubmit={handleSubmit(handleUpdate)}
+            className="flex flex-col lg:flex-row"
+          >
+            <div className="lg:flex-grow">
+              <Label htmlFor="name">Nombre de la marca</Label>
+              <Input
+                id="name"
+                placeholder="Ej. Toyota"
+                defaultValue={name}
+                {...register("name", {
+                  required: "Introduce un nombre válido.",
+                })}
+              />
+              {errors.name && (
+                <span className="text-red-600 text-sm font-semibold">
+                  {errors.name.message}
+                </span>
+              )}
+            </div>
+          </form>
           {isError && error && (
             <div className="text-red-600 ml-4 lg:ml-0">{error}</div>
           )}
-        </div>
-      </AlertDialogContent>
-    </AlertDialog>
+          <div className="flex justify-end mt- lg:mt-0">
+            <DialogFooter className="flex-shrink-0">
+              <AlertDialogCancel onClick={handleClose}>
+                Cancelar
+              </AlertDialogCancel>
+            </DialogFooter>
+            <div className="ml-4">
+              <Button variant={"update"} onClick={handleSubmit(handleUpdate)}>
+                Actualizar
+              </Button>
+            </div>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 

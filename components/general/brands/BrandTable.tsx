@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import BrandUpdate from "./BrandUpdate";
 
 interface Brand {
   id: number;
@@ -91,6 +92,10 @@ const BrandTable: React.FC = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
+  const handleBrandUpdate = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
   const columns: TableColumn<Brand>[] = [
     {
       name: "Nombre de Marca",
@@ -105,9 +110,12 @@ const BrandTable: React.FC = () => {
       name: "Acciones",
       cell: (row) => (
         <div className="flex space-x-2">
-          <button className="bg-orange-600 rounded text-white p-1">
-            <FaEdit className="text-xl" />
-          </button>
+          <BrandUpdate
+            id={row.id}
+            entity={"car-brand"}
+            entityName={row.name}
+            onComplete={handleBrandUpdate }
+          ></BrandUpdate>
           <DeleteEntityDialog
             entityId={row.id}
             entity="car-brand"

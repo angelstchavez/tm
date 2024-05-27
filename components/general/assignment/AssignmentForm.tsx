@@ -55,63 +55,58 @@ const AssignmentForm = () => {
   return (
     <Section>
       <CustomTitle title={"Registrar asignación"}></CustomTitle>
-      <form
-        className="flex flex-wrap justify-between"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className="w-full sm:w-full md:w-1/2 lg:w-1/2 px-2">
-          <div className="flex flex-col sm:flex-col md:flex-row md:space-x-4">
-            <div className="w-full sm:w-full md:w-1/3">
-              <ComboboxFetch
-                id="carId"
-                endpoint="car/get-all"
-                label="Coche"
-                register={register("carId")}
-                error={errors.carId?.message}
-                displayFormat={(item) =>
-                  `${item.plate} - ${item.manufacturingYear} - ${item.color}`
-                }
-              />
-            </div>
-            <div className="w-full sm:w-full md:w-1/3">
-              <ComboboxFetch
-                id="mainDriverId"
-                endpoint="employee/get-all-by-role/Conductor"
-                label="Conductor principal"
-                register={register("mainDriverId")}
-                error={errors.mainDriverId?.message}
-                displayFormat={(item) =>
-                  `${item.person.names} - ${item.person.surnames} - ${item.person.identificationNumber}`
-                }
-              />
-            </div>
-            <div className="w-full sm:w-full md:w-1/3">
-              <ComboboxFetch
-                id="auxiliaryDriverId"
-                endpoint="employee/get-all-by-role/Conductor"
-                label="Conductor auxiliar"
-                register={register("auxiliaryDriverId")}
-                error={errors.auxiliaryDriverId?.message}
-                displayFormat={(item) =>
-                  `${item.person.names} - ${item.person.surnames} - ${item.person.identificationNumber}`
-                }
-              />
-            </div>
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <CreateEntityDialog
-              entity="car-driver"
-              entityName={formData?.carId ?? ""}
-              entityAttributes={formData ?? {}}
-              onComplete={handleOnComplete}
-              onError={handleError}
-              buttonComponent={
-                <Button variant="travely" type="submit" disabled={!isValid}>
-                  Crear
-                </Button>
+            <ComboboxFetch
+              id="carId"
+              endpoint="car/get-all"
+              label="Coche"
+              register={register("carId")}
+              error={errors.carId?.message}
+              displayFormat={(item) =>
+                `${item.plate} - ${item.manufacturingYear} - ${item.color}`
               }
             />
           </div>
+          <div>
+            <ComboboxFetch
+              id="mainDriverId"
+              endpoint="employee/get-all-by-role/Conductor"
+              label="Conductor principal"
+              register={register("mainDriverId")}
+              error={errors.mainDriverId?.message}
+              displayFormat={(item) =>
+                `${item.person.names} - ${item.person.surnames} - ${item.person.identificationNumber}`
+              }
+            />
+          </div>
+          <div>
+            <ComboboxFetch
+              id="auxiliaryDriverId"
+              endpoint="employee/get-all-by-role/Conductor"
+              label="Conductor auxiliar"
+              register={register("auxiliaryDriverId")}
+              error={errors.auxiliaryDriverId?.message}
+              displayFormat={(item) =>
+                `${item.person.names} - ${item.person.surnames} - ${item.person.identificationNumber}`
+              }
+            />
+          </div>
+        </div>
+        <div>
+          <CreateEntityDialog
+            entity="car-driver"
+            entityName={formData?.carId ?? ""}
+            entityAttributes={formData ?? {}}
+            onComplete={handleOnComplete}
+            onError={handleError}
+            buttonComponent={
+              <Button variant="travely" type="submit" disabled={!isValid}>
+                Crear
+              </Button>
+            }
+          />
         </div>
       </form>
     </Section>

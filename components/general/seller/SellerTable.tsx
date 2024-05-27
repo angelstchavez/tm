@@ -1,13 +1,8 @@
-import Section from "@/components/ui/Section";
-import CustomTitle from "@/components/utils/CustomTitle";
 import React from "react";
+import EmployeeRoleTable from "../employees/EmployeeRoleTable";
 
 const SellerTable = () => {
-  return (
-    <Section>
-      <CustomTitle title={"Vendedores"}></CustomTitle>
-    </Section>
-  );
+  return <EmployeeRoleTable role={"Vendedor"}></EmployeeRoleTable>;
 };
 
 export default SellerTable;

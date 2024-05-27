@@ -1,13 +1,8 @@
-import Section from "@/components/ui/Section";
-import CustomTitle from "@/components/utils/CustomTitle";
 import React from "react";
+import EmployeeRoleTable from "../employees/EmployeeRoleTable";
 
 const DriverTable = () => {
-  return (
-    <Section>
-      <CustomTitle title={"Conductores"}></CustomTitle>
-    </Section>
-  );
+  return <EmployeeRoleTable role={"Conductor"}></EmployeeRoleTable>;
 };
 
 export default DriverTable;

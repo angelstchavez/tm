@@ -8,6 +8,7 @@ interface ComboboxFetchProps {
   endpoint: string;
   register: UseFormRegisterReturn;
   error?: string;
+  displayFormat?: (item: any) => string; // Nueva propiedad para definir el formato de visualización
 }
 
 const ComboboxFetch: React.FC<ComboboxFetchProps> = ({
@@ -16,6 +17,7 @@ const ComboboxFetch: React.FC<ComboboxFetchProps> = ({
   endpoint,
   register,
   error,
+  displayFormat,
 }) => {
   const [options, setOptions] = useState<{ value: string; label: string }[]>(
     []
@@ -54,12 +56,10 @@ const ComboboxFetch: React.FC<ComboboxFetchProps> = ({
           throw new Error("La respuesta no contiene datos válidos.");
         }
 
-        const formattedOptions = responseData.data.map(
-          (item: { id: string; name: string }) => ({
-            value: item.id,
-            label: item.name,
-          })
-        );
+        const formattedOptions = responseData.data.map((item: any) => ({
+          value: item.id,
+          label: displayFormat ? displayFormat(item) : item.name,
+        }));
 
         setOptions(formattedOptions);
       } catch (error: any) {
@@ -68,7 +68,7 @@ const ComboboxFetch: React.FC<ComboboxFetchProps> = ({
     };
 
     fetchData();
-  }, [endpoint]);
+  }, [endpoint, displayFormat]);
 
   return (
     <div className="mb-4">

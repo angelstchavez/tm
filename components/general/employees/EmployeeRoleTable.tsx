@@ -30,6 +30,7 @@ interface Employee {
 
 interface Props {
   role: string;
+  title: string;
 }
 
 const NoDataComponent = () => (
@@ -38,7 +39,7 @@ const NoDataComponent = () => (
   </p>
 );
 
-const EmployeeRoleTable: React.FC<Props> = ({ role }) => {
+const EmployeeRoleTable: React.FC<Props> = ({ role, title }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [originalEmployees, setOriginalEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -173,7 +174,7 @@ const EmployeeRoleTable: React.FC<Props> = ({ role }) => {
   return (
     <Section>
       <div className="flex items-center justify-between">
-        <CustomTitle title={"Empleados"} />
+        <CustomTitle title={title} />
         <div className="w-1/2 max-w-md py-2">
           <Input
             type="text"

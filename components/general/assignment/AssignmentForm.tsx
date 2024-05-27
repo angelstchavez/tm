@@ -38,7 +38,11 @@ const AssignmentForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    setFormData(data);
+    const formDataWithTimestamp = {
+      ...data,
+      createdAt: new Date().toISOString(),
+    };
+    setFormData(formDataWithTimestamp);
     setDialogOpen(true);
   };
 

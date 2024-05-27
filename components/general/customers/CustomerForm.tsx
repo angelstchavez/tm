@@ -35,9 +35,7 @@ const FormSchema = z.object({
       .min(10, "El número de contacto debe tener 10 dígitos.")
       .max(10, "El número de contacto debe tener 10 dígitos.")
       .nonempty("Introduce un número de contacto válido."),
-    createdAt: z.string(),
   }),
-  createdAt: z.string(),
 });
 
 const CustomerForm = () => {
@@ -58,9 +56,7 @@ const CustomerForm = () => {
         birthdate: "",
         email: "",
         mobilePhone: "",
-        createdAt: "",
       },
-      createdAt: "",
     },
   });
 
@@ -70,11 +66,16 @@ const CustomerForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    const now = new Date();
-    const formattedDate = now.toISOString();
-    data.person.createdAt = formattedDate;
-    data.createdAt = formattedDate;
-    setFormData(data);
+    const now = new Date().toISOString();
+    const formDataWithTimestamps = {
+      ...data,
+      createdAt: now,
+      person: {
+        ...data.person,
+        createdAt: now,
+      },
+    };
+    setFormData(formDataWithTimestamps);
     setDialogOpen(true);
   };
 

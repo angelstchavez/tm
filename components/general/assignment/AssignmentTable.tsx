@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
-import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import AssignmentUpdate from "./AssignmentUpdate";
 
 interface Allocation {
   id: number;
@@ -134,6 +133,10 @@ const AssignmentTable: React.FC = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
+  const handleAssignmentUpdate = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
   const columns: TableColumn<Allocation>[] = [
     {
       name: "Placa del vehículo",
@@ -215,9 +218,12 @@ const AssignmentTable: React.FC = () => {
       name: "Acciones",
       cell: (row) => (
         <div className="flex space-x-2">
-          <button className="bg-orange-600 rounded text-white p-1">
-            <FaEdit className="text-xl" />
-          </button>
+          <AssignmentUpdate
+            id={row.id}
+            entity={"car-driver"}
+            entityName={row.id.toString()}
+            onComplete={handleAssignmentUpdate}
+          ></AssignmentUpdate>
           <DeleteEntityDialog
             entityId={row.id}
             entity="car-driver"

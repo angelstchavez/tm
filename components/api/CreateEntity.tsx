@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 
 interface EntityAttributes {
-  [key: string]: string | number | boolean | Date;
+  [key: string]: any;
 }
 
 interface CreateEntityDialogProps {

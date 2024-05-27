@@ -46,3 +46,13 @@ export const Colors = [
   { value: "Blanco", label: "Blanco" },
   { value: "Negro", label: "Negro" },
 ];
+
+export const Genders = [
+  { value: "Masculino", label: "Masculino" },
+  { value: "Femenino", label: "Femenino" },
+];
+
+export const EmployeeRoles = [
+  { value: "Conductor", label: "Conductor" },
+  { value: "Vendedor", label: "Vendedor" },
+];

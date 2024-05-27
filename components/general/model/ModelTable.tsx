@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
-import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import ModelUpdate from "./ModelUpdate";
 
 interface CarModel {
   id: number;
@@ -100,6 +99,10 @@ const ModelTable: React.FC = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
+  const handleModelUpdate = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
   const columns: TableColumn<CarModel>[] = [
     {
       name: "Nombre",
@@ -154,9 +157,12 @@ const ModelTable: React.FC = () => {
       name: "Acciones",
       cell: (row) => (
         <div className="flex space-x-2">
-          <button className="bg-orange-600 rounded text-white p-1">
-            <FaEdit className="text-xl" />
-          </button>
+          <ModelUpdate
+            id={row.id}
+            entity={"car-model"}
+            entityName={row.name}
+            onComplete={handleModelUpdate}
+          ></ModelUpdate>
           <DeleteEntityDialog
             entityId={row.id}
             entity="car-model"

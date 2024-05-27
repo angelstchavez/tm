@@ -3,7 +3,6 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -159,7 +158,7 @@ const BrandUpdate: React.FC<BrandUpdateProps> = ({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              <CustomTitle title={`Actualizar ${entityName}`} />
+              <CustomTitle title={`Actualizar marca ${entityName}`} />
             </AlertDialogTitle>
             <AlertDialogDescription>
               Se actualizará el registro en el sistema.

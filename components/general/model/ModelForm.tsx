@@ -72,7 +72,7 @@ const ModelForm = () => {
         className="flex flex-wrap justify-between"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="w-full md:w-1/2 lg:w-1/2 px-2 mb-4">
+        <div className="w-full md:w-1/2 lg:w-1/2 px-2">
           <div className="mb-4">
             <Label htmlFor="name">Nombre del modelo</Label>
             <Input
@@ -105,7 +105,7 @@ const ModelForm = () => {
               error={errors.fueltype?.message}
             />
           </div>
-          <div className="mb-4">
+          <div className="">
             <CreateEntityDialog
               entity="car-model"
               entityName={formData?.name ?? ""}
@@ -120,7 +120,7 @@ const ModelForm = () => {
             />
           </div>
         </div>
-        <div className="w-full md:w-1/2 lg:w-1/2 px-2 mb-4">
+        <div className="w-full md:w-1/2 lg:w-1/2 px-2">
           <div className="mb-4">
             <ComboBox
               id="transmissionType"

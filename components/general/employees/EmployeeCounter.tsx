@@ -1,6 +1,6 @@
 import CounterModule from "@/components/utils/CounterModule";
 
-const AssignmentCounter = () => {
+const EmployeeCounter = () => {
   return (
     <CounterModule
       entityName={"employee"}
@@ -10,4 +10,4 @@ const AssignmentCounter = () => {
   );
 };
 
-export default AssignmentCounter;
+export default EmployeeCounter;

@@ -9,6 +9,7 @@ import EmployeeTable from "@/components/general/employees/EmployeeTable";
 import EmployeReport from "@/components/general/employees/EmployeReport";
 import SellerReport from "@/components/general/seller/SellerReport";
 import SellerTable from "@/components/general/seller/SellerTable";
+import EmployeeCounter from "@/components/general/employees/EmployeeCounter";
 
 const EmployeesPage: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const EmployeesPage: React.FC = () => {
           <TabsTrigger value="driver">Conductores</TabsTrigger>
         </TabsList>
         <TabsContent value="general">
+          <EmployeeCounter></EmployeeCounter>
           <EmployeeForm></EmployeeForm>
           <EmployeeTable></EmployeeTable>
           <EmployeReport></EmployeReport>

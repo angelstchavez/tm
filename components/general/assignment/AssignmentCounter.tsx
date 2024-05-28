@@ -3,9 +3,9 @@ import CounterModule from "@/components/utils/CounterModule";
 const AssignmentCounter = () => {
   return (
     <CounterModule
-      entityName={"employee"}
-      module={"empleados"}
-      entities={"Empleados"}
+      entityName={"car-driver"}
+      module={"asignaciones"}
+      entities={"Asignaciones"}
     ></CounterModule>
   );
 };

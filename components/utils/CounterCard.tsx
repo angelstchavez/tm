@@ -15,15 +15,15 @@ const CounterCard: React.FC<CounterCardProps> = ({
   icon: Icon,
 }) => {
   return (
-    <div className="rounded-xl border bg-card text-card-foreground shadow">
-      <div className="p-3 flex flex-row items-center justify-between space-y-0 pb-2">
-        <h3 className="tracking-tight text-sm font-medium">{title}</h3>
-        <div className="bg-travely-100/20 p-2 rounded-lg">
-          <Icon className="h-4 w-4 text-muted-foreground text-travely-100" />
+    <div className="rounded-lg border text-card-foregroun p-2 bg-travely-100/5">
+      <div className="flex items-center justify-between mb-1">
+        <h3 className="font-medium text-md">{title}</h3>
+        <div className="bg-travely-100/20 p-2 rounded-md">
+          <Icon className="h-4 w-4 text-travely-100" />
         </div>
       </div>
-      <div className="p-3 pt-0">
-        <div className="text-2xl font-bold">{count}</div>
+      <div>
+        <div className="text-xl font-bold text-travely-200">{count}</div>
         <p className="text-xs text-muted-foreground">{entities}</p>
       </div>
     </div>

@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface Person {
   id: number;
@@ -247,6 +249,39 @@ const CustomerTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={customers.map((customer) => ({
+                "Nombre Completo": `${customer.person.names} ${customer.person.surnames}`,
+                "Número de Identificación":
+                  customer.person.identificationNumber,
+                "Tipo de Identificación": customer.person.identificationType,
+                Género: customer.person.gender,
+                "Fecha de Nacimiento": new Date(
+                  customer.person.birthdate
+                ).toLocaleDateString("es-CO", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                }),
+                Email: customer.person.email,
+                "Teléfono Móvil": customer.person.mobilePhone,
+                "Fecha de Registro": new Date(
+                  customer.createdAt
+                ).toLocaleDateString("es-CO", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                }),
+              }))}
+              fileName="clientes.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"customer"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

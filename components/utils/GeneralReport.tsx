@@ -54,16 +54,9 @@ const GeneralReport: React.FC<GeneralReportProps> = ({ entity }) => {
   };
 
   return (
-    <>
-      <Section>
-        <div className="justify-between flex items-center">
-          <h2 className="text-xl font-bold text-gray-800">Reporte general</h2>
-          <Button variant={"destructive"} onClick={downloadPDF}>
-            <span>Descargar PDF</span>
-          </Button>
-        </div>
-      </Section>
-    </>
+    <Button variant={"destructive"} onClick={downloadPDF}>
+      <span>Descargar PDF</span>
+    </Button>
   );
 };
 

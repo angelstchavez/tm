@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface Trip {
   id: number;
@@ -225,6 +227,28 @@ const TripTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end mt-2">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={trips.map((trip) => ({
+                "Fecha de Viaje": new Date(trip.travelDate).toLocaleDateString(
+                  "es-CO"
+                ),
+                "Hora de Viaje": formatTime(trip.travelTime),
+                "Precio del Boleto": formatCurrency(trip.ticketPrice),
+                Origen: trip.travelRoute.departureCity.name,
+                Destino: trip.travelRoute.destinationCity.name,
+                "Fecha de Registro": new Date(
+                  trip.createdAt
+                ).toLocaleDateString("es-CO"),
+              }))}
+              fileName="viajes.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"trip"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

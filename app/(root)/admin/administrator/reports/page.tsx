@@ -6,7 +6,7 @@ import { TabsContent } from "@radix-ui/react-tabs";
 import TodayReport from "@/components/general/reports/TodayReport";
 import WeeklyReport from "@/components/general/reports/WeeklyReport";
 import MonthlyReport from "@/components/general/reports/MonthlyReport";
-import GeneralReport from "@/components/general/reports/GeneralReport";
+import GenericReport from "@/components/general/reports/GenericReport";
 
 const ReportsPage: React.FC = () => {
   return (
@@ -28,7 +28,7 @@ const ReportsPage: React.FC = () => {
           <MonthlyReport></MonthlyReport>
         </TabsContent>
         <TabsContent value="general">
-          <GeneralReport></GeneralReport>
+          <GenericReport></GenericReport>
         </TabsContent>
       </Tabs>
     </>

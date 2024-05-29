@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface TransportTerminal {
   id: number;
@@ -182,6 +184,22 @@ const TransportTerminalTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end mt-2">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={terminals.map((terminal) => ({
+                Nombre: terminal.name,
+                Dirección: terminal.address,
+                Teléfono: terminal.phoneNumber,
+                Ciudad: terminal.city.name,
+              }))}
+              fileName="terminales_de_transporte.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"transport-terminal"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

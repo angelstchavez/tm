@@ -9,6 +9,8 @@ import { MdDelete } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
+import GeneralReport from "@/components/utils/GeneralReport";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
 
 interface User {
   id: number;
@@ -172,6 +174,27 @@ const UserTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end mt-2">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={users.map((user) => ({
+                "Nombre de usuario": user.username,
+                Rol: user.role,
+                "Fecha de creación": new Date(
+                  user.createdAt
+                ).toLocaleDateString("es-CO", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                }),
+              }))}
+              fileName="usuarios.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"user"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

@@ -9,6 +9,8 @@ import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
 import ModelUpdate from "./ModelUpdate";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface CarModel {
   id: number;
@@ -198,6 +200,24 @@ const ModelTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end mt-2">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={models.map((model) => ({
+                Nombre: model.name,
+                Categoría: model.category,
+                "Tipo de Combustible": model.fuelType,
+                "Capacidad de Asientos": model.seatingCapacity,
+                "Tipo de Transmisión": model.transmissionType,
+                "Marca de Auto": model.carBrand.name,
+              }))}
+              fileName="modelos.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"car-model"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

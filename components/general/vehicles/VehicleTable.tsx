@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface Vehicle {
   id: number;
@@ -185,6 +187,23 @@ const VehicleTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end mt-2">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={vehicles.map((vehicle) => ({
+                Placa: vehicle.plate,
+                Color: vehicle.color,
+                "Año de fabricación": vehicle.manufacturingYear,
+                "Modelo de auto": vehicle.carModel.name,
+                "Marca de auto": vehicle.carModel.carBrand.name,
+              }))}
+              fileName="vehiculos.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"car"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

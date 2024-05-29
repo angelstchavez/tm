@@ -2,12 +2,9 @@
 
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DriverReport from "@/components/general/driver/DriverReport";
 import DriverTable from "@/components/general/driver/DriverTable";
 import EmployeeForm from "@/components/general/employees/EmployeeForm";
 import EmployeeTable from "@/components/general/employees/EmployeeTable";
-import EmployeReport from "@/components/general/employees/EmployeReport";
-import SellerReport from "@/components/general/seller/SellerReport";
 import SellerTable from "@/components/general/seller/SellerTable";
 import EmployeeCounter from "@/components/general/employees/EmployeeCounter";
 
@@ -24,15 +21,12 @@ const EmployeesPage: React.FC = () => {
           <EmployeeCounter></EmployeeCounter>
           <EmployeeForm></EmployeeForm>
           <EmployeeTable></EmployeeTable>
-          <EmployeReport></EmployeReport>
         </TabsContent>
         <TabsContent value="seller">
           <SellerTable></SellerTable>
-          <SellerReport></SellerReport>
         </TabsContent>
         <TabsContent value="driver">
           <DriverTable></DriverTable>
-          <DriverReport></DriverReport>
         </TabsContent>
       </Tabs>
     </>

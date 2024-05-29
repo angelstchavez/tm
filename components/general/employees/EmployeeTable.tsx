@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface Employee {
   id: number;
@@ -193,6 +195,28 @@ const EmployeeTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end mt-2">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={employees.map((employee) => ({
+                Nombres: employee.person.names,
+                Apellidos: employee.person.surnames,
+                Rol: employee.role,
+                "Fecha de Registro": new Date(
+                  employee.createdAt
+                ).toLocaleDateString("es-CO", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                }),
+              }))}
+              fileName="empleados.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"employee"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

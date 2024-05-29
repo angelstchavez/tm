@@ -9,6 +9,8 @@ import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
 import AssignmentUpdate from "./AssignmentUpdate";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface Allocation {
   id: number;
@@ -259,6 +261,34 @@ const AssignmentTable: React.FC = () => {
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}
         />
+        <div className="flex items-center justify-end mt-2">
+          <div className="mr-2">
+            <ExportCsvButton
+              data={assignments.map((assignment) => ({
+                "Placa del vehículo": assignment.car.plate,
+                "Color del vehículo": assignment.car.color,
+                "Año de fabricación": assignment.car.manufacturingYear,
+                "Modelo del vehículo": assignment.car.carModel.name,
+                "Conductor principal": `${assignment.mainDriver.person.names} ${assignment.mainDriver.person.surnames}`,
+                "Conductor auxiliar": assignment.auxiliaryDriver
+                  ? `${assignment.auxiliaryDriver.person.names} ${assignment.auxiliaryDriver.person.surnames}`
+                  : "N/A",
+                Estado: assignment.isActive ? "Activo" : "Inactivo",
+                "Fecha de creación": new Date(
+                  assignment.createdAt
+                ).toLocaleDateString("es-CO", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                }),
+              }))}
+              fileName="asignaciones.csv"
+            />
+          </div>
+          <div>
+            <GeneralReport entity={"car-driver"}></GeneralReport>
+          </div>
+        </div>
       </div>
     </Section>
   );

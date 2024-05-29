@@ -2,7 +2,7 @@ import Section from "@/components/ui/Section";
 import CustomTitle from "@/components/utils/CustomTitle";
 import React from "react";
 
-const GeneralReport = () => {
+const GenericReport = () => {
   return (
     <Section>
       <CustomTitle title={"Reporte general"}></CustomTitle>
@@ -10,4 +10,4 @@ const GeneralReport = () => {
   );
 };
 
-export default GeneralReport;
+export default GenericReport;

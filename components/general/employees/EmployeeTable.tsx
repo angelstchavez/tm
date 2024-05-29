@@ -191,6 +191,7 @@ const EmployeeTable: React.FC = () => {
           columns={columns}
           data={employees}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

@@ -223,6 +223,7 @@ const TripTable: React.FC = () => {
           columns={columns}
           data={trips}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

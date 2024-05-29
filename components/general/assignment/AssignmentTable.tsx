@@ -257,6 +257,7 @@ const AssignmentTable: React.FC = () => {
           columns={columns}
           data={assignments}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

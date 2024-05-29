@@ -180,6 +180,7 @@ const TransportTerminalTable: React.FC = () => {
           columns={columns}
           data={terminals}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

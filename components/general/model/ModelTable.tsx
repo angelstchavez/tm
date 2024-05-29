@@ -196,6 +196,7 @@ const ModelTable: React.FC = () => {
           columns={columns}
           data={models}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

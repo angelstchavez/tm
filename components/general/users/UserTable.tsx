@@ -170,6 +170,7 @@ const UserTable: React.FC = () => {
           columns={columns}
           data={users}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

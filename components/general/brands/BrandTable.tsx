@@ -147,6 +147,7 @@ const BrandTable: React.FC = () => {
           columns={columns}
           data={brands}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

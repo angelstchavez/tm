@@ -185,6 +185,7 @@ const TravelRouteTable: React.FC = () => {
           columns={columns}
           data={routes}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

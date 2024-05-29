@@ -245,6 +245,7 @@ const CustomerTable: React.FC = () => {
           columns={columns}
           data={customers}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

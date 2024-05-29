@@ -183,6 +183,7 @@ const VehicleTable: React.FC = () => {
           columns={columns}
           data={vehicles}
           pagination
+          highlightOnHover
           progressPending={loading}
           progressComponent={<Loading />}
           noDataComponent={<NoDataComponent />}

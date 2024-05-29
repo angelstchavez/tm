@@ -56,3 +56,9 @@ export const EmployeeRoles = [
   { value: "Conductor", label: "Conductor" },
   { value: "Vendedor", label: "Vendedor" },
 ];
+
+export const SystemRoles = [
+  { value: "Administrador", label: "Administrador" },
+  { value: "Conductor", label: "Conductor" },
+  { value: "Vendedor", label: "Vendedor" },
+];

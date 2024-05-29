@@ -16,13 +16,18 @@ import ComboboxFetch from "@/components/api/ComboboxFetch";
 const FormSchema = z.object({
   name: z.string().nonempty("Introduce un modelo válido."),
   category: z.string().nonempty("Introduce una categoría válida."),
-  fueltype: z.string().nonempty("Introduce un tipo de gasolina válido."),
+  fueltype: z.string().nonempty("Introduce un tipo de combustible válido."),
   transmissionType: z
     .string()
     .nonempty("Introduce un tipo de transmisión válido."),
   seatingCapacity: z.preprocess(
     (val) => parseInt(z.string().parse(val), 10),
-    z.number().min(10, "Introduce una cantidad válida.")
+    z
+      .number({
+        invalid_type_error:
+          "La capacidad de asientos debe ser un número válido.",
+      })
+      .min(10, "La capacidad de asientos debe ser al menos 10.")
   ),
   carBrandId: z.string().nonempty("Introduce una marca válida."),
   createdAt: z.date(), // Agregamos el campo createdAt
@@ -37,14 +42,15 @@ const ModelForm = () => {
     formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
+    mode: "onChange",
     defaultValues: {
       name: "",
       category: "",
       fueltype: "",
       transmissionType: "",
-      seatingCapacity: 0,
+      seatingCapacity: NaN,
       carBrandId: "",
-      createdAt: new Date(), // Valor inicial para createdAt
+      createdAt: new Date(),
     },
   });
 

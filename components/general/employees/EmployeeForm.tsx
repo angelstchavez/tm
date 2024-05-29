@@ -23,7 +23,25 @@ const FormSchema = z.object({
       .min(6, "El número de identificación debe tener al menos 6 caracteres.")
       .nonempty("Introduce un número de identificación válido."),
     gender: z.string().nonempty("Selecciona un género válido."),
-    birthdate: z.string().nonempty("Introduce una fecha de nacimiento válida."),
+    birthdate: z
+      .string()
+      .nonempty("Introduce una fecha de nacimiento válida.")
+      .refine((value) => {
+        // Parse the birthdate string to a Date object
+        const birthdate = new Date(value);
+        // Get today's date
+        const today = new Date();
+        // Calculate the age difference in years
+        const ageDifference = today.getFullYear() - birthdate.getFullYear();
+        // Adjust if the birthday hasn't occurred yet this year
+        const isBeforeBirthday =
+          today.getMonth() < birthdate.getMonth() ||
+          (today.getMonth() === birthdate.getMonth() &&
+            today.getDate() < birthdate.getDate());
+        const age = isBeforeBirthday ? ageDifference - 1 : ageDifference;
+        // Check if age is at least 18 and birthdate is not in the future
+        return age >= 18 && birthdate <= today;
+      }, "La fecha de nacimiento debe ser válida y tener al menos 18 años."),
     email: z
       .string()
       .email("Introduce un correo electrónico válido.")
@@ -77,8 +95,7 @@ const EmployeeForm = () => {
     setFormData(data);
     setDialogOpen(true);
   };
-  
-  
+
   const handleOnComplete = () => {
     console.log("Entidad creada con éxito");
     setDialogOpen(false);

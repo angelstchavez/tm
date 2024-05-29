@@ -54,7 +54,7 @@ const GeneralReport: React.FC<GeneralReportProps> = ({ entity }) => {
   };
 
   return (
-    <Button variant={"destructive"} onClick={downloadPDF}>
+    <Button variant={"default"} onClick={downloadPDF}>
       <span>Descargar PDF</span>
     </Button>
   );

@@ -16,7 +16,7 @@ import ComboboxFetch from "@/components/api/ComboboxFetch";
 const FormSchema = z.object({
   name: z.string().nonempty("Introduce un modelo válido."),
   category: z.string().nonempty("Introduce una categoría válida."),
-  fueltype: z.string().nonempty("Introduce un tipo de categoría válida."),
+  fueltype: z.string().nonempty("Introduce un tipo de gasolina válido."),
   transmissionType: z
     .string()
     .nonempty("Introduce un tipo de transmisión válido."),
@@ -25,14 +25,17 @@ const FormSchema = z.object({
     z.number().min(10, "Introduce una cantidad válida.")
   ),
   carBrandId: z.string().nonempty("Introduce una marca válida."),
+  createdAt: z.date(), // Agregamos el campo createdAt
 });
+
+type FormData = z.infer<typeof FormSchema>;
 
 const ModelForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<z.infer<typeof FormSchema>>({
+  } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
@@ -41,17 +44,19 @@ const ModelForm = () => {
       transmissionType: "",
       seatingCapacity: 0,
       carBrandId: "",
+      createdAt: new Date(), // Valor inicial para createdAt
     },
   });
 
-  const [formData, setFormData] = useState<z.infer<typeof FormSchema> | null>(
-    null
-  );
-
+  const [formData, setFormData] = useState<FormData | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    setFormData(data);
+  const onSubmit = (data: FormData) => {
+    const dataWithTimestamp = {
+      ...data,
+      createdAt: new Date(), // Aseguramos que createdAt tenga la fecha actual
+    };
+    setFormData(dataWithTimestamp);
     setDialogOpen(true);
   };
 

@@ -11,6 +11,7 @@ import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
 import ExportCsvButton from "@/components/utils/ExportCsvButton";
 import GeneralReport from "@/components/utils/GeneralReport";
+import EmployeeUpdate from "./EmployeeUpdate";
 
 interface Employee {
   id: number;
@@ -111,6 +112,10 @@ const EmployeeTable: React.FC = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
+  const handleEmployeeUpdate = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
   const columns: TableColumn<Employee>[] = [
     {
       name: "Nombres",
@@ -157,9 +162,11 @@ const EmployeeTable: React.FC = () => {
       name: "Acciones",
       cell: (row) => (
         <div className="flex space-x-2">
-          <button className="bg-orange-600 rounded text-white p-1">
-            <FaEdit className="text-xl" />
-          </button>
+          <EmployeeUpdate
+            id={row.id}
+            entityName={`${row.person.names} ${row.person.surnames}`}
+            onComplete={handleEmployeeUpdate}
+          ></EmployeeUpdate>
           <DeleteEntityDialog
             entityId={row.id}
             entity="employee"

@@ -19,6 +19,9 @@ interface BusProps {
 
 const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
   const [seats, setSeats] = useState<SeatData[]>([]);
+  const [selectedSeats, setSelectedSeats] = useState<
+    { id: string; number: number }[]
+  >([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +35,7 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
         }
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/seat/get-by-trip/${tripId}`, // Se utiliza tripId en la URL del endpoint
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/seat/get-by-trip/${tripId}`,
           {
             method: "GET",
             headers: {
@@ -61,9 +64,21 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
   const fourthSection = seats.slice(thirdLength * 3);
 
   const handleSeatClick = (seatData: { id: string; number: number }) => {
-    // Modificado el argumento para recibir el objeto con ID y número
-    onSelectedSeatsChange(seatData); // Pasar el objeto con ID y número al hacer clic en la silla
+    setSelectedSeats((prevSelectedSeats) => {
+      const isAlreadySelected = prevSelectedSeats.some(
+        (seat) => seat.id === seatData.id
+      );
+      if (isAlreadySelected) {
+        return prevSelectedSeats.filter((seat) => seat.id !== seatData.id);
+      } else if (prevSelectedSeats.length < 5) {
+        return [...prevSelectedSeats, seatData];
+      }
+      return prevSelectedSeats;
+    });
+    onSelectedSeatsChange(seatData);
   };
+
+  const isSelectionDisabled = selectedSeats.length >= 5;
 
   return (
     <>
@@ -83,7 +98,6 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
           </div>
         </div>
         <div className="grid grid-cols-5 gap-2 p-2">
-          {/* Columna 1 */}
           <div className="col-span-1">
             {firstThird.map((seat, index) => (
               <div
@@ -97,11 +111,14 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
                   number={seat.number}
                   status={seat.status}
                   onSeatClick={handleSeatClick}
+                  disabled={
+                    isSelectionDisabled &&
+                    !selectedSeats.some((s) => s.id === seat.id)
+                  }
                 />
               </div>
             ))}
           </div>
-          {/* Columna 2 */}
           <div className="col-span-1">
             {secondThird.map((seat, index) => (
               <div
@@ -115,13 +132,15 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
                   number={seat.number}
                   status={seat.status}
                   onSeatClick={handleSeatClick}
+                  disabled={
+                    isSelectionDisabled &&
+                    !selectedSeats.some((s) => s.id === seat.id)
+                  }
                 />
               </div>
             ))}
           </div>
-          {/* Columna 3 (vacía) */}
           <div className="col-span-1 bg-zinc-100 rounded-md mb-1"></div>
-          {/* Columna 4 */}
           <div className="col-span-1">
             {thirdSection.map((seat, index) => (
               <div
@@ -135,11 +154,14 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
                   number={seat.number}
                   status={seat.status}
                   onSeatClick={handleSeatClick}
+                  disabled={
+                    isSelectionDisabled &&
+                    !selectedSeats.some((s) => s.id === seat.id)
+                  }
                 />
               </div>
             ))}
           </div>
-          {/* Columna 5 */}
           <div className="col-span-1">
             {fourthSection.map((seat, index) => (
               <div
@@ -153,6 +175,10 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
                   number={seat.number}
                   status={seat.status}
                   onSeatClick={handleSeatClick}
+                  disabled={
+                    isSelectionDisabled &&
+                    !selectedSeats.some((s) => s.id === seat.id)
+                  }
                 />
               </div>
             ))}

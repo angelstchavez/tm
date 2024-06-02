@@ -4,10 +4,17 @@ interface SeatProps {
   id: string;
   number: number;
   status: "Disponible" | "Reservado" | "Vendido";
-  onSeatClick: (seatData: { id: string; number: number }) => void; // Modificada la prop para enviar el objeto con ID y número
+  onSeatClick: (seatData: { id: string; number: number }) => void;
+  disabled: boolean;
 }
 
-const Seat: React.FC<SeatProps> = ({ id, number, status, onSeatClick }) => {
+const Seat: React.FC<SeatProps> = ({
+  id,
+  number,
+  status,
+  onSeatClick,
+  disabled,
+}) => {
   const [selected, setSelected] = useState<boolean>(false);
 
   let seatColor = "";
@@ -17,7 +24,8 @@ const Seat: React.FC<SeatProps> = ({ id, number, status, onSeatClick }) => {
     case "Disponible":
       seatColor = selected ? "bg-yellow-400" : "bg-white";
       textColor = selected ? "text-yellow-800" : "text-zinc-400";
-      hoverColor = selected ? "hover:bg-yellow-300" : "hover:bg-gray-100";
+      hoverColor =
+        selected && !disabled ? "hover:bg-yellow-300" : "hover:bg-gray-100";
       break;
     case "Reservado":
       seatColor = "bg-zinc-500";
@@ -37,7 +45,7 @@ const Seat: React.FC<SeatProps> = ({ id, number, status, onSeatClick }) => {
   }
 
   const handleClick = () => {
-    if (status === "Disponible") {
+    if (status === "Disponible" && !disabled) {
       setSelected(!selected);
       onSeatClick({ id, number });
     }

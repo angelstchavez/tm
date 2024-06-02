@@ -49,95 +49,90 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
   };
 
   return (
-    <>
-      <div className="flex flex-col items-center">
-        <div className="mb-2">
-          <TripDetails tripId={tripId} />
-        </div>
-        <div className="border p-2 rounded-lg">
-          <Tabs
-            value={activeTab}
-            onValueChange={handleTabChange}
-            className="w-[480px]"
-          >
-            <div className="flex justify-center items-center">
-              <TabsList>
-                <TabsTrigger value="seats" disabled={activeTab !== "seats"}>
-                  1. Seleccionar asiento
-                </TabsTrigger>
-                <TabsTrigger
-                  value="passengers"
-                  disabled={activeTab !== "passengers"}
-                >
-                  2. Registrar pasajeros
-                </TabsTrigger>
-                <TabsTrigger value="payment" disabled={activeTab !== "payment"}>
-                  3. Realizar pago
-                </TabsTrigger>
-              </TabsList>
-            </div>
-            {/* Asientos */}
-            <TabsContent value="seats">
-              <div className="flex flex-wrap justify-center items-start">
-                <div className="w-full sm:w-1/2 px-2">
-                  <Bus
-                    tripId={tripId}
-                    onSelectedSeatsChange={handleSelectedSeatsChange}
-                  />
-                </div>
-                <div className="w-full sm:w-1/2 px-2">
-                  <SeatStatusCounts tripId={tripId} />
-                  <div className="my-2">
-                    <TotalSale
-                      count={selectedSeats.length}
-                      tripId={tripId}
-                    ></TotalSale>
-                  </div>
-                  <div className="flex justify-end my-2">
-                    <Button
-                      variant={"travely"}
-                      onClick={handleNext}
-                      disabled={selectedSeats.length === 0}
-                    >
-                      Siguiente
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-            {/* Pasajeros */}
-            <TabsContent value="passengers">
-              <h2 className="py-2 text-xl font-bold text-gray-800">
-                Registrar pasajeros
-              </h2>
-              {selectedSeats.map((seat) => (
-                <PassengerForm key={seat.id} seatNumber={seat.number} />
-              ))}
-              <div className="flex justify-between py-2">
-                <Button variant={"secondary"} onClick={handleBack}>
-                  Volver
-                </Button>
-                <Button variant={"travely"} onClick={handleNext}>
-                  Siguiente
-                </Button>
-              </div>
-            </TabsContent>
-            {/* Pago */}
-            <TabsContent value="payment">
-              <h2 className="py-2 text-xl font-bold text-gray-800">
-                Finalizar pago
-              </h2>
-              <div className="flex justify-between">
-                <Button variant={"secondary"} onClick={handleBack}>
-                  Volver
-                </Button>
-                <Button variant={"confirm"}>Pagar</Button>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+    <div className="flex flex-col items-center">
+      <div className="mb-2">
+        <TripDetails tripId={tripId} />
       </div>
-    </>
+      <div className="rounded-lg">
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className="w-[480px]"
+        >
+          <div className="flex justify-center items-center">
+            <TabsList>
+              <TabsTrigger value="seats" disabled={activeTab !== "seats"}>
+                1. Seleccionar asiento
+              </TabsTrigger>
+              <TabsTrigger
+                value="passengers"
+                disabled={activeTab !== "passengers"}
+              >
+                2. Registrar pasajeros
+              </TabsTrigger>
+              <TabsTrigger value="payment" disabled={activeTab !== "payment"}>
+                3. Realizar pago
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          {/* Asientos */}
+          <TabsContent value="seats">
+            <div className="flex flex-wrap justify-center items-start">
+              <div className="w-full sm:w-1/2">
+                <Bus
+                  tripId={tripId}
+                  onSelectedSeatsChange={handleSelectedSeatsChange}
+                />
+              </div>
+              <div className="w-full sm:w-1/2 px-1">
+                <SeatStatusCounts tripId={tripId} />
+                <div className="my-2">
+                  <TotalSale
+                    count={selectedSeats.length}
+                    tripId={tripId}
+                  ></TotalSale>
+                </div>
+                <div className="flex justify-end my-2">
+                  <Button
+                    variant={"travely"}
+                    onClick={handleNext}
+                    disabled={selectedSeats.length === 0}
+                  >
+                    Siguiente
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+          {/* Pasajeros */}
+          <TabsContent value="passengers">
+            <h2 className="py-2 text-xl font-bold text-gray-800">
+              Registrar pasajeros
+            </h2>
+            {selectedSeats.map((seat) => (
+              <PassengerForm key={seat.id} seatNumber={seat.number} />
+            ))}
+            <div className="flex justify-end py-2">
+              <Button variant={"travely"} onClick={handleNext}>
+                Siguiente
+              </Button>
+            </div>
+          </TabsContent>
+          {/* Pago */}
+          <TabsContent value="payment">
+            <h2 className="py-2 text-xl font-bold text-gray-800">
+              Finalizar pago
+            </h2>
+            <div className="flex justify-between">
+              <Button variant={"secondary"} onClick={handleBack}>
+                Volver
+              </Button>
+              <Button variant={"confirm"}>Pagar</Button>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
   );
 };
 

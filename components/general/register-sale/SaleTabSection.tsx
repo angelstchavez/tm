@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SeatStatusCounts from "./SeatStatusCount";
 import Bus from "./Bus";
-import SelectedSeats from "./SelectedSeats";
 import TripDetails from "./TripDetails";
 import TotalSale from "./TotalSaleCount";
 import PassengerForm from "./PassengerForm";
@@ -110,7 +109,14 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               Registrar pasajeros
             </h2>
             {selectedSeats.map((seat) => (
-              <PassengerForm key={seat.id} seatNumber={seat.number} />
+              <div key={seat.id} className="mb-4">
+                <PassengerForm
+                  seatNumber={seat.number}
+                  onFormSubmit={function (isValid: boolean): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+              </div>
             ))}
             <div className="flex justify-end py-2">
               <Button variant={"travely"} onClick={handleNext}>

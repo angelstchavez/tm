@@ -263,16 +263,18 @@ const RegisterSalePage: React.FC = () => {
         </div>
       </Section>
       <Section>
-        <DataTable
-          columns={columns}
-          data={filteredTrips}
-          pagination
-          paginationPerPage={10}
-          fixedHeader
-          progressPending={loading}
-          progressComponent={<Loading />}
-          noDataComponent={<NoDataComponent />}
-        />
+        <div className="grid grid-col-1">
+          <DataTable
+            columns={columns}
+            data={filteredTrips}
+            pagination
+            paginationPerPage={10}
+            fixedHeader
+            progressPending={loading}
+            progressComponent={<Loading />}
+            noDataComponent={<NoDataComponent />}
+          />
+        </div>
       </Section>
       {selectedTripId && (
         <div className="justify-center items-center flex">

@@ -99,7 +99,7 @@ const TripDetails: React.FC<TripDetailsProps> = ({ tripId }) => {
 
   return (
     <div>
-      <div className="w-[515px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 border rounded-lg p-4">
+      <div className="w-[550x] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 border rounded-lg p-2">
         <p className="bg-orange-500 text-white rounded-sm p-1 flex items-center font-bold">
           <FaLocationDot className="mr-1 text-orange-300" />
           {trip.travelRoute.departureCity.name} -{" "}

@@ -49,30 +49,27 @@ const SeatStatusCounts: React.FC<SeatStatusCountsProps> = ({ tripId }) => {
 
   return (
     <div className="mb-2 flex justify-center items-center border rounded-lg p-1">
-      <div>
-        <div className="flex justify-center">
-          <div className="mr-6 flex flex-col items-center">
-            <span className="text-4xl text-zinc-300">
-              <PiSeatFill />
-            </span>
-            <p className="text-sm text-gray-700">
-              Libres: {statusCounts.Disponible}
-            </p>
-          </div>
-          <div className="mr-6 flex flex-col items-center">
-            <span className="text-4xl text-zinc-600">
-              <PiSeatFill />
-            </span>
-            <p className="text-sm text-gray-700">
-              Reservadas: {statusCounts.Reservado}
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="text-4xl text-travely-200">
-              <PiSeatFill />
-            </span>
-            <p className="text-sm">Vendidas: {statusCounts.Vendido}</p>
-          </div>
+      <div className="flex justify-center">
+        <div className="mr-6 flex flex-col items-center">
+          <span className="text-3xl text-zinc-300">
+            <PiSeatFill />
+          </span>
+          <p className="text-xs text-gray-700">Libres:</p>
+          <p className="text-xs text-gray-700">{statusCounts.Disponible}</p>
+        </div>
+        <div className="mr-6 flex flex-col items-center">
+          <span className="text-3xl text-zinc-600">
+            <PiSeatFill />
+          </span>
+          <p className="text-xs text-gray-700">Reservadas:</p>
+          <p className="text-sm text-gray-700">{statusCounts.Reservado}</p>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl text-travely-200">
+            <PiSeatFill />
+          </span>
+          <p className="text-xs">Vendidas:</p>
+          <p className="text-xs">{statusCounts.Vendido}</p>
         </div>
       </div>
     </div>

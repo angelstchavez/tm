@@ -6,6 +6,7 @@ import Bus from "./Bus";
 import SelectedSeats from "./SelectedSeats";
 import TripDetails from "./TripDetails";
 import TotalSale from "./TotalSaleCount";
+import PassengerForm from "./PassengerForm";
 
 interface SaleTabSectionProps {
   tripId: number;
@@ -13,6 +14,9 @@ interface SaleTabSectionProps {
 
 const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
   const [activeTab, setActiveTab] = React.useState("seats");
+  const [selectedSeats, setSelectedSeats] = React.useState<
+    { id: string; number: number }[]
+  >([]);
 
   const handleNext = () => {
     if (activeTab === "seats") setActiveTab("passengers");
@@ -28,61 +32,77 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     setActiveTab(value);
   };
 
+  const handleSelectedSeatsChange = (seatData: {
+    id: string;
+    number: number;
+  }) => {
+    setSelectedSeats((prevSelectedSeats) => {
+      const isAlreadySelected = prevSelectedSeats.some(
+        (seat) => seat.id === seatData.id
+      );
+      if (isAlreadySelected) {
+        return prevSelectedSeats.filter((seat) => seat.id !== seatData.id);
+      } else {
+        return [...prevSelectedSeats, seatData];
+      }
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col items-center">
-        <div className="w-full flex justify-center mb-4">
+        <div className="mb-2">
           <TripDetails tripId={tripId} />
         </div>
-        <div className="border p-4 rounded-lg">
+        <div className="border p-2 rounded-lg">
           <Tabs
             value={activeTab}
             onValueChange={handleTabChange}
             className="w-[480px]"
           >
-            <TabsList>
-              <TabsTrigger value="seats" disabled={activeTab !== "seats"}>
-                1. Seleccionar asiento
-              </TabsTrigger>
-              <TabsTrigger
-                value="passengers"
-                disabled={activeTab !== "passengers"}
-              >
-                2. Registrar pasajeros
-              </TabsTrigger>
-              <TabsTrigger value="payment" disabled={activeTab !== "payment"}>
-                3. Realizar pago
-              </TabsTrigger>
-            </TabsList>
+            <div className="flex justify-center items-center">
+              <TabsList>
+                <TabsTrigger value="seats" disabled={activeTab !== "seats"}>
+                  1. Seleccionar asiento
+                </TabsTrigger>
+                <TabsTrigger
+                  value="passengers"
+                  disabled={activeTab !== "passengers"}
+                >
+                  2. Registrar pasajeros
+                </TabsTrigger>
+                <TabsTrigger value="payment" disabled={activeTab !== "payment"}>
+                  3. Realizar pago
+                </TabsTrigger>
+              </TabsList>
+            </div>
             {/* Asientos */}
             <TabsContent value="seats">
-              <div className="flex justify-center items-center">
-                <div className="w-full">
-                  <SeatStatusCounts tripId={tripId}></SeatStatusCounts>
-                </div>
-              </div>
-              <div className="flex justify-center items-center">
-                <div className="w-[250px]">
+              <div className="flex flex-wrap justify-center items-start">
+                <div className="w-full sm:w-1/2 px-2">
                   <Bus
                     tripId={tripId}
-                    onSelectedSeatsChange={(selectedSeatData: {
-                      id: string;
-                      number: number;
-                    }): void => {
-                      console.log(tripId);
-                    }}
+                    onSelectedSeatsChange={handleSelectedSeatsChange}
                   />
                 </div>
-              </div>
-              <div className="py-2 flex justify-center items-center">
-                <div className="w-full">
-                  <TotalSale count={1} tripId={tripId}></TotalSale>
+                <div className="w-full sm:w-1/2 px-2">
+                  <SeatStatusCounts tripId={tripId} />
+                  <div className="my-2">
+                    <TotalSale
+                      count={selectedSeats.length}
+                      tripId={tripId}
+                    ></TotalSale>
+                  </div>
+                  <div className="flex justify-end my-2">
+                    <Button
+                      variant={"travely"}
+                      onClick={handleNext}
+                      disabled={selectedSeats.length === 0}
+                    >
+                      Siguiente
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <div className="flex justify-end py-2">
-                <Button variant={"travely"} onClick={handleNext}>
-                  Siguiente
-                </Button>
               </div>
             </TabsContent>
             {/* Pasajeros */}
@@ -90,7 +110,10 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               <h2 className="py-2 text-xl font-bold text-gray-800">
                 Registrar pasajeros
               </h2>
-              <div className="flex justify-between">
+              {selectedSeats.map((seat) => (
+                <PassengerForm key={seat.id} seatNumber={seat.number} />
+              ))}
+              <div className="flex justify-between py-2">
                 <Button variant={"secondary"} onClick={handleBack}>
                   Volver
                 </Button>

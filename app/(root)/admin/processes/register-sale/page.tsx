@@ -229,7 +229,7 @@ const RegisterSalePage: React.FC = () => {
       <Section>
         <CustomTitle title={"Consultar viajes disponibles"}></CustomTitle>
         <div className="flex flex-col md:flex-row w-full max-w-4xl items-center gap-4 py-2">
-          <div className="w-full md:w-auto">
+          <div className="w-full md:flex-1">
             <Label htmlFor="origin">Origen o destino</Label>
             <Input
               type="text"
@@ -237,27 +237,27 @@ const RegisterSalePage: React.FC = () => {
               placeholder="Ej. Bogotá"
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
-              className="w-full md:w-auto"
+              className="w-full"
             />
           </div>
-          <div className="w-full md:w-auto">
+          <div className="w-full md:flex-1">
             <Label htmlFor="date">Fecha de viaje</Label>
             <Input
               type="date"
               id="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full md:w-auto"
+              className="w-full"
             />
           </div>
-          <div className="w-full md:w-auto">
+          <div className="w-full md:flex-1">
             <Label htmlFor="time">Hora de viaje</Label>
             <Input
               type="time"
               id="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-full md:w-auto"
+              className="w-full"
             />
           </div>
         </div>
@@ -275,16 +275,14 @@ const RegisterSalePage: React.FC = () => {
         />
       </Section>
       {selectedTripId && (
-        <>
-          <div className="justify-center items-center flex">
-            <section className="h-auto rounded-md bg-white shadow-md border p-4 flex flex-col w-[550px]">
-              <TripSaleMainNavigation
-                tripId={selectedTripId}
-                onCancel={handleCancel}
-              ></TripSaleMainNavigation>
-            </section>
-          </div>
-        </>
+        <div className="justify-center items-center flex">
+          <section className="h-auto rounded-md bg-white shadow-md border p-4 flex flex-col">
+            <TripSaleMainNavigation
+              tripId={selectedTripId}
+              onCancel={handleCancel}
+            ></TripSaleMainNavigation>
+          </section>
+        </div>
       )}
     </>
   );

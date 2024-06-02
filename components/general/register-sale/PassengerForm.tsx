@@ -2,46 +2,60 @@ import { Button } from "@/components/ui/button";
 import ComboBox from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import React, { useState } from "react"; // Importa useState
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DocumentTypes } from "../../../utilities/types";
 
-// Definir el esquema de validación con Zod
 const PassengerFormSchema = z.object({
-  firstName: z.string().nonempty(),
-  lastName: z.string().nonempty(),
-  documentType: z.string().nonempty(),
-  documentNumber: z.string().nonempty(),
+  firstName: z.string().nonempty("Introduce un nombre válido."),
+  lastName: z.string().nonempty("Introduce un apellido válido."),
+  documentType: z.string().nonempty("Selecciona un tipo de documento válido."),
+  documentNumber: z
+    .string()
+    .nonempty("Introduce un número de documento válido."),
 });
+
+interface FormData {
+  firstName: string;
+  lastName: string;
+  documentType: string;
+  documentNumber: string;
+}
 
 interface PassengerFormProps {
   seatNumber: number;
+  onFormSubmit: (isValid: boolean) => void;
 }
 
-const PassengerForm: React.FC<PassengerFormProps> = ({ seatNumber }) => {
+const PassengerForm: React.FC<PassengerFormProps> = ({
+  seatNumber,
+  onFormSubmit,
+}) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(PassengerFormSchema),
+    mode: "onChange",
+  });
 
-  const onSubmit = (data: any) => {
-    try {
-      // Valida los datos del formulario con Zod
-      PassengerFormSchema.parse(data);
+  const [formValid, setFormValid] = useState(false); // Estado local para rastrear la validez del formulario
 
-      // Si la validación es exitosa, envía los datos al backend
-      console.log("Datos válidos:", data);
-    } catch (error) {
-      // Si la validación falla, maneja el error
-      console.error("Error de validación:", error);
-    }
+  const onSubmit = (data: FormData) => {
+    console.log("Datos del pasajero:", data);
+    setFormValid(isValid); // Actualiza el estado local cuando se envía el formulario
+    onFormSubmit(isValid); // Llama a la función del padre con la validez del formulario
   };
-
   return (
     <form className="border rounded-lg p-4" onSubmit={handleSubmit(onSubmit)}>
-      <h2>Pasajero del asiento: {seatNumber}</h2>
+      <div className="mb-2 bg-travely-200 text-white p-2 rounded-lg">
+        <h2>
+          Pasajero del asiento: <span className="font-bold">{seatNumber}</span>
+        </h2>
+      </div>
       <div className="mb-2">
         <Label>Nombres</Label>
         <Input
@@ -50,6 +64,11 @@ const PassengerForm: React.FC<PassengerFormProps> = ({ seatNumber }) => {
           placeholder="Nombres"
           {...register("firstName")}
         />
+        {errors.firstName && (
+          <span className="text-red-500 text-sm">
+            {errors.firstName.message}
+          </span>
+        )}
       </div>
       <div className="mb-2">
         <Label>Apellidos</Label>
@@ -59,6 +78,11 @@ const PassengerForm: React.FC<PassengerFormProps> = ({ seatNumber }) => {
           placeholder="Apellidos"
           {...register("lastName")}
         />
+        {errors.lastName && (
+          <span className="text-red-500 text-sm">
+            {errors.lastName.message}
+          </span>
+        )}
       </div>
       <div className="mb-2">
         <ComboBox
@@ -67,6 +91,11 @@ const PassengerForm: React.FC<PassengerFormProps> = ({ seatNumber }) => {
           options={DocumentTypes}
           register={register("documentType")}
         />
+        {errors.documentType && (
+          <span className="text-red-500 text-sm">
+            {errors.documentType.message}
+          </span>
+        )}
       </div>
       <div className="mb-2">
         <Label>Número de documento</Label>
@@ -76,10 +105,12 @@ const PassengerForm: React.FC<PassengerFormProps> = ({ seatNumber }) => {
           placeholder="Número de documento"
           {...register("documentNumber")}
         />
+        {errors.documentNumber && (
+          <span className="text-red-500 text-sm">
+            {errors.documentNumber.message}
+          </span>
+        )}
       </div>
-      <Button type="submit" variant={"other"}>
-        Registrar pasajero
-      </Button>
     </form>
   );
 };

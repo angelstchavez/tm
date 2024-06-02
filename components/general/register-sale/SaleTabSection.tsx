@@ -16,6 +16,9 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
   const [selectedSeats, setSelectedSeats] = React.useState<
     { id: string; number: number }[]
   >([]);
+  const [passengerFormValidity, setPassengerFormValidity] = React.useState<{
+    [key: number]: boolean;
+  }>({});
 
   const handleNext = () => {
     if (activeTab === "seats") setActiveTab("passengers");
@@ -46,6 +49,18 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
       }
     });
   };
+
+  const handleFormValidChange = (seatNumber: number, isValid: boolean) => {
+    setPassengerFormValidity((prevState) => ({
+      ...prevState,
+      [seatNumber]: isValid,
+    }));
+  };
+
+  const allFormsValid = React.useMemo(
+    () => selectedSeats.every((seat) => passengerFormValidity[seat.number]),
+    [selectedSeats, passengerFormValidity]
+  );
 
   return (
     <div className="flex flex-col items-center">
@@ -112,14 +127,16 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               <div key={seat.id} className="mb-4">
                 <PassengerForm
                   seatNumber={seat.number}
-                  onFormSubmit={function (isValid: boolean): void {
-                    throw new Error("Function not implemented.");
-                  }}
+                  onFormValidChange={handleFormValidChange}
                 />
               </div>
             ))}
             <div className="flex justify-end py-2">
-              <Button variant={"travely"} onClick={handleNext}>
+              <Button
+                variant={"travely"}
+                onClick={handleNext}
+                disabled={!allFormsValid}
+              >
                 Siguiente
               </Button>
             </div>

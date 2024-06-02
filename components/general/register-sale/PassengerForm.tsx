@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import ComboBox from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState } from "react"; // Importa useState
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,12 +25,12 @@ interface FormData {
 
 interface PassengerFormProps {
   seatNumber: number;
-  onFormSubmit: (isValid: boolean) => void;
+  onFormValidChange: (seatNumber: number, isValid: boolean) => void;
 }
 
 const PassengerForm: React.FC<PassengerFormProps> = ({
   seatNumber,
-  onFormSubmit,
+  onFormValidChange,
 }) => {
   const {
     register,
@@ -42,13 +41,14 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
     mode: "onChange",
   });
 
-  const [formValid, setFormValid] = useState(false); // Estado local para rastrear la validez del formulario
+  useEffect(() => {
+    onFormValidChange(seatNumber, isValid);
+  }, [isValid, seatNumber, onFormValidChange]);
 
   const onSubmit = (data: FormData) => {
     console.log("Datos del pasajero:", data);
-    setFormValid(isValid); // Actualiza el estado local cuando se envía el formulario
-    onFormSubmit(isValid); // Llama a la función del padre con la validez del formulario
   };
+
   return (
     <form className="border rounded-lg p-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-2 bg-travely-200 text-white p-2 rounded-lg">

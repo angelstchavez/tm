@@ -101,10 +101,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               <div className="w-full sm:w-1/2 px-1">
                 <SeatStatusCounts tripId={tripId} />
                 <div className="my-2">
-                  <TotalSale
-                    count={selectedSeats.length}
-                    tripId={tripId}
-                  ></TotalSale>
+                  <TotalSale count={selectedSeats.length} tripId={tripId} />
                 </div>
                 <div className="flex justify-end my-2">
                   <Button
@@ -112,7 +109,11 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
                     onClick={handleNext}
                     disabled={selectedSeats.length === 0}
                   >
-                    Siguiente
+                    {selectedSeats.length > 0
+                      ? `Continuar con ${selectedSeats.length} ${
+                          selectedSeats.length === 1 ? "silla" : "sillas"
+                        }`
+                      : "Continuar"}
                   </Button>
                 </div>
               </div>
@@ -120,9 +121,6 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
           </TabsContent>
           {/* Pasajeros */}
           <TabsContent value="passengers">
-            <h2 className="py-2 text-xl font-bold text-gray-800">
-              Registrar pasajeros
-            </h2>
             {selectedSeats.map((seat) => (
               <div key={seat.id} className="mb-4">
                 <PassengerForm

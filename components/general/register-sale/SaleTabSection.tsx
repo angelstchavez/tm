@@ -64,9 +64,6 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-2">
-        <TripDetails tripId={tripId} />
-      </div>
       <div className="rounded-lg">
         <Tabs
           value={activeTab}
@@ -93,17 +90,15 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
           <TabsContent value="seats">
             <div className="flex flex-wrap justify-center items-start">
               <div className="w-full sm:w-1/2">
+                <SeatStatusCounts tripId={tripId} />
                 <Bus
                   tripId={tripId}
                   onSelectedSeatsChange={handleSelectedSeatsChange}
                 />
               </div>
               <div className="w-full sm:w-1/2 px-1">
-                <SeatStatusCounts tripId={tripId} />
-                <div className="my-2">
-                  <TotalSale count={selectedSeats.length} tripId={tripId} />
-                </div>
-                <p className="text-right text-xs text-gray-600 mb-2">
+                <TotalSale count={selectedSeats.length} tripId={tripId} />
+                <p className="my-2 text-right text-xs text-gray-600 mb-2">
                   (Máximo 5 asientos por venta)
                 </p>
                 <div className="flex justify-end my-2">

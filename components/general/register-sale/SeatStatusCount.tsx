@@ -48,32 +48,34 @@ const SeatStatusCounts: React.FC<SeatStatusCountsProps> = ({ tripId }) => {
   }, [tripId]);
 
   return (
-    <div className="mb-2 flex justify-center items-center border rounded-lg">
-      <div className="flex justify-between max-w-xs">
-        <div className="p-2 flex flex-col items-center">
-          <span className="text-3xl text-zinc-300">
+    <div className="mb-2 flex justify-center items-center border rounded-lg p-2">
+      <div className="grid grid-cols-3 max-w-sm w-full">
+        <div className="flex flex-col items-center">
+          <span className="text-4xl text-zinc-300">
             <PiSeatFill />
           </span>
-          <p className="text-xs text-gray-700">Libres</p>
-          <p className="text-sm text-gray-700 font-bold">
-            {statusCounts.Disponible}
+          <p className="text-xs text-gray-700">
+            Libres:{" "}
+            <span className="text-xs font-bold">{statusCounts.Disponible}</span>
           </p>
         </div>
-        <div className="p-2 flex flex-col items-center">
-          <span className="text-3xl text-zinc-600">
+        <div className="flex flex-col items-center">
+          <span className="text-4xl text-zinc-600">
             <PiSeatFill />
           </span>
-          <p className="text-xs text-gray-700">Reservadas</p>
-          <p className="text-sm text-gray-700 font-bold">
-            {statusCounts.Reservado}
+          <p className="text-xs text-gray-700">
+            Reservadas:{" "}
+            <span className="text-xs font-bold">{statusCounts.Reservado}</span>
           </p>
         </div>
-        <div className="p-2 flex flex-col items-center">
-          <span className="text-3xl text-travely-200">
+        <div className="flex flex-col items-center">
+          <span className="text-4xl text-travely-200">
             <PiSeatFill />
           </span>
-          <p className="text-xs text-gray-700">Vendidas</p>
-          <p className="text-sm text-gray-700 font-bold">{statusCounts.Vendido}</p>
+          <p className="text-xs text-gray-700">
+            Vendidas:{" "}
+            <span className="text-xs font-bold">{statusCounts.Vendido}</span>
+          </p>
         </div>
       </div>
     </div>

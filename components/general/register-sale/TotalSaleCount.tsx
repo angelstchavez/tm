@@ -64,6 +64,13 @@ const TotalSale: React.FC<TotalSaleProps> = ({ count, tripId }) => {
   return (
     <div className="p-1 border rounded">
       <div className="bg-zinc-100 text-zinc-700 p-1 rounded flex justify-between">
+        <span className="text-md">Precio del boleto:</span>
+        <span className="text-md text-zinc-700 px-1 font-semibold">
+          {formatCurrency(tripDetails.ticketPrice)}
+        </span>
+      </div>
+      <div className="py-0.5"></div>
+      <div className="bg-zinc-100 text-zinc-700 p-1 rounded flex justify-between">
         <span className="text-md">Cantidad de asientos:</span>
         <span className="text-md text-zinc-700 px-1 font-semibold">
           {count}

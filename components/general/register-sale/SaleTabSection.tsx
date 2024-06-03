@@ -103,6 +103,9 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
                 <div className="my-2">
                   <TotalSale count={selectedSeats.length} tripId={tripId} />
                 </div>
+                <p className="text-right text-xs text-gray-600 mb-2">
+                  (Máximo 5 asientos por venta)
+                </p>
                 <div className="flex justify-end my-2">
                   <Button
                     variant={"travely"}
@@ -129,7 +132,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
                 />
               </div>
             ))}
-            <div className="flex justify-end py-2">
+            <div className="flex justify-end">
               <Button
                 variant={"travely"}
                 onClick={handleNext}

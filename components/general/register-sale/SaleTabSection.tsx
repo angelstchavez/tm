@@ -1,28 +1,60 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SeatStatusCounts from "./SeatStatusCount";
 import Bus from "./Bus";
-import TripDetails from "./TripDetails";
 import TotalSale from "./TotalSaleCount";
 import PassengerForm from "./PassengerForm";
+import PaymentForm from "./PaymentForm";
+import Cookies from "js-cookie";
 
 interface SaleTabSectionProps {
   tripId: number;
 }
 
+interface PassengerData {
+  firstName: string;
+  lastName: string;
+  documentType: string;
+  documentNumber: string;
+}
+
+interface PaymentFormData {
+  names: string;
+  surnames: string;
+  documentType: string;
+  documentNumber: string;
+  gender: string;
+  birthDate: string;
+  email: string;
+  mobilePhone: string;
+  paymentMethod: string;
+  amountGivenByCustomer: number;
+}
+
 const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
-  const [activeTab, setActiveTab] = React.useState("seats");
-  const [selectedSeats, setSelectedSeats] = React.useState<
+  const [activeTab, setActiveTab] = useState<string>("seats");
+  const [selectedSeats, setSelectedSeats] = useState<
     { id: string; number: number }[]
   >([]);
-  const [passengerFormValidity, setPassengerFormValidity] = React.useState<{
+  const [passengerFormValidity, setPassengerFormValidity] = useState<{
     [key: number]: boolean;
   }>({});
+  const [passengerData, setPassengerData] = useState<{
+    [key: number]: PassengerData;
+  }>({});
+  const [paymentFormData, setPaymentFormData] = useState<PaymentFormData | null>(null);
+
+  useEffect(() => {
+    setPaymentFormData(paymentFormData);
+  }, [paymentFormData]);
 
   const handleNext = () => {
-    if (activeTab === "seats") setActiveTab("passengers");
-    else if (activeTab === "passengers") setActiveTab("payment");
+    if (activeTab === "seats") {
+      setActiveTab("passengers");
+    } else if (activeTab === "passengers") {
+      setActiveTab("payment");
+    }
   };
 
   const handleBack = () => {
@@ -57,10 +89,74 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     }));
   };
 
-  const allFormsValid = React.useMemo(
-    () => selectedSeats.every((seat) => passengerFormValidity[seat.number]),
-    [selectedSeats, passengerFormValidity]
+  const handlePassengerFormSubmit = (
+    data: PassengerData,
+    seatNumber: number
+  ) => {
+    setPassengerData((prevState) => ({
+      ...prevState,
+      [seatNumber]: data,
+    }));
+  };
+
+  const allFormsValid = selectedSeats.every(
+    (seat) => passengerFormValidity[seat.number]
   );
+
+  const handlePayment = async (): Promise<void> => {
+    try {
+      const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
+      const cookieData = JSON.parse(cookieValue);
+      const token = cookieData.data.token;
+
+      if (!token) {
+        throw new Error("No se encontró el token en el cookie.");
+      }
+
+      const passengersList = Object.values(passengerData);
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/ticket-sale/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            seatIds: selectedSeats.map((seat) => seat.id),
+            passengers: passengersList,
+            tripId: tripId,
+            paymentMethodId: paymentFormData?.paymentMethod,
+            amountGivenByCustomer: paymentFormData?.amountGivenByCustomer,
+            customerModel: {
+              person: {
+                names: paymentFormData?.names,
+                surnames: paymentFormData?.surnames,
+                identificationType: paymentFormData?.documentType,
+                identificationNumber: paymentFormData?.documentNumber,
+                gender: paymentFormData?.gender,
+                birthdate: paymentFormData?.birthDate,
+                email: paymentFormData?.email,
+                mobilePhone: paymentFormData?.mobilePhone,
+                createdAt: new Date().toISOString(),
+              },
+              createdAt: new Date().toISOString(),
+            },
+          }),
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.data || "Error al crear la venta.");
+      }
+    } catch (error: any) {
+      // Manejo de errores
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -124,6 +220,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
                 <PassengerForm
                   seatNumber={seat.number}
                   onFormValidChange={handleFormValidChange}
+                  onSubmit={handlePassengerFormSubmit}
                 />
               </div>
             ))}
@@ -139,14 +236,17 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
           </TabsContent>
           {/* Pago */}
           <TabsContent value="payment">
-            <h2 className="py-2 text-xl font-bold text-gray-800">
-              Finalizar pago
-            </h2>
+            <PaymentForm
+              formData={paymentFormData}
+              setFormData={setPaymentFormData}
+            ></PaymentForm>
             <div className="flex justify-between">
               <Button variant={"secondary"} onClick={handleBack}>
                 Volver
               </Button>
-              <Button variant={"confirm"}>Pagar</Button>
+              <Button variant={"confirm"} onClick={handlePayment}>
+                Pagar
+              </Button>
             </div>
           </TabsContent>
         </Tabs>

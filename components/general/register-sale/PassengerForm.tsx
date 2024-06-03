@@ -1,10 +1,11 @@
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState, useEffect } from "react";
+
 import ComboBox from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { DocumentTypes } from "../../../utilities/types";
 import Section from "@/components/ui/Section";
 
@@ -27,11 +28,13 @@ interface FormData {
 interface PassengerFormProps {
   seatNumber: number;
   onFormValidChange: (seatNumber: number, isValid: boolean) => void;
+  onSubmit: (data: FormData, seatNumber: number) => void;
 }
 
 const PassengerForm: React.FC<PassengerFormProps> = ({
   seatNumber,
   onFormValidChange,
+  onSubmit,
 }) => {
   const {
     register,
@@ -46,13 +49,13 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
     onFormValidChange(seatNumber, isValid);
   }, [isValid, seatNumber, onFormValidChange]);
 
-  const onSubmit = (data: FormData) => {
-    console.log("Datos del pasajero:", data);
+  const handleFormSubmit = (data: FormData) => {
+    onSubmit(data, seatNumber);
   };
 
   return (
     <Section>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="mb-2 bg-travely-200 text-white p-2 rounded-sm">
           <h2>
             Pasajero del asiento:{" "}
@@ -114,6 +117,9 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
             </span>
           )}
         </div>
+        <button type="submit" className="hidden">
+          Submit
+        </button>
       </form>
     </Section>
   );

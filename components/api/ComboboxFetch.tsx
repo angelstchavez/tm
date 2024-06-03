@@ -90,13 +90,9 @@ const ComboboxFetch: React.FC<ComboboxFetchProps> = ({
             </option>
           ))}
         </select>
-        {error && (
-          <span className="text-red-600 text-sm font-semibold">{error}</span>
-        )}
+        {error && <span className="text-red-600 text-xs">{error}</span>}
         {fetchError && (
-          <span className="text-red-600 text-sm font-semibold">
-            {fetchError}
-          </span>
+          <span className="text-red-600 text-xs">{fetchError}</span>
         )}
       </div>
     </div>

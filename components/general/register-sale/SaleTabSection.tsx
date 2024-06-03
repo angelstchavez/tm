@@ -71,7 +71,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
         <Tabs
           value={activeTab}
           onValueChange={handleTabChange}
-          className="w-[480px]"
+          className="w-[550px]"
         >
           <div className="flex justify-center items-center">
             <TabsList>

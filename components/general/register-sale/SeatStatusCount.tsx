@@ -55,7 +55,7 @@ const SeatStatusCounts: React.FC<SeatStatusCountsProps> = ({ tripId }) => {
             <PiSeatFill />
           </span>
           <p className="text-xs text-gray-700">Libres</p>
-          <p className="text-xs text-gray-700 font-bold">
+          <p className="text-sm text-gray-700 font-bold">
             {statusCounts.Disponible}
           </p>
         </div>
@@ -72,8 +72,8 @@ const SeatStatusCounts: React.FC<SeatStatusCountsProps> = ({ tripId }) => {
           <span className="text-3xl text-travely-200">
             <PiSeatFill />
           </span>
-          <p className="text-xs">Vendidas</p>
-          <p className="text-sm font-bold">{statusCounts.Vendido}</p>
+          <p className="text-xs text-gray-700">Vendidas</p>
+          <p className="text-sm text-gray-700 font-bold">{statusCounts.Vendido}</p>
         </div>
       </div>
     </div>

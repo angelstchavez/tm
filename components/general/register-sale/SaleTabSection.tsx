@@ -96,7 +96,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
                   onSelectedSeatsChange={handleSelectedSeatsChange}
                 />
               </div>
-              <div className="w-full sm:w-1/2 px-1">
+              <div className="w-full sm:w-1/2 px-2">
                 <TotalSale count={selectedSeats.length} tripId={tripId} />
                 <p className="my-2 text-right text-xs text-gray-600 mb-2">
                   (Máximo 5 asientos por venta)

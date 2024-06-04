@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState, useEffect } from "react";
-
+import React, { useEffect } from "react";
 import ComboBox from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,44 +9,53 @@ import { DocumentTypes } from "../../../utilities/types";
 import Section from "@/components/ui/Section";
 
 const PassengerFormSchema = z.object({
-  firstName: z.string().nonempty("Introduce un nombre válido."),
-  lastName: z.string().nonempty("Introduce un apellido válido."),
-  documentType: z.string().nonempty("Selecciona un tipo de documento válido."),
-  documentNumber: z
+  names: z.string().nonempty("Introduce un nombre válido."),
+  surnames: z.string().nonempty("Introduce un apellido válido."),
+  identificationType: z.string().nonempty("Selecciona un tipo de documento válido."),
+  identificationNumber: z
     .string()
     .nonempty("Introduce un número de documento válido."),
 });
 
 interface FormData {
-  firstName: string;
-  lastName: string;
-  documentType: string;
-  documentNumber: string;
+  names: string;
+  surnames: string;
+  identificationType: string;
+  identificationNumber: string;
 }
 
 interface PassengerFormProps {
   seatNumber: number;
   onFormValidChange: (seatNumber: number, isValid: boolean) => void;
   onSubmit: (data: FormData, seatNumber: number) => void;
+  onFormDataChange: (seatNumber: number, data: FormData) => void;
 }
 
 const PassengerForm: React.FC<PassengerFormProps> = ({
   seatNumber,
   onFormValidChange,
   onSubmit,
+  onFormDataChange,
 }) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(PassengerFormSchema),
     mode: "onChange",
   });
 
+  const formData = watch();
+
   useEffect(() => {
     onFormValidChange(seatNumber, isValid);
   }, [isValid, seatNumber, onFormValidChange]);
+
+  useEffect(() => {
+    onFormDataChange(seatNumber, formData);
+  }, [formData, seatNumber, onFormDataChange]);
 
   const handleFormSubmit = (data: FormData) => {
     onSubmit(data, seatNumber);
@@ -66,13 +74,13 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
           <Label>Nombres</Label>
           <Input
             type="text"
-            id="firstName"
+            id="names"
             placeholder="Nombres"
-            {...register("firstName")}
+            {...register("names")}
           />
-          {errors.firstName && (
+          {errors.names && (
             <span className="text-red-500 text-sm">
-              {errors.firstName.message}
+              {errors.names.message}
             </span>
           )}
         </div>
@@ -80,26 +88,26 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
           <Label>Apellidos</Label>
           <Input
             type="text"
-            id="lastName"
+            id="surnames"
             placeholder="Apellidos"
-            {...register("lastName")}
+            {...register("surnames")}
           />
-          {errors.lastName && (
+          {errors.surnames && (
             <span className="text-red-500 text-sm">
-              {errors.lastName.message}
+              {errors.surnames.message}
             </span>
           )}
         </div>
         <div className="mb-2">
           <ComboBox
-            id="documentType"
+            id="identificationType"
             label="Tipo de documento"
             options={DocumentTypes}
-            register={register("documentType")}
+            register={register("identificationType")}
           />
-          {errors.documentType && (
+          {errors.identificationType && (
             <span className="text-red-500 text-sm">
-              {errors.documentType.message}
+              {errors.identificationType.message}
             </span>
           )}
         </div>
@@ -107,19 +115,16 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
           <Label>Número de documento</Label>
           <Input
             type="text"
-            id="documentNumber"
+            id="identificationNumber"
             placeholder="Número de documento"
-            {...register("documentNumber")}
+            {...register("identificationNumber")}
           />
-          {errors.documentNumber && (
+          {errors.identificationNumber && (
             <span className="text-red-500 text-sm">
-              {errors.documentNumber.message}
+              {errors.identificationNumber.message}
             </span>
           )}
         </div>
-        <button type="submit" className="hidden">
-          Submit
-        </button>
       </form>
     </Section>
   );

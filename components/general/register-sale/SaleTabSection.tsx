@@ -13,17 +13,17 @@ interface SaleTabSectionProps {
 }
 
 interface PassengerData {
-  firstName: string;
-  lastName: string;
-  documentType: string;
-  documentNumber: string;
+  names: string;
+  surnames: string;
+  identificationType: string;
+  identificationNumber: string;
 }
 
 interface PaymentFormData {
   names: string;
   surnames: string;
-  documentType: string;
-  documentNumber: string;
+  identificationType: string;
+  identificationNumber: string;
   gender: string;
   birthDate: string;
   email: string;
@@ -43,7 +43,8 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
   const [passengerData, setPassengerData] = useState<{
     [key: number]: PassengerData;
   }>({});
-  const [paymentFormData, setPaymentFormData] = useState<PaymentFormData | null>(null);
+  const [paymentFormData, setPaymentFormData] =
+    useState<PaymentFormData | null>(null);
 
   useEffect(() => {
     setPaymentFormData(paymentFormData);
@@ -99,6 +100,16 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     }));
   };
 
+  const handlePassengerFormDataChange = (
+    seatNumber: number,
+    data: PassengerData
+  ) => {
+    setPassengerData((prevState) => ({
+      ...prevState,
+      [seatNumber]: data,
+    }));
+  };
+
   const allFormsValid = selectedSeats.every(
     (seat) => passengerFormValidity[seat.number]
   );
@@ -134,8 +145,8 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               person: {
                 names: paymentFormData?.names,
                 surnames: paymentFormData?.surnames,
-                identificationType: paymentFormData?.documentType,
-                identificationNumber: paymentFormData?.documentNumber,
+                identificationType: paymentFormData?.identificationType,
+                identificationNumber: paymentFormData?.identificationNumber,
                 gender: paymentFormData?.gender,
                 birthdate: paymentFormData?.birthDate,
                 email: paymentFormData?.email,
@@ -221,6 +232,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
                   seatNumber={seat.number}
                   onFormValidChange={handleFormValidChange}
                   onSubmit={handlePassengerFormSubmit}
+                  onFormDataChange={handlePassengerFormDataChange}
                 />
               </div>
             ))}
@@ -239,13 +251,11 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
             <PaymentForm
               formData={paymentFormData}
               setFormData={setPaymentFormData}
+              handlePayment={handlePayment}
             ></PaymentForm>
-            <div className="flex justify-between">
-              <Button variant={"secondary"} onClick={handleBack}>
-                Volver
-              </Button>
+            <div className="mt-2 flex justify-end">
               <Button variant={"confirm"} onClick={handlePayment}>
-                Pagar
+                Registrar venta
               </Button>
             </div>
           </TabsContent>

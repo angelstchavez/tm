@@ -52,6 +52,18 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     ],
     allowedRoles: ["Administrador"],
   },
+// ...............................
+  {
+    title: "Conductor",
+    path: "/driver",
+    icon: <MdFolder size={24} />,
+    submenu: true,
+    subMenuItems: [
+      { title: "Asignaciones", path: "/admin/driver/assignments" },
+    ],
+    allowedRoles: ["Conductor"],
+  },
+  // .................................
   {
     title: "Mi perfil",
     path: "/admin/profile",

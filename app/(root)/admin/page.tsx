@@ -1,25 +1,40 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
 import Section from "@/components/ui/Section";
 
 const AdminPage = () => {
-  const now = new Date();
-  const time = now.toLocaleTimeString("es-CO", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-  const date = now.toLocaleDateString("es-CO", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+  
+  const [time, setTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const tiempo = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(tiempo);
+  }, []);
+
+  const formatTime = (date: Date) => date.toLocaleTimeString("es-CO");
+
+  const formattedDate = useMemo(() => {
+    const now = new Date();
+    return now.toLocaleDateString("es-CO", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  }, []);
+
   return (
     <Section>
-      <div className="flex h-full flex-col justify-between max-md:px-5 max-md:py-8 lg:p-11 px-5 py-8"></div>
+      {/* <div className="flex h-full flex-col justify-between max-md:px-5 max-md:py-8 lg:p-11 px-5 py-8"></div> */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-extrabold lg:text-7xl">{time}</h1>
-        <p>{date}.</p>
+        <h1 className="text-4xl font-extrabold lg:text-7xl">
+          {formatTime(time)}
+        </h1>
+        <p>{formattedDate}.</p>
       </div>
     </Section>
   );

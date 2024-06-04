@@ -1,20 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z, ZodType } from "zod";
-import { DocumentTypes, Genders } from "@/utilities/types";
+import { Genders, DocumentTypes } from "@/utilities/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ComboBox from "@/components/ui/combobox";
 import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
-import { Button } from "@/components/ui/button";
 
 interface FormData {
   names: string;
   surnames: string;
-  documentType: string;
-  documentNumber: string;
+  identificationType: string;
+  identificationNumber: string;
   gender: string;
   birthDate: string;
   email: string;
@@ -26,13 +25,14 @@ interface FormData {
 interface FormProps {
   formData: FormData | null;
   setFormData: React.Dispatch<React.SetStateAction<FormData | null>>;
+  handlePayment: (data: FormData) => void;
 }
 
 const PaymentFormSchema: ZodType<FormData> = z.object({
   names: z.string().nonempty("Introduce un nombre válido."),
   surnames: z.string().nonempty("Introduce un apellido válido."),
-  documentType: z.string().nonempty("Selecciona un tipo de documento válido."),
-  documentNumber: z
+  identificationType: z.string().nonempty("Selecciona un tipo de documento válido."),
+  identificationNumber: z
     .string()
     .nonempty("Introduce un número de documento válido."),
   gender: z.string().nonempty("Selecciona un género válido."),
@@ -69,11 +69,16 @@ const PaymentFormSchema: ZodType<FormData> = z.object({
     }),
 });
 
-const PaymentForm: React.FC<FormProps> = ({ formData, setFormData }) => {
+const PaymentForm: React.FC<FormProps> = ({
+  formData,
+  setFormData,
+  handlePayment,
+}) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(PaymentFormSchema),
     mode: "onChange",
@@ -81,8 +86,14 @@ const PaymentForm: React.FC<FormProps> = ({ formData, setFormData }) => {
 
   const onSubmit = (data: FormData) => {
     setFormData(data);
-    console.log(data);
+    handlePayment(data);
   };
+
+  const watchedFormData = watch();
+
+  useEffect(() => {
+    setFormData(watchedFormData);
+  }, [watchedFormData, setFormData]);
 
   return (
     <>
@@ -116,14 +127,14 @@ const PaymentForm: React.FC<FormProps> = ({ formData, setFormData }) => {
           </div>
           <div className="mb-2">
             <ComboBox
-              id="documentType"
+              id="identificationType"
               options={DocumentTypes}
-              register={register("documentType")}
-              label={"Tipo de coumento:"}
+              register={register("identificationType")}
+              label={"Tipo de documento:"}
             />
-            {errors.documentType && (
+            {errors.identificationType && (
               <span className="text-red-500 text-xs">
-                {errors.documentType.message}
+                {errors.identificationType.message}
               </span>
             )}
           </div>
@@ -131,12 +142,12 @@ const PaymentForm: React.FC<FormProps> = ({ formData, setFormData }) => {
             <Label>Número de identificación:</Label>
             <Input
               type="text"
-              placeholder="Ej. Pineda"
-              {...register("documentNumber")}
+              placeholder="1234567890"
+              {...register("identificationNumber")}
             />
-            {errors.documentNumber && (
+            {errors.identificationNumber && (
               <span className="text-red-500 text-xs">
-                {errors.documentNumber.message}
+                {errors.identificationNumber.message}
               </span>
             )}
           </div>
@@ -170,7 +181,7 @@ const PaymentForm: React.FC<FormProps> = ({ formData, setFormData }) => {
             <Label>Correo electrónico:</Label>
             <Input
               type="email"
-              placeholder="Ej. Pineda"
+              placeholder="ejemplo@correo.com"
               {...register("email")}
             />
             {errors.email && (
@@ -196,10 +207,13 @@ const PaymentForm: React.FC<FormProps> = ({ formData, setFormData }) => {
       </div>
       <div className="mt-2 border rounded-lg p-4">
         <CustomTitle title={"Datos de pago"}></CustomTitle>
-        <form className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+        <form
+          className="grid grid-cols-1 sm:grid-cols-2 gap-x-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="mb-1">
             <ComboboxFetch
-              id="paymentMethodId"
+              id="paymentMethod"
               endpoint="payment-method/get-all"
               label="Método de pago:"
               register={register("paymentMethod")}
@@ -211,16 +225,13 @@ const PaymentForm: React.FC<FormProps> = ({ formData, setFormData }) => {
             <Input
               type="number"
               placeholder="0"
-              {...register("amountGivenByCustomer")}
+              {...register("amountGivenByCustomer", { valueAsNumber: true })}
             />
             {errors.amountGivenByCustomer && (
               <span className="text-red-500 text-xs">
                 {errors.amountGivenByCustomer.message}
               </span>
             )}
-          </div>
-          <div className="flex justify-center mt-4">
-            <Button onClick={handleSubmit(onSubmit)}>Registrar</Button>
           </div>
         </form>
       </div>

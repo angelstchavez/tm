@@ -252,6 +252,8 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               formData={paymentFormData}
               setFormData={setPaymentFormData}
               handlePayment={handlePayment}
+              tripId={tripId}
+              totalCount={selectedSeats.length}
             ></PaymentForm>
             <div className="mt-2 flex justify-end">
               <Button variant={"confirm"} onClick={handlePayment}>

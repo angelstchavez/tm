@@ -5,7 +5,7 @@ import Navbar from "@/components/utils/Navbar";
 export default function Home() {
   return (
     <div className="flex flex-col h-screen">
-      <Navbar />
+      <Navbar />  
       <Hero />
       <Footer />
     </div>

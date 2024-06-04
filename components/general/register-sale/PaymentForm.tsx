@@ -10,6 +10,7 @@ import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
 import TotalSale from "./TotalSaleCount";
 import { Switch } from "@/components/ui/switch";
+import Cookies from "js-cookie";
 
 interface FormData {
   names: string;
@@ -104,6 +105,10 @@ const PaymentForm: React.FC<FormProps> = ({
   const [change, setChange] = useState<number>(0);
   const [isExactAmount, setIsExactAmount] = useState<boolean>(false);
 
+  const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
+  const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
+  const token = cookieData?.data?.token;
+
   useEffect(() => {
     const fetchTicketPrice = async () => {
       try {
@@ -112,6 +117,7 @@ const PaymentForm: React.FC<FormProps> = ({
           {
             method: "GET",
             headers: {
+              Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }
@@ -119,6 +125,7 @@ const PaymentForm: React.FC<FormProps> = ({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+
         const data = await response.json();
         setTicketPrice(data.data.ticketPrice);
       } catch (error) {
@@ -127,7 +134,7 @@ const PaymentForm: React.FC<FormProps> = ({
     };
 
     fetchTicketPrice();
-  }, [tripId]);
+  }, [tripId, token]);
 
   const calculateChange = (value: number) => {
     const totalToPay = totalCount * ticketPrice;
@@ -303,8 +310,8 @@ const PaymentForm: React.FC<FormProps> = ({
               <Switch
                 id="exactAmount"
               />
-              <Label htmlFor="exactAmount" className="ml-2">
-                Mismo valor
+              <Label htmlFor="exactAmount" className="ml-2 text-xs">
+                El cliente entrega el monto exacto.
               </Label>
             </div>
             <div className="mb-1">

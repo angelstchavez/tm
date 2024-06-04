@@ -9,6 +9,7 @@ import ComboBox from "@/components/ui/combobox";
 import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
 import TotalSale from "./TotalSaleCount";
+import { Switch } from "@/components/ui/switch";
 
 interface FormData {
   names: string;
@@ -101,6 +102,7 @@ const PaymentForm: React.FC<FormProps> = ({
 
   const [ticketPrice, setTicketPrice] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
+  const [isExactAmount, setIsExactAmount] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTicketPrice = async () => {
@@ -133,18 +135,36 @@ const PaymentForm: React.FC<FormProps> = ({
     setChange(changeAmount > 0 ? changeAmount : 0);
   };
 
+  const onAmountGivenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const amountGiven = parseFloat(e.target.value);
+    setValue("amountGivenByCustomer", amountGiven);
+    calculateChange(amountGiven);
+  };
+
+  const handleExactAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsExactAmount(e.target.checked);
+    if (e.target.checked) {
+      const totalToPay = totalCount * ticketPrice;
+      setValue("amountGivenByCustomer", totalToPay);
+      calculateChange(totalToPay);
+    } else {
+      setValue("amountGivenByCustomer", 0);
+      setChange(0);
+    }
+  };
+
   const onSubmit = (data: FormData) => {
     setFormData(data);
     handlePayment(data);
   };
-  
+
   return (
     <div className="flex flex-col md:flex-row md:space-x-2">
       <div className="md:w-1/2">
-        <div className="border rounded-lg p-4 mb-4">
+        <div className="border rounded-lg p-4 mb-2 bg-zinc-50">
           <CustomTitle title={"Datos del cliente"}></CustomTitle>
-          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-2">
+          <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-1">
               <Label>Nombres:</Label>
               <Input
                 type="text"
@@ -157,7 +177,7 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <Label>Apellidos:</Label>
               <Input
                 type="text"
@@ -170,7 +190,7 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <ComboBox
                 id="identificationType"
                 options={DocumentTypes}
@@ -183,7 +203,7 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <Label>Número de identificación:</Label>
               <Input
                 type="text"
@@ -196,7 +216,7 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <ComboBox
                 id="gender"
                 options={Genders}
@@ -209,7 +229,7 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <Label>Fecha de nacimiento:</Label>
               <Input type="date" {...register("birthDate")} />
               {errors.birthDate && (
@@ -218,7 +238,7 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <Label>Correo electrónico:</Label>
               <Input
                 type="email"
@@ -231,7 +251,7 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <Label>Número de contacto:</Label>
               <Input
                 type="number"
@@ -247,12 +267,12 @@ const PaymentForm: React.FC<FormProps> = ({
           </form>
         </div>
       </div>
-      <div className="md:w-1/2 mt-4 md:mt-0">
+      <div className="md:w-1/2 mt-2 md:mt-0">
         <TotalSale count={totalCount} tripId={tripId}></TotalSale>
         <div className="mb-2"></div>
-        <div className="border rounded-lg p-4">
+        <div className="border rounded-lg p-4 bg-teal-500/10">
           <CustomTitle title={"Datos de pago"}></CustomTitle>
-          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-1">
               <ComboboxFetch
                 id="paymentMethod"
@@ -269,8 +289,9 @@ const PaymentForm: React.FC<FormProps> = ({
                 placeholder="0"
                 {...register("amountGivenByCustomer", {
                   valueAsNumber: true,
-                  onChange: (e) => calculateChange(parseFloat(e.target.value)),
+                  onChange: onAmountGivenChange,
                 })}
+                disabled={isExactAmount}
               />
               {errors.amountGivenByCustomer && (
                 <span className="text-red-500 text-xs">
@@ -278,13 +299,24 @@ const PaymentForm: React.FC<FormProps> = ({
                 </span>
               )}
             </div>
+            <div className="mb-1 flex items-center">
+              <Switch
+                id="exactAmount"
+              />
+              <Label htmlFor="exactAmount" className="ml-2">
+                Mismo valor
+              </Label>
+            </div>
             <div className="mb-1">
               <Label>Vueltos:</Label>
               <Input
                 type="text"
                 placeholder="0"
-                value={formatCurrency(change)}
-                disabled
+                value={
+                  isExactAmount ? formatCurrency(0) : formatCurrency(change)
+                }
+                className="font-bold bg-teal-500/30 text-teal-900"
+                readOnly
               />
             </div>
           </form>

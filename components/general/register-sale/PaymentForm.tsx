@@ -9,6 +9,7 @@ import ComboBox from "@/components/ui/combobox";
 import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
 import TotalSale from "./TotalSaleCount";
+
 import Cookies from "js-cookie";
 
 interface FormData {
@@ -151,6 +152,12 @@ const PaymentForm: React.FC<FormProps> = ({
     setFormData(data);
     handlePayment(data);
   };
+
+  const watchedFormData = watch();
+
+  useEffect(() => {
+    setFormData(watchedFormData);
+  }, [watchedFormData, setFormData]);
 
   return (
     <div className="flex flex-col md:flex-row md:space-x-2">

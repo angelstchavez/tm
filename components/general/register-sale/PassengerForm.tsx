@@ -69,6 +69,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
   return (
     <Section>
       <form
+        autoComplete="off"
         onSubmit={handleSubmit(handleFormSubmit)}
         className="grid grid-cols-1 sm:grid-cols-2 gap-2"
       >
@@ -81,6 +82,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
         <div className="mb-1">
           <Label>Nombres</Label>
           <Input
+            autoComplete=""
             type="text"
             id="names"
             placeholder="Nombres"

@@ -70,7 +70,9 @@ const PaymentFormSchema: ZodType<FormData> = z.object({
       (value) => {
         const birthDate = new Date(value);
         const oneHundredTwentyYearsAgo = new Date();
-        oneHundredTwentyYearsAgo.setFullYear(oneHundredTwentyYearsAgo.getFullYear() - 120);
+        oneHundredTwentyYearsAgo.setFullYear(
+          oneHundredTwentyYearsAgo.getFullYear() - 120
+        );
         return birthDate >= oneHundredTwentyYearsAgo;
       },
       { message: "La edad máxima permitida es de 120 años." }
@@ -176,7 +178,11 @@ const PaymentForm: React.FC<FormProps> = ({
       <div className="md:w-1/2">
         <div className="border rounded-lg p-4 mb-2 bg-zinc-50">
           <CustomTitle title={"Datos del cliente"}></CustomTitle>
-          <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            autoComplete="off"
+            className="space-y-2"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className="mb-1">
               <Label>Nombres:</Label>
               <Input

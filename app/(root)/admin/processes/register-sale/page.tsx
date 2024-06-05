@@ -149,6 +149,8 @@ const RegisterSalePage: React.FC = () => {
       sortable: true,
       style: {
         fontSize: 14,
+        fontWeight: "bold",
+        color: "#134b95",
       },
     },
     {
@@ -157,6 +159,8 @@ const RegisterSalePage: React.FC = () => {
       sortable: true,
       style: {
         fontSize: 14,
+        fontWeight: "bold",
+        color: "darkred",
       },
     },
     {
@@ -194,21 +198,15 @@ const RegisterSalePage: React.FC = () => {
       sortable: true,
       style: {
         fontSize: 14,
-        width: "400px",
+        fontWeight: "bold",
+        color: "darkgreen",
       },
-      cell: (row) => (
-        <div className="py-1 p-1 flex items-center rounded bg-green-100 text-green-900 font-semibold">
-          <span className="mr-1">
-            <FaTicketAlt />
-          </span>
-          <span>
-            {row.ticketPrice.toLocaleString("es-CO", {
-              style: "currency",
-              currency: "COP",
-            })}
-          </span>
-        </div>
-      ),
+      selector: (row) => {
+        return row.ticketPrice.toLocaleString("es-CO", {
+          style: "currency",
+          currency: "COP",
+        });
+      },
     },
     {
       name: "Ver Sillas",

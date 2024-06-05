@@ -113,6 +113,11 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
       name: "Número de Asiento",
       sortable: true,
       selector: (row) => row.seatNumber,
+      style: {
+        fontSize: 14,
+        fontWeight: "bold",
+        color: "#134b95",
+      },
     },
   ];
 
@@ -149,7 +154,7 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
                     columns={columns}
                     data={filteredPassengers}
                     pagination
-                    paginationPerPage={10}
+                    paginationPerPage={5}
                     fixedHeader
                     progressPending={loading}
                     progressComponent={<Loading />}

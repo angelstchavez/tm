@@ -116,6 +116,7 @@ const TransportTerminalTable: React.FC = () => {
       style: {
         fontSize: 14,
         fontWeight: "bold",
+        color: "darkred",
       },
     },
     {

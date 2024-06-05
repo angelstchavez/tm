@@ -239,10 +239,10 @@ const PaymentForm: React.FC<FormProps> = ({
         <div className="w-full">
           <div className="border rounded-lg p-4 bg-zinc-50">
             <CustomTitle title={"Datos del cliente"}></CustomTitle>
-            <div className="flex space-x-2 items-center mb-2">
+            <div className="border rounded-md p-2 bg-travely-100/10 flex space-x-2 items-center mb-2">
               <Input
                 type="text"
-                placeholder="Buscar"
+                placeholder="Buscar por número de documento"
                 value={searchIdentificationNumber}
                 onChange={(e) => setSearchIdentificationNumber(e.target.value)}
                 className="flex-grow"

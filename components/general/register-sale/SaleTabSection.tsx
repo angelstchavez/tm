@@ -93,33 +93,24 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     });
   };
 
-  const handleFormValidChange = (seatNumber: number, isValid: boolean) => {
-    setPassengerFormValidity((prevState) => ({
-      ...prevState,
-      [seatNumber]: isValid,
-    }));
-  };
-
   const handlePassengerFormSubmit = (
     data: PassengerData,
     seatNumber: number
   ) => {
+    // Actualiza el estado con los datos del pasajero
     setPassengerData((prevState) => ({
       ...prevState,
       [seatNumber]: data,
     }));
-  };
 
-  const handlePassengerFormDataChange = (
-    seatNumber: number,
-    data: PassengerData
-  ) => {
-    setPassengerData((prevState) => ({
+    // Actualiza la validez del formulario del pasajero para este asiento
+    setPassengerFormValidity((prevState) => ({
       ...prevState,
-      [seatNumber]: data,
+      [seatNumber]: true, // Por ahora, suponemos que el formulario es válido
     }));
   };
 
+  // Verifica si todos los formularios de pasajeros son válidos
   const allFormsValid = selectedSeats.every(
     (seat) => passengerFormValidity[seat.number]
   );
@@ -209,6 +200,13 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     }
   };
 
+  const handleFormValidityChange = (isValid: boolean, seatNumber: number) => {
+    setPassengerFormValidity((prevState) => ({
+      ...prevState,
+      [seatNumber]: isValid,
+    }));
+  };
+
   return (
     <div className="flex flex-col items-center">
       <div className="rounded-lg">
@@ -270,9 +268,12 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               <div key={seat.id} className="mb-4">
                 <PassengerForm
                   seatNumber={seat.number}
-                  onFormValidChange={handleFormValidChange}
-                  onSubmit={handlePassengerFormSubmit}
-                  onFormDataChange={handlePassengerFormDataChange}
+                  onSubmit={(data) =>
+                    handlePassengerFormSubmit(data, seat.number)
+                  }
+                  onFormValidityChange={(isValid) =>
+                    handleFormValidityChange(isValid, seat.number)
+                  }
                 />
               </div>
             ))}

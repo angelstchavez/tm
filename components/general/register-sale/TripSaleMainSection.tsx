@@ -20,10 +20,10 @@ const TripSaleMainNavigation: React.FC<TabSaleNavigationProps> = ({
         <div className="flex-grow">
           <h2 className="text-xl font-bold text-gray-800">Registrar venta</h2>
         </div>
-        <div className="ml-1">
+        <div className="ml-2">
           <PassengersByTrip tripId={tripId}></PassengersByTrip>
         </div>
-        <div className="ml-1">
+        <div className="ml-2">
           <Button variant={"destructive"} onClick={onCancel}>
             Cancelar
           </Button>

@@ -17,7 +17,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   error,
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-1">
       <label htmlFor={id} className="text-sm">
         {label}
       </label>

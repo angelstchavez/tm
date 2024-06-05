@@ -160,6 +160,8 @@ const TripTable: React.FC = () => {
       sortable: true,
       style: {
         fontSize: 14,
+        fontWeight: "bold",
+        color: "#134b95",
       },
     },
     {
@@ -168,6 +170,8 @@ const TripTable: React.FC = () => {
       sortable: true,
       style: {
         fontSize: 14,
+        fontWeight: "bold",
+        color: "darkred",
       },
     },
     {

@@ -57,8 +57,10 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
     useState("");
   const [passengerData, setPassengerData] = useState<any>(null);
   const [searchError, setSearchError] = useState("");
+  const [isSearching, setIsSearching] = useState(false); // Variable para controlar el estado del botón de búsqueda
 
   const fetchData = async () => {
+    setIsSearching(true); // Desactivar el botón de búsqueda al comenzar la búsqueda
     try {
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
       const cookieData = JSON.parse(cookieValue);
@@ -89,6 +91,8 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
       setValue("identificationNumber", data.data.identificationNumber);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsSearching(false); // Volver a activar el botón de búsqueda al finalizar la búsqueda
     }
   };
 
@@ -128,6 +132,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
     setSearchIdentificationNumber("");
     setPassengerData(null);
     onFormValidityChange(false, seatNumber);
+    setIsSearching(false);
   };
 
   return (
@@ -150,6 +155,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
                 onClick={handleSearch}
                 variant={"confirm"}
                 className="text-1xl"
+                disabled={isSearching}
               >
                 <FaSearch />
               </Button>

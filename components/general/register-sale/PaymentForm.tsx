@@ -114,7 +114,7 @@ const PaymentForm: React.FC<FormProps> = ({
     reset,
   } = useForm<FormData>({
     resolver: zodResolver(PaymentFormSchema),
-    mode: "onChange",
+    mode: "onBlur",
   });
 
   const [ticketPrice, setTicketPrice] = useState<number>(0);
@@ -377,7 +377,7 @@ const PaymentForm: React.FC<FormProps> = ({
           </div>
         </div>
         <div className="md:w-1/2">
-          <div className="border rounded-lg p-4 bg-teal-500/10">
+          <div className="border rounded-lg p-4 bg-orange-500/10">
             <CustomTitle title={"Datos de pago"}></CustomTitle>
             <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-1">
@@ -414,7 +414,7 @@ const PaymentForm: React.FC<FormProps> = ({
                   value={
                     isExactAmount ? formatCurrency(0) : formatCurrency(change)
                   }
-                  className="font-bold bg-teal-500/30 text-teal-900"
+                  className="font-bold bg-orange-500/30 text-orange-900"
                   readOnly
                 />
               </div>

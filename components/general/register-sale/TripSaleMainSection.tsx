@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import TripDetails from "./TripDetails";
 import SaleTabSection from "./SaleTabSection";
 import { Button } from "@/components/ui/button";
 import PassengersByTrip from "./PassengersByTrip";
-import BookingsByTrip from "./bookingsByTrip";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface TabSaleNavigationProps {
   tripId: number;
@@ -24,9 +32,33 @@ const TripSaleMainNavigation: React.FC<TabSaleNavigationProps> = ({
           <PassengersByTrip tripId={tripId}></PassengersByTrip>
         </div>
         <div className="ml-2">
-          <Button variant={"destructive"} onClick={onCancel}>
-            Cancelar
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant={"destructive"}>Cancelar</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>¿Desea cancelar esta venta?</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                Todos los cambios relizados en esta venta se perderán.
+              </DialogDescription>
+              <DialogFooter>
+                <div className="flex justify-between space-x-2">
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Cancelar
+                    </Button>
+                  </DialogClose>
+                  <DialogTrigger>
+                    <Button variant="destructive" onClick={onCancel}>
+                      Confirmar
+                    </Button>
+                  </DialogTrigger>
+                </div>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       <div className="p-1"></div>

@@ -200,6 +200,13 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     }
   };
 
+  const handleFormValidityChange = (isValid: boolean, seatNumber: number) => {
+    setPassengerFormValidity((prevState) => ({
+      ...prevState,
+      [seatNumber]: isValid,
+    }));
+  };
+
   return (
     <div className="flex flex-col items-center">
       <div className="rounded-lg">
@@ -263,6 +270,9 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
                   seatNumber={seat.number}
                   onSubmit={(data) =>
                     handlePassengerFormSubmit(data, seat.number)
+                  }
+                  onFormValidityChange={(isValid) =>
+                    handleFormValidityChange(isValid, seat.number)
                   }
                 />
               </div>

@@ -32,20 +32,24 @@ type PassengerFormInputs = z.infer<typeof PassengerFormSchema>;
 interface PassengerFormProps {
   seatNumber: number;
   onSubmit: (data: PassengerFormInputs) => void;
+  onFormValidityChange: (isValid: boolean, seatNumber: number) => void;
 }
 
 const PassengerForm: React.FC<PassengerFormProps> = ({
   seatNumber,
   onSubmit,
+  onFormValidityChange,
 }) => {
   const {
     register,
     reset,
     handleSubmit,
     formState: { errors },
+    formState: { isValid },
     setValue,
   } = useForm<PassengerFormInputs>({
     resolver: zodResolver(PassengerFormSchema),
+    mode: "onChange",
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -89,17 +93,24 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
   };
 
   useEffect(() => {
-    if (passengerData) {
+    if (passengerData && !formSubmitted) {
       setValue("names", passengerData.names);
       setValue("surnames", passengerData.surnames);
       setValue("identificationType", passengerData.identificationType);
       setValue("identificationNumber", passengerData.identificationNumber);
+
+      // Validar los datos del pasajero
+      handleSubmit((data) => onSubmit(data))();
+
+      // Desactivar los campos y el botón de búsqueda
+      setFormSubmitted(true);
     }
-  }, [passengerData, setValue]);
+  }, [passengerData, formSubmitted, setValue, handleSubmit, onSubmit]);
 
   const handleFormSubmit = (data: PassengerFormInputs) => {
     onSubmit(data);
     setFormSubmitted(true);
+    onFormValidityChange(isValid, seatNumber);
   };
 
   const handleSearch = () => {
@@ -111,18 +122,12 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
     fetchData();
   };
 
-  const handleResetSearch = () => {
-    setSearchIdentificationNumber("");
-    setPassengerData(null);
-    setValue("names", "");
-    setValue("surnames", "");
-    setValue("identificationType", "");
-    setValue("identificationNumber", "");
-  };
-
   const handleReset = () => {
     reset();
     setFormSubmitted(false);
+    setSearchIdentificationNumber("");
+    setPassengerData(null);
+    onFormValidityChange(false, seatNumber);
   };
 
   return (
@@ -142,20 +147,11 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
                 className="mr-2"
               />
               <Button
-                size={"icon"}
                 onClick={handleSearch}
                 variant={"confirm"}
                 className="text-1xl"
               >
                 <FaSearch />
-              </Button>
-              <Button
-                size={"icon"}
-                variant={"default"}
-                onClick={handleResetSearch}
-                className="ml-2 text-1xl"
-              >
-                <MdDelete />
               </Button>
             </div>
           </div>

@@ -11,12 +11,14 @@ import Section from "@/components/ui/Section";
 const PassengerFormSchema = z.object({
   names: z.string().nonempty("Introduce un nombre válido."),
   surnames: z.string().nonempty("Introduce un apellido válido."),
-  identificationType: z.string().nonempty("Selecciona un tipo de documento válido."),
+  identificationType: z
+    .string()
+    .nonempty("Selecciona un tipo de documento válido."),
   identificationNumber: z
     .string()
     .nonempty("Introduce un número de documento válido.")
     .refine((value) => /^\d{5,10}$/.test(value), {
-      message: "El número de documento debe tener entre 5 y 10 dígitos.",
+      message: "Debe tener entre 5 y 10 dígitos.",
     }),
 });
 
@@ -66,42 +68,45 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
 
   return (
     <Section>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <div className="mb-2 bg-travely-200 text-white p-2 rounded-sm">
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-2"
+      >
+        <div className="mb-1 bg-travely-200 text-white p-2 rounded-sm col-span-2">
           <h2>
             Pasajero del asiento:{" "}
             <span className="font-bold">{seatNumber}</span>
           </h2>
         </div>
-        <div className="mb-2">
+        <div className="mb-1">
           <Label>Nombres</Label>
           <Input
             type="text"
             id="names"
             placeholder="Nombres"
             {...register("names")}
+            className="w-full"
           />
           {errors.names && (
-            <span className="text-red-500 text-sm">
-              {errors.names.message}
-            </span>
+            <span className="text-red-500 text-xs">{errors.names.message}</span>
           )}
         </div>
-        <div className="mb-2">
+        <div className="mb-1">
           <Label>Apellidos</Label>
           <Input
             type="text"
             id="surnames"
             placeholder="Apellidos"
             {...register("surnames")}
+            className="w-full"
           />
           {errors.surnames && (
-            <span className="text-red-500 text-sm">
+            <span className="text-red-500 text-xs">
               {errors.surnames.message}
             </span>
           )}
         </div>
-        <div className="mb-2">
+        <div className="mb-1">
           <ComboBox
             id="identificationType"
             label="Tipo de documento"
@@ -109,21 +114,22 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
             register={register("identificationType")}
           />
           {errors.identificationType && (
-            <span className="text-red-500 text-sm">
+            <span className="text-red-500 text-xs">
               {errors.identificationType.message}
             </span>
           )}
         </div>
-        <div className="mb-2">
+        <div className="mb-1">
           <Label>Número de documento</Label>
           <Input
             type="text"
             id="identificationNumber"
             placeholder="Número de documento"
             {...register("identificationNumber")}
+            className="w-full"
           />
           {errors.identificationNumber && (
-            <span className="text-red-500 text-sm">
+            <span className="text-red-500 text-xs">
               {errors.identificationNumber.message}
             </span>
           )}

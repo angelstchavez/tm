@@ -9,7 +9,6 @@ import ComboBox from "@/components/ui/combobox";
 import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
 import TotalSale from "./TotalSaleCount";
-import { Switch } from "@/components/ui/switch";
 import Cookies from "js-cookie";
 
 interface FormData {
@@ -146,18 +145,6 @@ const PaymentForm: React.FC<FormProps> = ({
     const amountGiven = parseFloat(e.target.value);
     setValue("amountGivenByCustomer", amountGiven);
     calculateChange(amountGiven);
-  };
-
-  const handleExactAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsExactAmount(e.target.checked);
-    if (e.target.checked) {
-      const totalToPay = totalCount * ticketPrice;
-      setValue("amountGivenByCustomer", totalToPay);
-      calculateChange(totalToPay);
-    } else {
-      setValue("amountGivenByCustomer", 0);
-      setChange(0);
-    }
   };
 
   const onSubmit = (data: FormData) => {
@@ -305,14 +292,6 @@ const PaymentForm: React.FC<FormProps> = ({
                   {errors.amountGivenByCustomer.message}
                 </span>
               )}
-            </div>
-            <div className="mb-1 flex items-center">
-              <Switch
-                id="exactAmount"
-              />
-              <Label htmlFor="exactAmount" className="ml-2 text-xs">
-                El cliente entrega el monto exacto.
-              </Label>
             </div>
             <div className="mb-1">
               <Label>Vueltos:</Label>

@@ -7,6 +7,18 @@ import TotalSale from "./TotalSaleCount";
 import PassengerForm from "./PassengerForm";
 import PaymentForm from "./PaymentForm";
 import Cookies from "js-cookie";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface SaleTabSectionProps {
   tripId: number;
@@ -118,7 +130,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     try {
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
       const cookieData = JSON.parse(cookieValue);
-      const token = cookieData.data.token;
+      const token = cookieData?.data?.token;
 
       if (!token) {
         throw new Error("No se encontró el token en el cookie.");
@@ -159,13 +171,14 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
         }
       );
 
-      const responseData = await response.json();
-
-      if (!response.ok || !responseData.success) {
+      if (!response.ok) {
+        const responseData = await response.json();
         throw new Error(responseData.data || "Error al crear la venta.");
       }
+
+      window.location.reload();
     } catch (error: any) {
-      // Manejo de errores
+      console.error("Error al procesar el pago:", error.message);
     }
   };
 
@@ -255,10 +268,33 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               tripId={tripId}
               totalCount={selectedSeats.length}
             ></PaymentForm>
-            <div className="mt-2 flex justify-end">
-              <Button variant={"confirm"} onClick={handlePayment}>
-                Registrar venta
-              </Button>
+            <div className="mt-4 flex justify-end">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="travely">finalizar</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>¿Desea registrar esta venta?</DialogTitle>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <div className="flex justify-between space-x-2">
+                      <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                          Cancelar
+                        </Button>
+                      </DialogClose>
+                      <Dialog>
+                        <DialogTrigger>
+                          <Button variant="confirm" onClick={handlePayment}>
+                            Confirmar
+                          </Button>
+                        </DialogTrigger>
+                      </Dialog>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </TabsContent>
         </Tabs>

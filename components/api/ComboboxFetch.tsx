@@ -71,7 +71,7 @@ const ComboboxFetch: React.FC<ComboboxFetchProps> = ({
   }, [endpoint, displayFormat]);
 
   return (
-    <div className="mb-4">
+    <div className="">
       <div className="flex flex-col">
         <label htmlFor={id} className="block text-sm font-medium text-gray-700">
           {label}

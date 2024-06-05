@@ -9,8 +9,9 @@ import ComboBox from "@/components/ui/combobox";
 import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
 import TotalSale from "./TotalSaleCount";
-
+import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
+import { FaSearch, FaTrash } from "react-icons/fa";
 
 interface FormData {
   names: string;
@@ -110,14 +111,21 @@ const PaymentForm: React.FC<FormProps> = ({
     handleSubmit,
     setValue,
     watch,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(PaymentFormSchema),
-    mode: "onChange",
+    mode: "onBlur",
   });
 
   const [ticketPrice, setTicketPrice] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
   const [isExactAmount, setIsExactAmount] = useState<boolean>(false);
+
+  const [searchIdentificationNumber, setSearchIdentificationNumber] =
+    useState("");
+  const [searchError, setSearchError] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [clientData, setClientData] = useState<any>(null);
 
   const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
   const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
@@ -150,6 +158,51 @@ const PaymentForm: React.FC<FormProps> = ({
     fetchTicketPrice();
   }, [tripId, token]);
 
+  const fetchClientData = async () => {
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/get-by-identification-number/${searchIdentificationNumber}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log("Client data received:", data); // Log the response
+      setClientData(data.data);
+
+      // Set form values using the received data
+      setValue("names", data.data.person.names);
+      setValue("surnames", data.data.person.surnames);
+      setValue("identificationType", data.data.person.identificationType);
+      setValue("identificationNumber", data.data.person.identificationNumber);
+      setValue("gender", data.data.person.gender);
+      setValue("birthDate", data.data.person.birthdate.split("T")[0]); // Convert to yyyy-mm-dd
+      setValue("email", data.data.person.email);
+      setValue("mobilePhone", data.data.person.mobilePhone);
+    } catch (error) {
+      console.error("Error fetching client data:", error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearch = () => {
+    setSearchError("");
+    if (searchIdentificationNumber.trim() === "") {
+      setSearchError("Introduce un número de documento.");
+      return;
+    }
+    fetchClientData();
+  };
+
   const calculateChange = (value: number) => {
     const totalToPay = totalCount * ticketPrice;
     const changeAmount = value - totalToPay;
@@ -173,167 +226,203 @@ const PaymentForm: React.FC<FormProps> = ({
     setFormData(watchedFormData);
   }, [watchedFormData, setFormData]);
 
+  const handleClear = () => {
+    reset();
+    setSearchIdentificationNumber("");
+    setSearchError("");
+    setClientData(null);
+  };
+
   return (
-    <div className="flex flex-col md:flex-row md:space-x-2">
-      <div className="md:w-1/2">
-        <div className="border rounded-lg p-4 mb-2 bg-zinc-50">
-          <CustomTitle title={"Datos del cliente"}></CustomTitle>
-          <form
-            autoComplete="off"
-            className="space-y-2"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="mb-1">
-              <Label>Nombres:</Label>
+    <>
+      <div className="mb-2 md:flex md:space-x-2">
+        <div className="w-full">
+          <div className="border rounded-lg p-4 bg-zinc-50">
+            <CustomTitle title={"Datos del cliente"}></CustomTitle>
+            <div className="border rounded-md p-2 bg-travely-100/10 flex space-x-2 items-center mb-2">
               <Input
                 type="text"
-                placeholder="Ej. Juan"
-                {...register("names")}
+                placeholder="Buscar por número de documento"
+                value={searchIdentificationNumber}
+                onChange={(e) => setSearchIdentificationNumber(e.target.value)}
+                className="flex-grow"
               />
-              {errors.names && (
-                <span className="text-red-500 text-xs">
-                  {errors.names.message}
-                </span>
-              )}
+              <Button
+                variant={"other"}
+                size={"icon"}
+                onClick={handleSearch}
+                disabled={isSearching}
+              >
+                {isSearching ? "Buscando..." : <FaSearch />}
+              </Button>
+              <Button size={"icon"} onClick={handleClear}>
+                <FaTrash />
+              </Button>
             </div>
-            <div className="mb-1">
-              <Label>Apellidos:</Label>
-              <Input
-                type="text"
-                placeholder="Ej. Pineda"
-                {...register("surnames")}
-              />
-              {errors.surnames && (
-                <span className="text-red-500 text-xs">
-                  {errors.surnames.message}
-                </span>
-              )}
-            </div>
-            <div className="mb-1">
-              <ComboBox
-                id="identificationType"
-                options={DocumentTypes}
-                register={register("identificationType")}
-                label={"Tipo de documento:"}
-              />
-              {errors.identificationType && (
-                <span className="text-red-500 text-xs">
-                  {errors.identificationType.message}
-                </span>
-              )}
-            </div>
-            <div className="mb-1">
-              <Label>Número de identificación:</Label>
-              <Input
-                type="text"
-                placeholder="1234567890"
-                {...register("identificationNumber")}
-              />
-              {errors.identificationNumber && (
-                <span className="text-red-500 text-xs">
-                  {errors.identificationNumber.message}
-                </span>
-              )}
-            </div>
-            <div className="mb-1">
-              <ComboBox
-                id="gender"
-                options={Genders}
-                register={register("gender")}
-                label={"Género:"}
-              />
-              {errors.gender && (
-                <span className="text-red-500 text-xs">
-                  {errors.gender.message}
-                </span>
-              )}
-            </div>
-            <div className="mb-1">
-              <Label>Fecha de nacimiento:</Label>
-              <Input type="date" {...register("birthDate")} />
-              {errors.birthDate && (
-                <span className="text-red-500 text-xs">
-                  {errors.birthDate.message}
-                </span>
-              )}
-            </div>
-            <div className="mb-1">
-              <Label>Correo electrónico:</Label>
-              <Input
-                type="email"
-                placeholder="ejemplo@correo.com"
-                {...register("email")}
-              />
-              {errors.email && (
-                <span className="text-red-500 text-xs">
-                  {errors.email.message}
-                </span>
-              )}
-            </div>
-            <div className="mb-1">
-              <Label>Número de contacto:</Label>
-              <Input
-                type="number"
-                placeholder="3001112233"
-                {...register("mobilePhone")}
-              />
-              {errors.mobilePhone && (
-                <span className="text-red-500 text-xs">
-                  {errors.mobilePhone.message}
-                </span>
-              )}
-            </div>
-          </form>
+            {searchError && (
+              <p className="text-red-500 text-xs">{searchError}</p>
+            )}
+            <form
+              className="space-y-2 md:grid md:grid-cols-2 md:gap-x-4"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <div className="mb-1">
+                <Label>Nombres:</Label>
+                <Input
+                  type="text"
+                  placeholder="Ej. Juan"
+                  {...register("names")}
+                />
+                {errors.names && (
+                  <span className="text-red-500 text-xs">
+                    {errors.names.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <Label>Apellidos:</Label>
+                <Input
+                  type="text"
+                  placeholder="Ej. Pineda"
+                  {...register("surnames")}
+                />
+                {errors.surnames && (
+                  <span className="text-red-500 text-xs">
+                    {errors.surnames.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <ComboBox
+                  id="identificationType"
+                  options={DocumentTypes}
+                  register={register("identificationType")}
+                  label={"Tipo de documento:"}
+                />
+                {errors.identificationType && (
+                  <span className="text-red-500 text-xs">
+                    {errors.identificationType.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <Label>Número de identificación:</Label>
+                <Input
+                  type="text"
+                  placeholder="1234567890"
+                  {...register("identificationNumber")}
+                />
+                {errors.identificationNumber && (
+                  <span className="text-red-500 text-xs">
+                    {errors.identificationNumber.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <ComboBox
+                  id="gender"
+                  options={Genders}
+                  register={register("gender")}
+                  label={"Género:"}
+                />
+                {errors.gender && (
+                  <span className="text-red-500 text-xs">
+                    {errors.gender.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <Label>Fecha de nacimiento:</Label>
+                <Input type="date" {...register("birthDate")} />
+                {errors.birthDate && (
+                  <span className="text-red-500 text-xs">
+                    {errors.birthDate.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <Label>Correo electrónico:</Label>
+                <Input
+                  type="email"
+                  placeholder="ejemplo@correo.com"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <span className="text-red-500 text-xs">
+                    {errors.email.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <Label>Número de contacto:</Label>
+                <Input
+                  type="number"
+                  placeholder="3001112233"
+                  {...register("mobilePhone")}
+                />
+                {errors.mobilePhone && (
+                  <span className="text-red-500 text-xs">
+                    {errors.mobilePhone.message}
+                  </span>
+                )}
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-      <div className="md:w-1/2 mt-2 md:mt-0">
-        <TotalSale count={totalCount} tripId={tripId}></TotalSale>
-        <div className="mb-2"></div>
-        <div className="border rounded-lg p-4 bg-teal-500/10">
-          <CustomTitle title={"Datos de pago"}></CustomTitle>
-          <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-1">
-              <ComboboxFetch
-                id="paymentMethod"
-                endpoint="payment-method/get-all"
-                label="Método de pago:"
-                register={register("paymentMethod")}
-                error={errors.paymentMethod?.message}
-              />
-            </div>
-            <div className="mb-1">
-              <Label>Monto pagado por el cliente:</Label>
-              <Input
-                type="number"
-                placeholder="0"
-                {...register("amountGivenByCustomer", {
-                  valueAsNumber: true,
-                  onChange: onAmountGivenChange,
-                })}
-                disabled={isExactAmount}
-              />
-              {errors.amountGivenByCustomer && (
-                <span className="text-red-500 text-xs">
-                  {errors.amountGivenByCustomer.message}
-                </span>
-              )}
-            </div>
-            <div className="mb-1">
-              <Label>Vueltos:</Label>
-              <Input
-                type="text"
-                placeholder="0"
-                value={
-                  isExactAmount ? formatCurrency(0) : formatCurrency(change)
-                }
-                className="font-bold bg-teal-500/30 text-teal-900"
-                readOnly
-              />
-            </div>
-          </form>
+      <div className="flex flex-col md:flex-row md:space-x-2">
+        <div className="md:w-1/2">
+          <div>
+            <TotalSale count={totalCount} tripId={tripId}></TotalSale>
+          </div>
+        </div>
+        <div className="md:w-1/2">
+          <div className="border rounded-lg p-4 bg-orange-500/10">
+            <CustomTitle title={"Datos de pago"}></CustomTitle>
+            <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-1">
+                <ComboboxFetch
+                  id="paymentMethod"
+                  endpoint="payment-method/get-all"
+                  label="Método de pago:"
+                  register={register("paymentMethod")}
+                  error={errors.paymentMethod?.message}
+                />
+              </div>
+              <div className="mb-1">
+                <Label>Monto pagado por el cliente:</Label>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  {...register("amountGivenByCustomer", {
+                    valueAsNumber: true,
+                    onChange: onAmountGivenChange,
+                  })}
+                  disabled={isExactAmount}
+                />
+                {errors.amountGivenByCustomer && (
+                  <span className="text-red-500 text-xs">
+                    {errors.amountGivenByCustomer.message}
+                  </span>
+                )}
+              </div>
+              <div className="mb-1">
+                <Label>Vueltos:</Label>
+                <Input
+                  type="text"
+                  placeholder="0"
+                  value={
+                    isExactAmount ? formatCurrency(0) : formatCurrency(change)
+                  }
+                  className="font-bold bg-orange-500/30 text-orange-900"
+                  readOnly
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

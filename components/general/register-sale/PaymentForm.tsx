@@ -9,8 +9,9 @@ import ComboBox from "@/components/ui/combobox";
 import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
 import TotalSale from "./TotalSaleCount";
-
+import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
+import { FaSearch, FaTrash } from "react-icons/fa";
 
 interface FormData {
   names: string;
@@ -110,6 +111,7 @@ const PaymentForm: React.FC<FormProps> = ({
     handleSubmit,
     setValue,
     watch,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(PaymentFormSchema),
     mode: "onChange",
@@ -118,6 +120,12 @@ const PaymentForm: React.FC<FormProps> = ({
   const [ticketPrice, setTicketPrice] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
   const [isExactAmount, setIsExactAmount] = useState<boolean>(false);
+
+  const [searchIdentificationNumber, setSearchIdentificationNumber] =
+    useState("");
+  const [searchError, setSearchError] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [clientData, setClientData] = useState<any>(null);
 
   const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
   const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
@@ -150,6 +158,51 @@ const PaymentForm: React.FC<FormProps> = ({
     fetchTicketPrice();
   }, [tripId, token]);
 
+  const fetchClientData = async () => {
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/customer/get-by-identification-number/${searchIdentificationNumber}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log("Client data received:", data); // Log the response
+      setClientData(data.data);
+
+      // Set form values using the received data
+      setValue("names", data.data.person.names);
+      setValue("surnames", data.data.person.surnames);
+      setValue("identificationType", data.data.person.identificationType);
+      setValue("identificationNumber", data.data.person.identificationNumber);
+      setValue("gender", data.data.person.gender);
+      setValue("birthDate", data.data.person.birthdate.split("T")[0]); // Convert to yyyy-mm-dd
+      setValue("email", data.data.person.email);
+      setValue("mobilePhone", data.data.person.mobilePhone);
+    } catch (error) {
+      console.error("Error fetching client data:", error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearch = () => {
+    setSearchError("");
+    if (searchIdentificationNumber.trim() === "") {
+      setSearchError("Por favor, introduce un número de documento.");
+      return;
+    }
+    fetchClientData();
+  };
+
   const calculateChange = (value: number) => {
     const totalToPay = totalCount * ticketPrice;
     const changeAmount = value - totalToPay;
@@ -173,16 +226,40 @@ const PaymentForm: React.FC<FormProps> = ({
     setFormData(watchedFormData);
   }, [watchedFormData, setFormData]);
 
+  const handleClear = () => {
+    reset();
+    setSearchIdentificationNumber("");
+    setSearchError("");
+    setClientData(null);
+  };
+
   return (
     <div className="flex flex-col md:flex-row md:space-x-2">
       <div className="md:w-1/2">
         <div className="border rounded-lg p-4 mb-2 bg-zinc-50">
           <CustomTitle title={"Datos del cliente"}></CustomTitle>
-          <form
-            autoComplete="off"
-            className="space-y-2"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <div className="flex space-x-2 items-center mb-2">
+            <Input
+              type="text"
+              placeholder="Buscar"
+              value={searchIdentificationNumber}
+              onChange={(e) => setSearchIdentificationNumber(e.target.value)}
+              className="flex-grow"
+            />
+            <Button
+              variant={"other"}
+              size={"icon"}
+              onClick={handleSearch}
+              disabled={isSearching}
+            >
+              {isSearching ? "Buscando..." : <FaSearch />}
+            </Button>
+            <Button size={"icon"} onClick={handleClear}>
+              <FaTrash />
+            </Button>
+          </div>
+          {searchError && <p className="text-red-500 text-xs">{searchError}</p>}
+          <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-1">
               <Label>Nombres:</Label>
               <Input

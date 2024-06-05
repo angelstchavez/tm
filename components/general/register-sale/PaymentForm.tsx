@@ -41,7 +41,10 @@ const PaymentFormSchema: ZodType<FormData> = z.object({
     .nonempty("Selecciona un tipo de documento válido."),
   identificationNumber: z
     .string()
-    .nonempty("Introduce un número de documento válido."),
+    .nonempty("Introduce un número de documento válido.")
+    .refine((value) => /^\d{5,10}$/.test(value), {
+      message: "El número de documento debe tener entre 5 y 10 dígitos.",
+    }),
   gender: z.string().nonempty("Selecciona un género válido."),
   birthDate: z
     .string()
@@ -62,6 +65,15 @@ const PaymentFormSchema: ZodType<FormData> = z.object({
         return birthDate <= eighteenYearsAgo;
       },
       { message: "Debes ser mayor de edad para registrarte." }
+    )
+    .refine(
+      (value) => {
+        const birthDate = new Date(value);
+        const oneHundredTwentyYearsAgo = new Date();
+        oneHundredTwentyYearsAgo.setFullYear(oneHundredTwentyYearsAgo.getFullYear() - 120);
+        return birthDate >= oneHundredTwentyYearsAgo;
+      },
+      { message: "La edad máxima permitida es de 120 años." }
     ),
   email: z.string().email("Introduce un correo electrónico válido."),
   paymentMethod: z.string().nonempty("Selecciona un método de pago válido."),

@@ -14,7 +14,10 @@ const PassengerFormSchema = z.object({
   identificationType: z.string().nonempty("Selecciona un tipo de documento válido."),
   identificationNumber: z
     .string()
-    .nonempty("Introduce un número de documento válido."),
+    .nonempty("Introduce un número de documento válido.")
+    .refine((value) => /^\d{5,10}$/.test(value), {
+      message: "El número de documento debe tener entre 5 y 10 dígitos.",
+    }),
 });
 
 interface FormData {

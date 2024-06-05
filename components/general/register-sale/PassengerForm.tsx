@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,10 @@ import Section from "@/components/ui/Section";
 import ComboBox from "@/components/ui/combobox";
 import { DocumentTypes } from "@/utilities/types";
 import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
+import { FaSearch } from "react-icons/fa";
+import { GrPowerReset } from "react-icons/gr";
+import { MdDelete } from "react-icons/md";
 
 const PassengerFormSchema = z.object({
   names: z.string().nonempty("Introduce un nombre válido."),
@@ -36,35 +40,126 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
 }) => {
   const {
     register,
-    handleSubmit,
     reset,
+    handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<PassengerFormInputs>({
     resolver: zodResolver(PassengerFormSchema),
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [searchIdentificationNumber, setSearchIdentificationNumber] =
+    useState("");
+  const [passengerData, setPassengerData] = useState<any>(null);
+  const [searchError, setSearchError] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
+      const cookieData = JSON.parse(cookieValue);
+      const token = cookieData?.data?.token;
+
+      if (!token) {
+        throw new Error("No se encontró el token en el cookie.");
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/passenger/get-by-identification-number/${searchIdentificationNumber}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setPassengerData(data.data);
+      setValue("names", data.data.names);
+      setValue("surnames", data.data.surnames);
+      setValue("identificationType", data.data.identificationType);
+      setValue("identificationNumber", data.data.identificationNumber);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (passengerData) {
+      setValue("names", passengerData.names);
+      setValue("surnames", passengerData.surnames);
+      setValue("identificationType", passengerData.identificationType);
+      setValue("identificationNumber", passengerData.identificationNumber);
+    }
+  }, [passengerData, setValue]);
 
   const handleFormSubmit = (data: PassengerFormInputs) => {
     onSubmit(data);
-    setFormSubmitted(true); // Marcar el formulario como enviado
+    setFormSubmitted(true);
+  };
+
+  const handleSearch = () => {
+    setSearchError("");
+    if (searchIdentificationNumber.trim() === "") {
+      setSearchError("Por favor, introduce un número de documento.");
+      return;
+    }
+    fetchData();
+  };
+
+  const handleResetSearch = () => {
+    setSearchIdentificationNumber("");
+    setPassengerData(null);
+    setValue("names", "");
+    setValue("surnames", "");
+    setValue("identificationType", "");
+    setValue("identificationNumber", "");
   };
 
   const handleReset = () => {
     reset();
-    setFormSubmitted(false); // Restablecer el estado del formulario
+    setFormSubmitted(false);
   };
 
   return (
     <Section>
       <form autoComplete="off" onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <div className="mb-1 bg-travely-200 text-white p-2 rounded-sm col-span-2">
-            <h2>
-              Pasajero del asiento:{" "}
-              <span className="font-bold">{seatNumber}</span>
+          <div className="mb-1 border p-2 rounded-sm col-span-2 flex justify-between items-center bg-travely-100/10">
+            <h2 className="bg-travely-200 text-white border rounded-md p-2">
+              Asiento: <span className="font-bold">{seatNumber}</span>
             </h2>
+            <div className="flex items-center">
+              <Input
+                type="text"
+                placeholder="Buscar por documento"
+                value={searchIdentificationNumber}
+                onChange={(e) => setSearchIdentificationNumber(e.target.value)}
+                className="mr-2"
+              />
+              <Button
+                size={"icon"}
+                onClick={handleSearch}
+                variant={"confirm"}
+                className="text-1xl"
+              >
+                <FaSearch />
+              </Button>
+              <Button
+                size={"icon"}
+                variant={"default"}
+                onClick={handleResetSearch}
+                className="ml-2 text-1xl"
+              >
+                <MdDelete />
+              </Button>
+            </div>
           </div>
+
           <div className="mb-1">
             <Label>Nombres</Label>
             <Input
@@ -74,7 +169,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
               placeholder="Nombres"
               {...register("names")}
               className={`w-full ${formSubmitted ? "bg-green-100" : ""}`}
-              disabled={formSubmitted}
+              disabled={formSubmitted || passengerData !== null}
             />
             {errors.names && (
               <span className="text-red-500 text-xs">
@@ -90,7 +185,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
               placeholder="Apellidos"
               {...register("surnames")}
               className={`w-full ${formSubmitted ? "bg-green-100" : ""}`}
-              disabled={formSubmitted}
+              disabled={formSubmitted || passengerData !== null}
             />
             {errors.surnames && (
               <span className="text-red-500 text-xs">
@@ -105,7 +200,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
               options={DocumentTypes}
               register={register("identificationType")}
               className={`w-full ${formSubmitted ? "bg-green-100" : ""}`}
-              disabled={formSubmitted}
+              disabled={formSubmitted || passengerData !== null}
             />
             {errors.identificationType && (
               <span className="text-red-500 text-xs">
@@ -121,7 +216,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
               placeholder="Número de documento"
               {...register("identificationNumber")}
               className={`w-full ${formSubmitted ? "bg-green-100" : ""}`}
-              disabled={formSubmitted}
+              disabled={formSubmitted || passengerData !== null}
             />
             {errors.identificationNumber && (
               <span className="text-red-500 text-xs">

@@ -38,7 +38,6 @@ const TravelRouteForm = () => {
     "depaOrigenId" | "depaDestinoId"
   > | null>(null);
 
-
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const {
@@ -49,15 +48,15 @@ const TravelRouteForm = () => {
   } = useForm({
     resolver: zodResolver(FormSchema),
     mode: "onChange",
-    defaultValues:{
+    defaultValues: {
       depaOrigenId: "",
       departureCityId: "",
       depaDestinoId: "",
-      destinationCityId:"",
+      destinationCityId: "",
       durationHours: "",
       distanceKilometers: "",
       createdAt: new Date(),
-    }
+    },
   });
 
   const onSubmit = (data: FormData) => {
@@ -65,44 +64,36 @@ const TravelRouteForm = () => {
     setFormData(rest);
     setDialogOpen(true);
   };
-  
+
   const handleError = (error: string) => console.log("Ocurrio un error");
-
-  //--------------------------------------------------
-
 
   const [selectedCityOri, setSelectedCityOri] = useState<string>("0");
   const [selectedCityDesti, setSelectedCityDesti] = useState<string>("0");
-
 
   const watchDepaOrigenId = watch("depaOrigenId");
   const watchDepaDestinoId = watch("depaDestinoId");
 
   useEffect(() => {
-
-    setSelectedCityOri(watchDepaOrigenId)
+    setSelectedCityOri(watchDepaOrigenId);
     setSelectedCityDesti(watchDepaDestinoId);
-    
-  }, [watchDepaOrigenId,watchDepaDestinoId])
-  
+  }, [watchDepaOrigenId, watchDepaDestinoId]);
 
-  const {data:dataCityOri} = useFetch<Municipio>(`/city/get-cities-by-deparment-id/${selectedCityOri}`);
-  const {data:dataCityDesti} = useFetch<Municipio>(`/city/get-cities-by-deparment-id/${selectedCityDesti}`);
+  const { data: dataCityOri } = useFetch<Municipio>(
+    `/city/get-cities-by-deparment-id/${selectedCityOri}`
+  );
+  const { data: dataCityDesti } = useFetch<Municipio>(
+    `/city/get-cities-by-deparment-id/${selectedCityDesti}`
+  );
 
-
-  const opcionMuniOrigen = dataCityOri.map((municipios)=>({
-    value:municipios.id,
-    label:municipios.name,
+  const opcionMuniOrigen = dataCityOri.map((municipios) => ({
+    value: municipios.id,
+    label: municipios.name,
   }));
 
-  const opcionMuniDestino = dataCityDesti.map((municipios)=>({
-    value:municipios.id,
-    label:municipios.name,
+  const opcionMuniDestino = dataCityDesti.map((municipios) => ({
+    value: municipios.id,
+    label: municipios.name,
   }));
-
-  
-
-  //--------------------------------------------------
 
   const {
     data: dataDepart,
@@ -120,25 +111,16 @@ const TravelRouteForm = () => {
     label: departamentos.name,
   }));
 
-
-
   const handleOnComplete = () => {
     console.log("Entidad creada con éxito");
     setDialogOpen(false);
     setFormData(null);
   };
 
-
-  console.log(formData);
-  
-  
-
   return (
     <Section>
       <CustomTitle title={"Registrar ruta de viaje"} />
-
       <form onSubmit={handleSubmit(onSubmit)}>
-
         <div className="grid  grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-2">
           <div>
             <ComboBox
@@ -153,14 +135,13 @@ const TravelRouteForm = () => {
               </span>
             )}
           </div>
-
           <div>
-            <ComboBox 
-            label="Ciudad Origen" 
-            id="a" 
-            options={opcionMuniOrigen}
-            disabled={!watch("depaOrigenId")}
-            register={register("departureCityId")}
+            <ComboBox
+              label="Ciudad Origen"
+              id="a"
+              options={opcionMuniOrigen}
+              disabled={!watch("depaOrigenId")}
+              register={register("departureCityId")}
             />
             {errors.departureCityId && (
               <span className="text-red-600 text-sm font-sans">
@@ -168,11 +149,10 @@ const TravelRouteForm = () => {
               </span>
             )}
           </div>
-
           <div>
             <ComboBox
               label="Departamento Destino"
-              id="a"
+              id="destinationCityId"
               options={opcionDepaDestino}
               register={register("depaDestinoId")}
             />
@@ -182,14 +162,13 @@ const TravelRouteForm = () => {
               </span>
             )}
           </div>
-
           <div>
-            <ComboBox 
-            label="Ciudad destino" 
-            id="aa" 
-            options={opcionMuniDestino} 
-            disabled={!watch("depaDestinoId")}
-            register={register("destinationCityId")}
+            <ComboBox
+              label="Ciudad destino"
+              id="destinationCityId"
+              options={opcionMuniDestino}
+              disabled={!watch("depaDestinoId")}
+              register={register("destinationCityId")}
             />
             {errors.destinationCityId && (
               <span className="text-red-600 text-sm font-sans">
@@ -197,13 +176,13 @@ const TravelRouteForm = () => {
               </span>
             )}
           </div>
-
           <div>
             <Label>{"Duracion del viaje(Horas)"}</Label>
-            <Input 
-            id="a"
-            placeholder="Duracion de viaje"
-            {...register("durationHours")}
+            <Input
+              id="durationHours"
+              type="number"
+              placeholder="Duracion de viaje"
+              {...register("durationHours")}
             />
             {errors.durationHours && (
               <span className="text-red-600 text-sm font-sans">
@@ -214,9 +193,10 @@ const TravelRouteForm = () => {
           <div>
             <Label>{"Distancia(Km)"}</Label>
             <Input
-            id="aa"
-            placeholder="Distancia"
-            {...register("distanceKilometers")}
+              id="distanceKilometers"
+              type="number"
+              placeholder="Distancia"
+              {...register("distanceKilometers")}
             />
             {errors.distanceKilometers && (
               <span className="text-red-600 text-sm font-sans">
@@ -228,7 +208,10 @@ const TravelRouteForm = () => {
         <div className="mt-4">
           <CreateEntityDialog
             entity="travel-route"
-            entityName={`${formData?.departureCityId} - ${formData?.destinationCityId}` ?? ""}
+            entityName={
+              `${formData?.departureCityId} - ${formData?.destinationCityId}` ??
+              ""
+            }
             entityAttributes={formData ?? {}}
             onComplete={handleOnComplete}
             onError={handleError}

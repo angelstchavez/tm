@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+
 import Header from '@/components/utils/Header'
 import HeaderMobile from '@/components/utils/HeaderMobile'
 import MarginWidthWrapper from '@/components/utils/MarginWifthWrapper'

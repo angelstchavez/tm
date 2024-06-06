@@ -35,7 +35,7 @@ const BrandForm: React.FC = () => {
   const onSubmit = (data: FormData) => {
     const dataWithTimestamp = {
       ...data,
-      createdAt: new Date(), // Aseguramos que createdAt tenga la fecha actual
+      createdAt: new Date(), 
     };
     setFormData(dataWithTimestamp);
     setDialogOpen(true);

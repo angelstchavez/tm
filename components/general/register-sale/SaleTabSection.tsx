@@ -7,23 +7,32 @@ import TotalSale from "./TotalSaleCount";
 import PassengerForm from "./PassengerForm";
 import PaymentForm from "./PaymentForm";
 import Cookies from "js-cookie";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface SaleTabSectionProps {
   tripId: number;
 }
 
 interface PassengerData {
-  firstName: string;
-  lastName: string;
-  documentType: string;
-  documentNumber: string;
+  names: string;
+  surnames: string;
+  identificationType: string;
+  identificationNumber: string;
 }
 
 interface PaymentFormData {
   names: string;
   surnames: string;
-  documentType: string;
-  documentNumber: string;
+  identificationType: string;
+  identificationNumber: string;
   gender: string;
   birthDate: string;
   email: string;
@@ -43,7 +52,9 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
   const [passengerData, setPassengerData] = useState<{
     [key: number]: PassengerData;
   }>({});
-  const [paymentFormData, setPaymentFormData] = useState<PaymentFormData | null>(null);
+  const [paymentFormData, setPaymentFormData] =
+    useState<PaymentFormData | null>(null);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     setPaymentFormData(paymentFormData);
@@ -82,32 +93,62 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     });
   };
 
-  const handleFormValidChange = (seatNumber: number, isValid: boolean) => {
-    setPassengerFormValidity((prevState) => ({
-      ...prevState,
-      [seatNumber]: isValid,
-    }));
-  };
-
   const handlePassengerFormSubmit = (
     data: PassengerData,
     seatNumber: number
   ) => {
+    // Actualiza el estado con los datos del pasajero
     setPassengerData((prevState) => ({
       ...prevState,
       [seatNumber]: data,
     }));
+
+    // Actualiza la validez del formulario del pasajero para este asiento
+    setPassengerFormValidity((prevState) => ({
+      ...prevState,
+      [seatNumber]: true, // Por ahora, suponemos que el formulario es válido
+    }));
   };
 
+  // Verifica si todos los formularios de pasajeros son válidos
   const allFormsValid = selectedSeats.every(
     (seat) => passengerFormValidity[seat.number]
   );
+
+  const isPaymentFormValid = (): boolean => {
+    if (!paymentFormData) return false;
+    const {
+      names,
+      surnames,
+      identificationType,
+      identificationNumber,
+      gender,
+      birthDate,
+      email,
+      mobilePhone,
+      paymentMethod,
+      amountGivenByCustomer,
+    } = paymentFormData;
+
+    return (
+      !!names &&
+      !!surnames &&
+      !!identificationType &&
+      !!identificationNumber &&
+      !!gender &&
+      !!birthDate &&
+      !!email &&
+      !!mobilePhone &&
+      !!paymentMethod &&
+      amountGivenByCustomer > 0
+    );
+  };
 
   const handlePayment = async (): Promise<void> => {
     try {
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
       const cookieData = JSON.parse(cookieValue);
-      const token = cookieData.data.token;
+      const token = cookieData?.data?.token;
 
       if (!token) {
         throw new Error("No se encontró el token en el cookie.");
@@ -134,8 +175,8 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               person: {
                 names: paymentFormData?.names,
                 surnames: paymentFormData?.surnames,
-                identificationType: paymentFormData?.documentType,
-                identificationNumber: paymentFormData?.documentNumber,
+                identificationType: paymentFormData?.identificationType,
+                identificationNumber: paymentFormData?.identificationNumber,
                 gender: paymentFormData?.gender,
                 birthdate: paymentFormData?.birthDate,
                 email: paymentFormData?.email,
@@ -148,14 +189,22 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
         }
       );
 
-      const responseData = await response.json();
-
-      if (!response.ok || !responseData.success) {
-        throw new Error(responseData.data || "Error al crear la venta.");
+      if (!response.ok) {
+        const responseData = await response.json();
+        setError(responseData.data || "Error al crear la venta.");
+      } else {
+        window.location.reload();
       }
     } catch (error: any) {
-      // Manejo de errores
+      console.error("Error al procesar el pago:", error.message);
     }
+  };
+
+  const handleFormValidityChange = (isValid: boolean, seatNumber: number) => {
+    setPassengerFormValidity((prevState) => ({
+      ...prevState,
+      [seatNumber]: isValid,
+    }));
   };
 
   return (
@@ -219,8 +268,12 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
               <div key={seat.id} className="mb-4">
                 <PassengerForm
                   seatNumber={seat.number}
-                  onFormValidChange={handleFormValidChange}
-                  onSubmit={handlePassengerFormSubmit}
+                  onSubmit={(data) =>
+                    handlePassengerFormSubmit(data, seat.number)
+                  }
+                  onFormValidityChange={(isValid) =>
+                    handleFormValidityChange(isValid, seat.number)
+                  }
                 />
               </div>
             ))}
@@ -239,14 +292,45 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
             <PaymentForm
               formData={paymentFormData}
               setFormData={setPaymentFormData}
+              handlePayment={handlePayment}
+              tripId={tripId}
+              totalCount={selectedSeats.length}
             ></PaymentForm>
-            <div className="flex justify-between">
-              <Button variant={"secondary"} onClick={handleBack}>
-                Volver
-              </Button>
-              <Button variant={"confirm"} onClick={handlePayment}>
-                Pagar
-              </Button>
+            <div className="mt-4 flex justify-end">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="travely"
+                    disabled={!paymentFormData || !isPaymentFormValid()}
+                  >
+                    Finalizar
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>¿Desea registrar esta venta?</DialogTitle>
+                    {error && <p className="text-red-500">{error}</p>}
+                  </DialogHeader>
+                  <DialogFooter>
+                    <div className="flex justify-between space-x-2">
+                      <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                          Cancelar
+                        </Button>
+                      </DialogClose>
+                      <DialogTrigger>
+                        <Button
+                          variant="confirm"
+                          onClick={() => handlePayment()}
+                          disabled={!paymentFormData || !isPaymentFormValid()}
+                        >
+                          Confirmar
+                        </Button>
+                      </DialogTrigger>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </TabsContent>
         </Tabs>

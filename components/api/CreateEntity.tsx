@@ -17,12 +17,12 @@ interface EntityAttributes {
 }
 
 interface CreateEntityDialogProps {
-  entity: string;
-  entityName: string;
-  entityAttributes: EntityAttributes;
-  onComplete: () => void;
-  onError: (error: string) => void;
-  buttonComponent: ReactElement;
+  readonly entity: string;
+  readonly entityName: string;
+  readonly entityAttributes: EntityAttributes;
+  readonly onComplete: () => void;
+  readonly onError: (error: string) => void;
+  readonly buttonComponent: ReactElement;
 }
 
 export function CreateEntityDialog({
@@ -44,11 +44,9 @@ export function CreateEntityDialog({
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
       const cookieData = JSON.parse(cookieValue);
       const token = cookieData?.data?.token;
-
       if (!token) {
         throw new Error("No se encontró el token en el cookie.");
       }
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/${entity}/create`,
         {
@@ -61,13 +59,10 @@ export function CreateEntityDialog({
           body: JSON.stringify(entityAttributes),
         }
       );
-
       const responseData = await response.json();
-
       if (!response.ok || !responseData.success) {
         throw new Error(responseData.data || `Error al crear ${entityName}.`);
       }
-
       onComplete();
       window.location.reload();
       handleClose();

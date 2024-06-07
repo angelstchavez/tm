@@ -142,7 +142,7 @@ const LoginPage: React.FC = () => {
             onClick={handleResetPasswordClick}
             className="w-full"
           >
-            Restablecer contraseña
+            Restablecer contraseña ahora
           </Button>
         </CardFooter>
       </Card>

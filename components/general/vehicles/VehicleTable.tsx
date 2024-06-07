@@ -1,13 +1,10 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
-import DataTable, { TableColumn } from "react-data-table-component";
-import Loading from "@/components/utils/Loading";
-import { Input } from "@/components/ui/input";
-import Section from "@/components/ui/Section";
-import CustomTitle from "@/components/utils/CustomTitle";
-import ExportCsvButton from "@/components/utils/ExportCsvButton";
-import GeneralReport from "@/components/utils/GeneralReport";
+import { TableColumn } from "react-data-table-component";
 import ActionButtons from "@/components/utils/ActionButtons";
 import { fetchData } from "@/utilities/FetchData";
+import CustomTable from "@/components/utils/CustomTable";
 
 interface Vehicle {
   id: number;
@@ -63,7 +60,7 @@ const VehicleTable: React.FC = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
-  const handleVehicleEdit = () => {
+  const handleVehicleUpdate = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
@@ -114,7 +111,7 @@ const VehicleTable: React.FC = () => {
       cell: (row) => (
         <ActionButtons
           row={row}
-          onEdit={handleVehicleEdit}
+          onEdit={handleVehicleUpdate}
           onDelete={handleVehicleDelete}
           entity="vehicle"
           entityCamelCase="vehicle"
@@ -125,48 +122,26 @@ const VehicleTable: React.FC = () => {
   ];
 
   return (
-    <Section>
-      <div className="flex items-center justify-between">
-        <CustomTitle title={"Vehículos"} />
-        <div className="w-1/2 max-w-md py-2">
-          <Input
-            type="text"
-            placeholder="Buscar por placa"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      {error && <div className="text-red-600 mb-4">Error: {error}</div>}
-      <div className="grid grid-col-1">
-        <DataTable
-          columns={columns}
-          data={vehicles}
-          pagination
-          highlightOnHover
-          progressPending={loading}
-          progressComponent={<Loading />}
-          noDataComponent={<NoDataComponent />}
-        />
-        <div className="flex items-center justify-end mt-2">
-          <div className="mr-2">
-            <ExportCsvButton
-              data={vehicles.map((vehicle) => ({
-                Placa: vehicle.plate,
-                Color: vehicle.color,
-                "Año de fabricación": vehicle.manufacturingYear,
-                "Modelo de auto": vehicle.carModel.name,
-                "Marca de auto": vehicle.carModel.carBrand.name,
-              }))}
-              fileName="vehiculos.csv"
-            />
-          </div>
-          <div>
-            <GeneralReport entity={"car"}></GeneralReport>
-          </div>
-        </div>
-      </div>
-    </Section>
+    <CustomTable
+      columns={columns}
+      data={vehicles}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      loading={loading}
+      error={error}
+      NoDataComponent={NoDataComponent}
+      handleDelete={handleVehicleDelete}
+      handleUpdate={handleVehicleUpdate}
+      exportCsvData={vehicles.map((vehicle) => ({
+        Placa: vehicle.plate,
+        Color: vehicle.color,
+        "Año de fabricación": vehicle.manufacturingYear,
+        "Modelo de auto": vehicle.carModel.name,
+        "Marca de auto": vehicle.carModel.carBrand.name,
+      }))}
+      exportCsvFileName="vehiculos.csv"
+      generalReportEntity="car"
+    />
   );
 };
 

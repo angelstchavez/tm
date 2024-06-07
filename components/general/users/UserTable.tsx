@@ -2,13 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
-import Loading from "@/components/utils/Loading";
-import { Input } from "@/components/ui/input";
-import Section from "@/components/ui/Section";
-import GeneralReport from "@/components/utils/GeneralReport";
-import ExportCsvButton from "@/components/utils/ExportCsvButton";
 import ActionButtons from "@/components/utils/ActionButtons";
 import { getToken } from "@/lib/GetToken";
+import CustomTable from "@/components/utils/CustomTable";
+import { fetchData } from "@/utilities/FetchData";
 
 interface User {
   id: number;
@@ -33,40 +30,13 @@ const UserTable: React.FC = () => {
   const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/get-all`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Error al obtener los usuarios.");
-        }
-
-        const responseData = await response.json();
-
-        if (!responseData.success || !responseData.data) {
-          throw new Error("La respuesta no contiene datos válidos.");
-        }
-
-        const fetchedUsers = responseData.data;
-        setUsers(fetchedUsers);
-        setOriginalUsers(fetchedUsers);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchData(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/get-all`,
+      setUsers,
+      setOriginalUsers,
+      setError,
+      setLoading
+    );
   }, [reloadData]);
 
   useEffect(() => {
@@ -81,6 +51,10 @@ const UserTable: React.FC = () => {
   }, [searchTerm, originalUsers]);
 
   const handleUserDelete = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
+  const handleUserUpdate = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
@@ -134,52 +108,31 @@ const UserTable: React.FC = () => {
   ];
 
   return (
-    <Section>
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-800">Usuarios</h2>
-        <div className="w-1/2 max-w-md py-2">
-          <Input
-            type="text"
-            placeholder="Buscar por nombre de usuario"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      {error && <div className="text-red-600 mb-4">Error: {error}</div>}
-      <div className="grid grid-col-1">
-        <DataTable
-          columns={columns}
-          data={users}
-          pagination
-          highlightOnHover
-          progressPending={loading}
-          progressComponent={<Loading />}
-          noDataComponent={<NoDataComponent />}
-        />
-        <div className="flex items-center justify-end mt-2">
-          <div className="mr-2">
-            <ExportCsvButton
-              data={users.map((user) => ({
-                "Nombre de usuario": user.username,
-                Rol: user.role,
-                "Fecha de creación": new Date(
-                  user.createdAt
-                ).toLocaleDateString("es-CO", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                }),
-              }))}
-              fileName="usuarios.csv"
-            />
-          </div>
-          <div>
-            <GeneralReport entity={"user"}></GeneralReport>
-          </div>
-        </div>
-      </div>
-    </Section>
+    <CustomTable
+      columns={columns}
+      data={users}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      loading={loading}
+      error={error}
+      NoDataComponent={NoDataComponent}
+      handleDelete={handleUserDelete}
+      handleUpdate={handleUserUpdate}
+      exportCsvData={users.map((user) => ({
+        "Nombre de usuario": user.username,
+        Rol: user.role,
+        "Fecha de creación": new Date(user.createdAt).toLocaleDateString(
+          "es-CO",
+          {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          }
+        ),
+      }))}
+      exportCsvFileName="usuarios.csv"
+      generalReportEntity="user"
+    />
   );
 };
 

@@ -1,23 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import DataTable, { TableColumn } from "react-data-table-component";
-import Loading from "@/components/utils/Loading";
-import { Input } from "@/components/ui/input";
-import Section from "@/components/ui/Section";
-import CustomTitle from "@/components/utils/CustomTitle";
-import ExportCsvButton from "@/components/utils/ExportCsvButton";
-import GeneralReport from "@/components/utils/GeneralReport";
+import { TableColumn } from "react-data-table-component";
 import ActionButtons from "@/components/utils/ActionButtons";
-import { getToken } from "@/lib/GetToken";
+import { fetchData } from "@/utilities/FetchData";
+import CustomTable from "@/components/utils/CustomTable";
 
 interface Trip {
   id: number;
   travelDate: string;
   travelTime: string;
   ticketPrice: number;
-  isActive: boolean;
-  createdAt: string;
   travelRoute: {
     departureCity: {
       name: string;
@@ -26,6 +19,7 @@ interface Trip {
       name: string;
     };
   };
+  createdAt: string;
 }
 
 const NoDataComponent = () => (
@@ -43,56 +37,37 @@ const TripTable: React.FC = () => {
   const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/trip/get-all`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Error al obtener los viajes.");
-        }
-
-        const responseData = await response.json();
-
-        if (!responseData.success || !responseData.data) {
-          throw new Error("La respuesta no contiene datos válidos.");
-        }
-
-        const fetchedTrips = responseData.data;
-        setTrips(fetchedTrips);
-        setOriginalTrips(fetchedTrips);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchData(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/trip/get-all`,
+      setTrips,
+      setOriginalTrips,
+      setError,
+      setLoading
+    );
   }, [reloadData]);
 
   useEffect(() => {
     if (searchTerm === "") {
       setTrips(originalTrips);
     } else {
-      const filteredTrips = originalTrips.filter((trip) =>
-        `${trip.travelRoute.departureCity.name} ${trip.travelRoute.destinationCity.name}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+      const filteredTrips = originalTrips.filter(
+        (trip) =>
+          trip.travelRoute.departureCity.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          trip.travelRoute.destinationCity.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
       );
       setTrips(filteredTrips);
     }
   }, [searchTerm, originalTrips]);
 
   const handleTripDelete = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
+  const handleTripUpdate = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
@@ -195,53 +170,29 @@ const TripTable: React.FC = () => {
   ];
 
   return (
-    <Section>
-      <div className="flex items-center justify-between">
-        <CustomTitle title={"Viajes"} />
-        <div className="w-1/2 max-w-md py-2">
-          <Input
-            type="text"
-            placeholder="Buscar por origen o destino"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      {error && <div className="text-red-600 mb-4">Error: {error}</div>}
-      <div className="grid grid-col-1">
-        <DataTable
-          columns={columns}
-          data={trips}
-          pagination
-          highlightOnHover
-          progressPending={loading}
-          progressComponent={<Loading />}
-          noDataComponent={<NoDataComponent />}
-        />
-        <div className="flex items-center justify-end mt-2">
-          <div className="mr-2">
-            <ExportCsvButton
-              data={trips.map((trip) => ({
-                "Fecha de Viaje": new Date(trip.travelDate).toLocaleDateString(
-                  "es-CO"
-                ),
-                "Hora de Viaje": formatTime(trip.travelTime),
-                "Precio del Boleto": formatCurrency(trip.ticketPrice),
-                Origen: trip.travelRoute.departureCity.name,
-                Destino: trip.travelRoute.destinationCity.name,
-                "Fecha de Registro": new Date(
-                  trip.createdAt
-                ).toLocaleDateString("es-CO"),
-              }))}
-              fileName="viajes.csv"
-            />
-          </div>
-          <div>
-            <GeneralReport entity={"trip"}></GeneralReport>
-          </div>
-        </div>
-      </div>
-    </Section>
+    <CustomTable
+      columns={columns}
+      data={trips}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      loading={loading}
+      error={error}
+      NoDataComponent={NoDataComponent}
+      handleDelete={handleTripDelete}
+      handleUpdate={handleTripUpdate}
+      exportCsvData={trips.map((trip) => ({
+        "Fecha de Viaje": new Date(trip.travelDate).toLocaleDateString("es-CO"),
+        "Hora de Viaje": formatTime(trip.travelTime),
+        "Precio del Boleto": formatCurrency(trip.ticketPrice),
+        Origen: trip.travelRoute.departureCity.name,
+        Destino: trip.travelRoute.destinationCity.name,
+        "Fecha de Registro": new Date(trip.createdAt).toLocaleDateString(
+          "es-CO"
+        ),
+      }))}
+      exportCsvFileName="viajes.csv"
+      generalReportEntity="trip"
+    />
   );
 };
 

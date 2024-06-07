@@ -97,8 +97,6 @@ const TravelRouteForm = () => {
 
   const {
     data: dataDepart,
-    hasError,
-    isLoading
   } = useFetch<Departamentos>('/deparment/get-all')
 
   const opcionDepaOrigen = dataDepart.map(departamentos => ({

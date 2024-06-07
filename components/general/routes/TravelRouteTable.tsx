@@ -1,16 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import DataTable, { TableColumn } from "react-data-table-component";
-import Loading from "@/components/utils/Loading";
+import { TableColumn } from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
-import { Input } from "@/components/ui/input";
-import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
-import CustomTitle from "@/components/utils/CustomTitle";
-import ExportCsvButton from "@/components/utils/ExportCsvButton";
-import GeneralReport from "@/components/utils/GeneralReport";
-import { getToken } from "@/lib/GetToken";
+import { fetchData } from "@/utilities/FetchData";
+import CustomTable from "@/components/utils/CustomTable";
 
 interface City {
   id: string;
@@ -46,40 +41,13 @@ const TravelRouteTable: React.FC = () => {
   const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/travel-route/get-all`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Error al obtener las rutas de viaje.");
-        }
-
-        const responseData = await response.json();
-
-        if (!responseData.success || !responseData.data) {
-          throw new Error("La respuesta no contiene datos válidos.");
-        }
-
-        const fetchedRoutes = responseData.data;
-        setRoutes(fetchedRoutes);
-        setOriginalRoutes(fetchedRoutes);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchData(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/travel-route/get-all`,
+      setRoutes,
+      setOriginalRoutes,
+      setError,
+      setLoading
+    );
   }, [reloadData]);
 
   useEffect(() => {
@@ -100,6 +68,10 @@ const TravelRouteTable: React.FC = () => {
   }, [searchTerm, originalRoutes]);
 
   const handleRouteDelete = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
+  const handleRouteUpdate = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
@@ -160,47 +132,25 @@ const TravelRouteTable: React.FC = () => {
   ];
 
   return (
-    <Section>
-      <div className="flex items-center justify-between">
-        <CustomTitle title={"Rutas de viaje"} />
-        <div className="w-1/2 max-w-md py-2">
-          <Input
-            type="text"
-            placeholder="Buscar por ciudad de partida o destino"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      {error && <div className="text-red-600 mb-4">Error: {error}</div>}
-      <div className="grid grid-col-1">
-        <DataTable
-          columns={columns}
-          data={routes}
-          pagination
-          highlightOnHover
-          progressPending={loading}
-          progressComponent={<Loading />}
-          noDataComponent={<NoDataComponent />}
-        />
-        <div className="flex items-center justify-end mt-2">
-          <div className="mr-2">
-            <ExportCsvButton
-              data={routes.map((route) => ({
-                "Ciudad de partida": route.departureCity.name,
-                "Ciudad de destino": route.destinationCity.name,
-                "Duración (horas)": route.durationHours,
-                "Distancia (kilómetros)": route.distanceKilometers,
-              }))}
-              fileName="rutas_de_viaje.csv"
-            />
-          </div>
-          <div>
-            <GeneralReport entity={"travel-route"}></GeneralReport>
-          </div>
-        </div>
-      </div>
-    </Section>
+    <CustomTable
+      columns={columns}
+      data={routes}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      loading={loading}
+      error={error}
+      NoDataComponent={NoDataComponent}
+      handleDelete={handleRouteDelete}
+      exportCsvData={routes.map((route) => ({
+        "Ciudad de partida": route.departureCity.name,
+        "Ciudad de destino": route.destinationCity.name,
+        "Duración (horas)": route.durationHours,
+        "Distancia (kilómetros)": route.distanceKilometers,
+      }))}
+      exportCsvFileName="rutas_de_viaje.csv"
+      generalReportEntity="travel-route"
+      handleUpdate={handleRouteUpdate}
+    />
   );
 };
 

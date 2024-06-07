@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { TableColumn } from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import { fetchData } from "@/utilities/FetchData";

@@ -1,16 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import DataTable, { TableColumn } from "react-data-table-component";
-import Loading from "@/components/utils/Loading";
-import { Input } from "@/components/ui/input";
-import Section from "@/components/ui/Section";
+import { TableColumn } from "react-data-table-component";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
-import CustomTitle from "@/components/utils/CustomTitle";
-import ExportCsvButton from "@/components/utils/ExportCsvButton";
-import GeneralReport from "@/components/utils/GeneralReport";
 import EmployeeUpdate from "./EmployeeUpdate";
-import { getToken } from "@/lib/GetToken";
+import { fetchData } from "@/utilities/FetchData";
+import CustomTable from "@/components/utils/CustomTable";
 
 interface Employee {
   id: number;
@@ -45,40 +40,13 @@ const EmployeeTable: React.FC = () => {
   const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/employee/get-all`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Error al obtener los empleados.");
-        }
-
-        const responseData = await response.json();
-
-        if (!responseData.success || !responseData.data) {
-          throw new Error("La respuesta no contiene datos válidos.");
-        }
-
-        const fetchedEmployees = responseData.data;
-        setEmployees(fetchedEmployees);
-        setOriginalEmployees(fetchedEmployees);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchData(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/employee/get-all`,
+      setEmployees,
+      setOriginalEmployees,
+      setError,
+      setLoading
+    );
   }, [reloadData]);
 
   useEffect(() => {
@@ -105,7 +73,6 @@ const EmployeeTable: React.FC = () => {
   const handleEmployeeUpdate = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
-
   const columns: TableColumn<Employee>[] = [
     {
       name: "Nombres",
@@ -170,53 +137,32 @@ const EmployeeTable: React.FC = () => {
   ];
 
   return (
-    <Section>
-      <div className="flex items-center justify-between">
-        <CustomTitle title={"Empleados"} />
-        <div className="w-1/2 max-w-md py-2">
-          <Input
-            type="text"
-            placeholder="Buscar por nombres o apellidos"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      {error && <div className="text-red-600 mb-4">Error: {error}</div>}
-      <div className="grid grid-col-1">
-        <DataTable
-          columns={columns}
-          data={employees}
-          pagination
-          highlightOnHover
-          progressPending={loading}
-          progressComponent={<Loading />}
-          noDataComponent={<NoDataComponent />}
-        />
-        <div className="flex items-center justify-end mt-2">
-          <div className="mr-2">
-            <ExportCsvButton
-              data={employees.map((employee) => ({
-                Nombres: employee.person.names,
-                Apellidos: employee.person.surnames,
-                Rol: employee.role,
-                "Fecha de Registro": new Date(
-                  employee.createdAt
-                ).toLocaleDateString("es-CO", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                }),
-              }))}
-              fileName="empleados.csv"
-            />
-          </div>
-          <div>
-            <GeneralReport entity={"employee"}></GeneralReport>
-          </div>
-        </div>
-      </div>
-    </Section>
+    <CustomTable
+      columns={columns}
+      data={employees}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      loading={loading}
+      error={error}
+      NoDataComponent={NoDataComponent}
+      handleDelete={handleEmployeeDelete}
+      handleUpdate={handleEmployeeUpdate}
+      exportCsvData={employees.map((employee) => ({
+        Nombres: employee.person.names,
+        Apellidos: employee.person.surnames,
+        Rol: employee.role,
+        "Fecha de Registro": new Date(employee.createdAt).toLocaleDateString(
+          "es-CO",
+          {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          }
+        ),
+      }))}
+      exportCsvFileName="empleados.csv"
+      generalReportEntity="employee"
+    />
   );
 };
 

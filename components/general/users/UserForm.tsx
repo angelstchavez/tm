@@ -34,7 +34,7 @@ const FormSchema = z
 
 type FormData = z.infer<typeof FormSchema>;
 
-const UserForm = () => {
+const UserForm: React.FC = () => {
   const {
     register,
     handleSubmit,

@@ -40,7 +40,7 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-const VehicleForm = () => {
+const VehicleForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -82,7 +82,7 @@ const VehicleForm = () => {
 
   return (
     <Section>
-      <CustomTitle title={"Registrar vehículo"}></CustomTitle>
+      <CustomTitle title={"Registrar vehículo"} />
       <form
         className="flex flex-wrap justify-between"
         onSubmit={handleSubmit(onSubmit)}
@@ -95,7 +95,7 @@ const VehicleForm = () => {
               placeholder="Ej. ABC123"
               type="text"
               {...register("plate")}
-            ></Input>
+            />
             {errors.plate && (
               <span className="text-red-600 text-sm font-semibold">
                 {errors.plate.message}
@@ -118,7 +118,7 @@ const VehicleForm = () => {
               placeholder="Ej. 2000"
               type="number"
               {...register("manufacturingYear", { valueAsNumber: true })}
-            ></Input>
+            />
             {errors.manufacturingYear && (
               <span className="text-red-600 text-sm font-semibold">
                 {errors.manufacturingYear.message}

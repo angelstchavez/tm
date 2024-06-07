@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
@@ -14,9 +13,7 @@ const GeneralReport: React.FC<GeneralReportProps> = ({ entity }) => {
   const downloadPDF = async () => {
     try {
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-
       const cookieData: { data: { token?: string } } = JSON.parse(cookieValue);
-
       const token = cookieData.data.token;
 
       if (!token) {
@@ -33,6 +30,10 @@ const GeneralReport: React.FC<GeneralReportProps> = ({ entity }) => {
           },
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Error al obtener el reporte.");
+      }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(new Blob([blob]));

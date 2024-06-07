@@ -1,5 +1,4 @@
-"use client"
-
+'use client'
 import {
   ReactNode,
   createContext,
@@ -27,17 +26,17 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 interface AuthContextProviderProps {
-  children: ReactNode;
+  readonly children: ReactNode;
 }
 
 export default function AuthContextProvider({
   children,
 }: AuthContextProviderProps) {
-  const login = useCallback(function (authTokens: AuthTokens) {
+  const login = useCallback((authTokens: AuthTokens) => {
     Cookies.set("authTokens", JSON.stringify(authTokens));
   }, []);
 
-  const logout = useCallback(function () {
+  const logout = useCallback(() => {
     Cookies.remove("authTokens");
   }, []);
 

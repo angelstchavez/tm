@@ -10,8 +10,6 @@ import { DocumentTypes } from "@/utilities/types";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { FaSearch } from "react-icons/fa";
-import { GrPowerReset } from "react-icons/gr";
-import { MdDelete } from "react-icons/md";
 
 const PassengerFormSchema = z.object({
   names: z.string().nonempty("Introduce un nombre válido."),

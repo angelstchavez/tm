@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";

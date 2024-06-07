@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
@@ -9,7 +7,7 @@ import CustomTitle from "@/components/utils/CustomTitle";
 import ExportCsvButton from "@/components/utils/ExportCsvButton";
 import GeneralReport from "@/components/utils/GeneralReport";
 import ActionButtons from "@/components/utils/ActionButtons";
-import { getToken } from "@/lib/GetToken";
+import { fetchData } from "@/utilities/FetchData";
 
 interface Vehicle {
   id: number;
@@ -41,40 +39,13 @@ const VehicleTable: React.FC = () => {
   const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/car/get-all`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Error al obtener los vehículos.");
-        }
-
-        const responseData = await response.json();
-
-        if (!responseData.success || !responseData.data) {
-          throw new Error("La respuesta no contiene datos válidos.");
-        }
-
-        const fetchedVehicles = responseData.data;
-        setVehicles(fetchedVehicles);
-        setOriginalVehicles(fetchedVehicles);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchData(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/car/get-all`,
+      setVehicles,
+      setOriginalVehicles,
+      setError,
+      setLoading
+    );
   }, [reloadData]);
 
   useEffect(() => {

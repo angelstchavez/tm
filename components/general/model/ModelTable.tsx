@@ -1,16 +1,8 @@
-"use client";
-
+import CustomTable from "@/components/utils/CustomTable";
 import React, { useState, useEffect } from "react";
-import DataTable, { TableColumn } from "react-data-table-component";
-import Loading from "@/components/utils/Loading";
-import { Input } from "@/components/ui/input";
-import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
-import CustomTitle from "@/components/utils/CustomTitle";
 import ModelUpdate from "./ModelUpdate";
-import ExportCsvButton from "@/components/utils/ExportCsvButton";
-import GeneralReport from "@/components/utils/GeneralReport";
-import { getToken } from "@/lib/GetToken";
+import { fetchData } from "@/utilities/FetchData";
 
 interface CarModel {
   id: number;
@@ -41,40 +33,13 @@ const ModelTable: React.FC = () => {
   const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/car-model/get-all`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Error al obtener los modelos de autos.");
-        }
-
-        const responseData = await response.json();
-
-        if (!responseData.success || !responseData.data) {
-          throw new Error("La respuesta no contiene datos válidos.");
-        }
-
-        const fetchedModels = responseData.data;
-        setModels(fetchedModels);
-        setOriginalModels(fetchedModels);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchData(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/car-model/get-all`,
+      setModels,
+      setOriginalModels,
+      setError,
+      setLoading
+    );
   }, [reloadData]);
 
   useEffect(() => {
@@ -96,10 +61,10 @@ const ModelTable: React.FC = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
-  const columns: TableColumn<CarModel>[] = [
+  const columns = [
     {
       name: "Nombre",
-      selector: (row) => row.name,
+      selector: (row: CarModel) => row.name,
       sortable: true,
       style: {
         fontSize: 14,
@@ -108,7 +73,7 @@ const ModelTable: React.FC = () => {
     },
     {
       name: "Categoría",
-      selector: (row) => row.category,
+      selector: (row: CarModel) => row.category,
       sortable: true,
       style: {
         fontSize: 14,
@@ -116,7 +81,7 @@ const ModelTable: React.FC = () => {
     },
     {
       name: "Tipo de Combustible",
-      selector: (row) => row.fuelType,
+      selector: (row: CarModel) => row.fuelType,
       sortable: true,
       style: {
         fontSize: 14,
@@ -124,7 +89,7 @@ const ModelTable: React.FC = () => {
     },
     {
       name: "Capacidad de Asientos",
-      selector: (row) => row.seatingCapacity.toString(),
+      selector: (row: CarModel) => row.seatingCapacity.toString(),
       sortable: true,
       style: {
         fontSize: 14,
@@ -132,7 +97,7 @@ const ModelTable: React.FC = () => {
     },
     {
       name: "Tipo de Transmisión",
-      selector: (row) => row.transmissionType,
+      selector: (row: CarModel) => row.transmissionType,
       sortable: true,
       style: {
         fontSize: 14,
@@ -140,7 +105,7 @@ const ModelTable: React.FC = () => {
     },
     {
       name: "Marca de Auto",
-      selector: (row) => row.carBrand.name,
+      selector: (row: CarModel) => row.carBrand.name,
       sortable: true,
       style: {
         fontSize: 14,
@@ -148,14 +113,14 @@ const ModelTable: React.FC = () => {
     },
     {
       name: "Acciones",
-      cell: (row) => (
+      cell: (row: CarModel) => (
         <div className="flex space-x-2">
           <ModelUpdate
             id={row.id}
             entity={"car-model"}
             entityName={row.name}
             onComplete={handleModelUpdate}
-          ></ModelUpdate>
+          />
           <DeleteEntityDialog
             entityId={row.id}
             entity="car-model"
@@ -169,49 +134,27 @@ const ModelTable: React.FC = () => {
   ];
 
   return (
-    <Section>
-      <div className="flex items-center justify-between">
-        <CustomTitle title={"Modelos"} />
-        <div className="w-1/2 max-w-md py-2">
-          <Input
-            type="text"
-            placeholder="Buscar por nombre de modelo"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      {error && <div className="text-red-600 mb-4">Error: {error}</div>}
-      <div className="grid grid-col-1">
-        <DataTable
-          columns={columns}
-          data={models}
-          pagination
-          highlightOnHover
-          progressPending={loading}
-          progressComponent={<Loading />}
-          noDataComponent={<NoDataComponent />}
-        />
-        <div className="flex items-center justify-end mt-2">
-          <div className="mr-2">
-            <ExportCsvButton
-              data={models.map((model) => ({
-                Nombre: model.name,
-                Categoría: model.category,
-                "Tipo de Combustible": model.fuelType,
-                "Capacidad de Asientos": model.seatingCapacity,
-                "Tipo de Transmisión": model.transmissionType,
-                "Marca de Auto": model.carBrand.name,
-              }))}
-              fileName="modelos.csv"
-            />
-          </div>
-          <div>
-            <GeneralReport entity={"car-model"}></GeneralReport>
-          </div>
-        </div>
-      </div>
-    </Section>
+    <CustomTable
+      columns={columns}
+      data={models}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      loading={loading}
+      error={error}
+      NoDataComponent={NoDataComponent}
+      handleDelete={handleModelDelete}
+      handleUpdate={handleModelUpdate}
+      exportCsvData={models.map((model) => ({
+        Nombre: model.name,
+        Categoría: model.category,
+        "Tipo de Combustible": model.fuelType,
+        "Capacidad de Asientos": model.seatingCapacity,
+        "Tipo de Transmisión": model.transmissionType,
+        "Marca de Auto": model.carBrand.name,
+      }))}
+      exportCsvFileName="modelos.csv"
+      generalReportEntity="car-model"
+    />
   );
 };
 

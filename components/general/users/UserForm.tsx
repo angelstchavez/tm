@@ -52,7 +52,6 @@ const UserForm: React.FC = () => {
   });
 
   const [formData, setFormData] = useState<FormData | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const onSubmit = (data: FormData) => {
     const dataWithTimestamp = {
@@ -60,12 +59,10 @@ const UserForm: React.FC = () => {
       createdAt: new Date(),
     };
     setFormData(dataWithTimestamp);
-    setDialogOpen(true);
   };
 
   const handleOnComplete = () => {
     console.log("Entidad creada con éxito");
-    setDialogOpen(false);
     setFormData(null);
   };
 

@@ -30,7 +30,7 @@ const FormSchema = z.object({
       .min(10, "La capacidad de asientos debe ser al menos 10.")
   ),
   carBrandId: z.string().nonempty("Introduce una marca válida."),
-  createdAt: z.date(), // Agregamos el campo createdAt
+  createdAt: z.date(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -55,7 +55,6 @@ const ModelForm = () => {
   });
 
   const [formData, setFormData] = useState<FormData | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const onSubmit = (data: FormData) => {
     const dataWithTimestamp = {
@@ -63,12 +62,10 @@ const ModelForm = () => {
       createdAt: new Date(), // Aseguramos que createdAt tenga la fecha actual
     };
     setFormData(dataWithTimestamp);
-    setDialogOpen(true);
   };
 
   const handleOnComplete = () => {
     console.log("Entidad creada con éxito");
-    setDialogOpen(false);
     setFormData(null);
   };
 

@@ -4,13 +4,12 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
-import { FaEdit } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
-import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
 import ExportCsvButton from "@/components/utils/ExportCsvButton";
 import GeneralReport from "@/components/utils/GeneralReport";
+import ActionButtons from "@/components/utils/ActionButtons";
 
 interface Vehicle {
   id: number;
@@ -102,6 +101,10 @@ const VehicleTable: React.FC = () => {
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
+  const handleVehicleEdit = () => {
+    setReloadData((prevReloadData) => !prevReloadData);
+  };
+
   const columns: TableColumn<Vehicle>[] = [
     {
       name: "Placa",
@@ -147,18 +150,14 @@ const VehicleTable: React.FC = () => {
     {
       name: "Acciones",
       cell: (row) => (
-        <div className="flex space-x-2">
-          <button className="bg-orange-600 rounded text-white p-1">
-            <FaEdit className="text-xl" />
-          </button>
-          <DeleteEntityDialog
-            entityId={row.id}
-            entity="vehicle"
-            entityCamelCase="vehicle"
-            entityName={row.plate}
-            onComplete={handleVehicleDelete}
-          />
-        </div>
+        <ActionButtons
+          row={row}
+          onEdit={handleVehicleEdit}
+          onDelete={handleVehicleDelete}
+          entity="vehicle"
+          entityCamelCase="vehicle"
+          entityName={row.plate}
+        />
       ),
     },
   ];

@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
-import { FaEdit } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
-import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import GeneralReport from "@/components/utils/GeneralReport";
 import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import ActionButtons from "@/components/utils/ActionButtons";
 
 interface User {
   id: number;
@@ -31,7 +30,7 @@ const UserTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [reloadData, setReloadData] = useState<boolean>(false); // Nuevo estado para controlar la recarga de datos
+  const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +67,7 @@ const UserTable: React.FC = () => {
 
         const fetchedUsers = responseData.data;
         setUsers(fetchedUsers);
-        setOriginalUsers(fetchedUsers); // Almacenar los usuarios originales
+        setOriginalUsers(fetchedUsers);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -77,7 +76,7 @@ const UserTable: React.FC = () => {
     };
 
     fetchData();
-  }, [reloadData]); // Recargar datos cuando cambie el estado de reloadData
+  }, [reloadData]);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -91,8 +90,6 @@ const UserTable: React.FC = () => {
   }, [searchTerm, originalUsers]);
 
   const handleUserDelete = () => {
-    // Manejar la eliminación de usuario completada
-    // Cambiar el estado reloadData para recargar los datos de la tabla
     setReloadData((prevReloadData) => !prevReloadData);
   };
 
@@ -133,19 +130,14 @@ const UserTable: React.FC = () => {
     {
       name: "Acciones",
       cell: (row) => (
-        <div className="flex space-x-2">
-          <button className="bg-orange-600 rounded text-white p-1">
-            <FaEdit className="text-xl" />
-          </button>
-          <DeleteEntityDialog
-            entityId={row.id}
-            entity="user"
-            entityCamelCase="user"
-            entityName={row.username}
-            onComplete={handleUserDelete}
-          />{" "}
-          {/* Aquí se pasa el id y el nombre del usuario, y la función de manejo */}
-        </div>
+        <ActionButtons
+          row={row}
+          onEdit={() => {}}
+          onDelete={handleUserDelete}
+          entity="user"
+          entityCamelCase="user"
+          entityName={row.username}
+        />
       ),
     },
   ];

@@ -14,11 +14,11 @@ import Cookies from "js-cookie";
 import { MdDelete } from "react-icons/md";
 
 interface DeleteEntityDialogProps {
-  entityId: number;
-  entityName: string;
-  entity: string;
-  entityCamelCase: string;
-  onComplete: () => void;
+  readonly entityId: number;
+  readonly entityName: string;
+  readonly entity: string;
+  readonly entityCamelCase: string;
+  readonly onComplete: () => void;
 }
 
 export function DeleteEntityDialog({
@@ -37,11 +37,9 @@ export function DeleteEntityDialog({
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
       const cookieData = JSON.parse(cookieValue);
       const token = cookieData?.data?.token;
-
       if (!token) {
         throw new Error("No se encontró el token en el cookie.");
       }
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/${entity}/delete?${entityCamelCase}Id=${entityId}`,
         {
@@ -52,7 +50,6 @@ export function DeleteEntityDialog({
           },
         }
       );
-
       if (response.ok) {
         setIsOpen(false);
         onComplete();

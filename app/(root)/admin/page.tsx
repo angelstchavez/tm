@@ -29,7 +29,6 @@ const AdminPage = () => {
 
   return (
     <Section>
-      {/* <div className="flex h-full flex-col justify-between max-md:px-5 max-md:py-8 lg:p-11 px-5 py-8"></div> */}
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-extrabold lg:text-7xl">
           {formatTime(time)}

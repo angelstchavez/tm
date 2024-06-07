@@ -1,6 +1,7 @@
 "use client";
 
 import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { IoMenu } from "react-icons/io5";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useCycle } from "framer-motion";
@@ -106,39 +107,8 @@ const MenuToggle = ({ toggle }: { toggle: any }) => (
     onClick={toggle}
     className="pointer-events-auto absolute right-3 top-[8px] z-30 bg-white rounded px-1 py-1"
   >
-    <svg width="23" height="23" viewBox="0 -1 22 22">
-      <Path
-        variants={{
-          closed: { d: "M 2 2.5 L 20 2.5" },
-          open: { d: "M 3 16.5 L 17 2.5" },
-        }}
-      />
-      <Path
-        d="M 2 9.423 L 20 9.423"
-        variants={{
-          closed: { opacity: 1 },
-          open: { opacity: 0 },
-        }}
-        transition={{ duration: 0.1 }}
-      />
-      <Path
-        variants={{
-          closed: { d: "M 2 16.346 L 20 16.346" },
-          open: { d: "M 3 2.5 L 17 16.346" },
-        }}
-      />
-    </svg>
+    <IoMenu  className="text-xl"/>
   </button>
-);
-
-const Path = (props: any) => (
-  <motion.path
-    fill="transparent"
-    strokeWidth="2"
-    stroke="hsl(0, 0%, 18%)"
-    strokeLinecap="round"
-    {...props}
-  />
 );
 
 const MenuItem = ({
@@ -241,7 +211,6 @@ const useDimensions = (ref: any) => {
       dimensions.current.width = ref.current.offsetWidth;
       dimensions.current.height = ref.current.offsetHeight;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref]);
 
   return dimensions.current;

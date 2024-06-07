@@ -68,11 +68,6 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     }
   };
 
-  const handleBack = () => {
-    if (activeTab === "passengers") setActiveTab("seats");
-    else if (activeTab === "payment") setActiveTab("passengers");
-  };
-
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
@@ -97,20 +92,17 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
     data: PassengerData,
     seatNumber: number
   ) => {
-    // Actualiza el estado con los datos del pasajero
     setPassengerData((prevState) => ({
       ...prevState,
       [seatNumber]: data,
     }));
 
-    // Actualiza la validez del formulario del pasajero para este asiento
     setPassengerFormValidity((prevState) => ({
       ...prevState,
-      [seatNumber]: true, // Por ahora, suponemos que el formulario es válido
+      [seatNumber]: true,
     }));
   };
 
-  // Verifica si todos los formularios de pasajeros son válidos
   const allFormsValid = selectedSeats.every(
     (seat) => passengerFormValidity[seat.number]
   );

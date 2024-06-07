@@ -165,7 +165,7 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="justify-end flex">
-          <Button variant={"destructive"} onClick={handleDownloadPDF}>
+          <Button variant={"default"} onClick={handleDownloadPDF}>
             Descargar PDF
           </Button>
         </DialogFooter>

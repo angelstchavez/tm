@@ -12,18 +12,18 @@ type LayoutProps = Readonly<{
 
 function Layout ({ children }: LayoutProps) {
   return (
-    <div>
+    <main>
       <div className='flex'>
         <SideNav />
-        <main className='flex-1'>
+        <div className='flex-1'>
           <MarginWidthWrapper>
             <Header />
             <HeaderMobile />
             <PageWrapper>{children}</PageWrapper>
           </MarginWidthWrapper>
-        </main>
+        </div>
       </div>
-    </div>
+    </main>
   )
 }
 

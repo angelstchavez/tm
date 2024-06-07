@@ -54,11 +54,11 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
   const [searchIdentificationNumber, setSearchIdentificationNumber] =
     useState("");
   const [passengerData, setPassengerData] = useState<any>(null);
-  const [searchError, setSearchError] = useState("");
-  const [isSearching, setIsSearching] = useState(false); // Variable para controlar el estado del botón de búsqueda
+  const [, setSearchError] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
   const fetchData = async () => {
-    setIsSearching(true); // Desactivar el botón de búsqueda al comenzar la búsqueda
+    setIsSearching(true);
     try {
       const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
       const cookieData = JSON.parse(cookieValue);
@@ -90,7 +90,7 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setIsSearching(false); // Volver a activar el botón de búsqueda al finalizar la búsqueda
+      setIsSearching(false);
     }
   };
 
@@ -101,10 +101,8 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
       setValue("identificationType", passengerData.identificationType);
       setValue("identificationNumber", passengerData.identificationNumber);
 
-      // Validar los datos del pasajero
       handleSubmit((data) => onSubmit(data))();
 
-      // Desactivar los campos y el botón de búsqueda
       setFormSubmitted(true);
     }
   }, [passengerData, formSubmitted, setValue, handleSubmit, onSubmit]);

@@ -10,8 +10,8 @@ import ComboboxFetch from "@/components/api/ComboboxFetch";
 import CustomTitle from "@/components/utils/CustomTitle";
 import TotalSale from "./TotalSaleCount";
 import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
 import { FaSearch, FaTrash } from "react-icons/fa";
+import { getToken } from "@/lib/GetToken";
 
 interface FormData {
   names: string;
@@ -125,11 +125,7 @@ const PaymentForm: React.FC<FormProps> = ({
     useState("");
   const [searchError, setSearchError] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [clientData, setClientData] = useState<any>(null);
-
-  const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-  const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
-  const token = cookieData?.data?.token;
+  const [, setClientData] = useState<any>(null);
 
   useEffect(() => {
     const fetchTicketPrice = async () => {
@@ -139,7 +135,7 @@ const PaymentForm: React.FC<FormProps> = ({
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
               Accept: "application/json",
             },
           }
@@ -156,7 +152,7 @@ const PaymentForm: React.FC<FormProps> = ({
     };
 
     fetchTicketPrice();
-  }, [tripId, token]);
+  }, [tripId,]);
 
   const fetchClientData = async () => {
     setIsSearching(true);
@@ -167,7 +163,7 @@ const PaymentForm: React.FC<FormProps> = ({
           method: "GET",
           headers: {
             Accept: "*/*",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         }
       );
@@ -175,10 +171,9 @@ const PaymentForm: React.FC<FormProps> = ({
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      console.log("Client data received:", data); // Log the response
+      console.log("Client data received:", data);
       setClientData(data.data);
 
-      // Set form values using the received data
       setValue("names", data.data.person.names);
       setValue("surnames", data.data.person.surnames);
       setValue("identificationType", data.data.person.identificationType);

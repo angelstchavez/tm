@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Cookies from "js-cookie";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
 import { Input } from "@/components/ui/input";
@@ -11,6 +10,7 @@ import CustomTitle from "@/components/utils/CustomTitle";
 import AssignmentUpdate from "./AssignmentUpdate";
 import ExportCsvButton from "@/components/utils/ExportCsvButton";
 import GeneralReport from "@/components/utils/GeneralReport";
+import { getToken } from "@/lib/GetToken";
 
 interface Allocation {
   id: number;
@@ -61,21 +61,12 @@ const AssignmentTable: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-        const cookieData: { data: { token?: string } } =
-          JSON.parse(cookieValue);
-        const token = cookieData.data.token;
-
-        if (!token) {
-          throw new Error("No se encontró el token en el cookie.");
-        }
-
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/car-driver/get-all`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
               Accept: "application/json",
             },
           }

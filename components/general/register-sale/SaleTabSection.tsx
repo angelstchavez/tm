@@ -6,7 +6,7 @@ import Bus from "./Bus";
 import TotalSale from "./TotalSaleCount";
 import PassengerForm from "./PassengerForm";
 import PaymentForm from "./PaymentForm";
-import Cookies from "js-cookie";
+
 import {
   Dialog,
   DialogClose,
@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getToken } from "@/lib/GetToken";
 
 interface SaleTabSectionProps {
   tripId: number;
@@ -138,14 +139,6 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
 
   const handlePayment = async (): Promise<void> => {
     try {
-      const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-      const cookieData = JSON.parse(cookieValue);
-      const token = cookieData?.data?.token;
-
-      if (!token) {
-        throw new Error("No se encontró el token en el cookie.");
-      }
-
       const passengersList = Object.values(passengerData);
 
       const response = await fetch(
@@ -154,7 +147,7 @@ const SaleTabSection: React.FC<SaleTabSectionProps> = ({ tripId }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken}`,
             Accept: "application/json",
           },
           body: JSON.stringify({

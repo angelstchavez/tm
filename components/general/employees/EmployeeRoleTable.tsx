@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
-import Cookies from "js-cookie";
 import { FaEdit } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import Section from "@/components/ui/Section";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTitle from "@/components/utils/CustomTitle";
 import Loading from "@/components/utils/Loading";
+import { getToken } from "@/lib/GetToken";
 
 interface Employee {
   id: number;
@@ -47,19 +47,12 @@ const EmployeeRoleTable: React.FC<Props> = ({ role, title }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-        const cookieData: { data: { token?: string } } =
-          JSON.parse(cookieValue);
-        const token = cookieData.data.token;
-        if (!token) {
-          throw new Error("No se encontró el token en el cookie.");
-        }
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/employee/get-all-by-role/${role}`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
               Accept: "application/json",
             },
           }

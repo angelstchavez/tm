@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
-import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
+import { getToken } from "@/lib/GetToken";
 
 interface PassengersByTripProps {
   tripId: number;
@@ -37,22 +37,14 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
-    const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-    const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
-    const token = cookieData?.data?.token;
-
     const fetchData = async () => {
       try {
-        if (!token) {
-          throw new Error("No se encontró el token en el cookie.");
-        }
-
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/passenger/trip/${tripId}`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer${getToken()}`,
               Accept: "application/json",
             },
           }

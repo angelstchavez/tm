@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Seat from "./Seat";
-import Cookies from "js-cookie";
+import { getToken } from "@/lib/GetToken";
 
 interface SeatData {
   id: string;
@@ -26,21 +26,13 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-        const cookieData = JSON.parse(cookieValue);
-        const token = cookieData?.data?.token;
-
-        if (!token) {
-          throw new Error("No se encontró el token en el cookie.");
-        }
-
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/seat/get-by-trip/${tripId}`,
           {
             method: "GET",
             headers: {
               Accept: "*/*",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
             },
           }
         );
@@ -81,124 +73,123 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
   const isSelectionDisabled = selectedSeats.length >= 5;
 
   return (
-      <div className="border rounded-xl">
-        <div className="bg-zinc-200 w-full h-2 border-t border-l border-r border-zinc-200 rounded-t-full"></div>{" "}
-        <div className="grid grid-cols-5">
-          <div className="col-span-2 h-8 bg-zinc-300 flex items-center justify-center">
-            <div className="text-center text-zinc-600 font-bold text-xs">
-              Conductor
-            </div>
-          </div>
-          <div className="col-span-1"></div>
-          <div className="col-span-2 h-8 bg-zinc-100 flex items-center justify-center">
-            <div className="text-center text-zinc-600 font-bold text-xs">
-              Auxiliar
-            </div>
+    <div className="border rounded-xl">
+      <div className="bg-zinc-200 w-full h-2 border-t border-l border-r border-zinc-200 rounded-t-full"></div>{" "}
+      <div className="grid grid-cols-5">
+        <div className="col-span-2 h-8 bg-zinc-300 flex items-center justify-center">
+          <div className="text-center text-zinc-600 font-bold text-xs">
+            Conductor
           </div>
         </div>
-        <div className="grid grid-cols-5 gap-2 p-2">
-          <div className="col-span-1">
-            {firstThird.map((seat, index) => (
-              <div
-                key={seat.id}
-                className={`mb-2 ${
-                  index !== firstThird.length - 1 ? "mb-2" : ""
-                }`}
-              >
-                <Seat
-                  id={seat.id}
-                  number={seat.number}
-                  status={seat.status}
-                  onSeatClick={handleSeatClick}
-                  disabled={
-                    isSelectionDisabled &&
-                    !selectedSeats.some((s) => s.id === seat.id)
-                  }
-                />
-              </div>
-            ))}
-          </div>
-          <div className="col-span-1">
-            {secondThird.map((seat, index) => (
-              <div
-                key={seat.id}
-                className={`mb-2 ${
-                  index !== secondThird.length - 1 ? "mb-2" : ""
-                }`}
-              >
-                <Seat
-                  id={seat.id}
-                  number={seat.number}
-                  status={seat.status}
-                  onSeatClick={handleSeatClick}
-                  disabled={
-                    isSelectionDisabled &&
-                    !selectedSeats.some((s) => s.id === seat.id)
-                  }
-                />
-              </div>
-            ))}
-          </div>
-          <div className="col-span-1 bg-zinc-100 rounded-md mb-1"></div>
-          <div className="col-span-1">
-            {thirdSection.map((seat, index) => (
-              <div
-                key={seat.id}
-                className={`mb-2 ${
-                  index !== thirdSection.length - 1 ? "mb-2" : ""
-                }`}
-              >
-                <Seat
-                  id={seat.id}
-                  number={seat.number}
-                  status={seat.status}
-                  onSeatClick={handleSeatClick}
-                  disabled={
-                    isSelectionDisabled &&
-                    !selectedSeats.some((s) => s.id === seat.id)
-                  }
-                />
-              </div>
-            ))}
-          </div>
-          <div className="col-span-1">
-            {fourthSection.map((seat, index) => (
-              <div
-                key={seat.id}
-                className={`mb-2 ${
-                  index !== fourthSection.length - 1 ? "mb-2" : ""
-                }`}
-              >
-                <Seat
-                  id={seat.id}
-                  number={seat.number}
-                  status={seat.status}
-                  onSeatClick={handleSeatClick}
-                  disabled={
-                    isSelectionDisabled &&
-                    !selectedSeats.some((s) => s.id === seat.id)
-                  }
-                />
-              </div>
-            ))}
+        <div className="col-span-1"></div>
+        <div className="col-span-2 h-8 bg-zinc-100 flex items-center justify-center">
+          <div className="text-center text-zinc-600 font-bold text-xs">
+            Auxiliar
           </div>
         </div>
-        <div className="grid grid-cols-5">
-          <div className="col-span-2 h-8 bg-zinc-100 flex items-center justify-center">
-            <div className="text-center text-zinc-600 font-bold text-xs">
-              Baño
-            </div>
-          </div>
-          <div className="col-span-1"></div>
-          <div className="col-span-2 h-8 bg-zinc-100 flex items-center justify-center">
-            <div className="text-center text-zinc-600 font-bold text-xs">
-              Baño
-            </div>
-          </div>
-        </div>
-        <div className="bg-zinc-200 w-full h-2 border-b border-l border-r border-zinc-200 rounded-b-full"></div>{" "}
       </div>
-
+      <div className="grid grid-cols-5 gap-2 p-2">
+        <div className="col-span-1">
+          {firstThird.map((seat, index) => (
+            <div
+              key={seat.id}
+              className={`mb-2 ${
+                index !== firstThird.length - 1 ? "mb-2" : ""
+              }`}
+            >
+              <Seat
+                id={seat.id}
+                number={seat.number}
+                status={seat.status}
+                onSeatClick={handleSeatClick}
+                disabled={
+                  isSelectionDisabled &&
+                  !selectedSeats.some((s) => s.id === seat.id)
+                }
+              />
+            </div>
+          ))}
+        </div>
+        <div className="col-span-1">
+          {secondThird.map((seat, index) => (
+            <div
+              key={seat.id}
+              className={`mb-2 ${
+                index !== secondThird.length - 1 ? "mb-2" : ""
+              }`}
+            >
+              <Seat
+                id={seat.id}
+                number={seat.number}
+                status={seat.status}
+                onSeatClick={handleSeatClick}
+                disabled={
+                  isSelectionDisabled &&
+                  !selectedSeats.some((s) => s.id === seat.id)
+                }
+              />
+            </div>
+          ))}
+        </div>
+        <div className="col-span-1 bg-zinc-100 rounded-md mb-1"></div>
+        <div className="col-span-1">
+          {thirdSection.map((seat, index) => (
+            <div
+              key={seat.id}
+              className={`mb-2 ${
+                index !== thirdSection.length - 1 ? "mb-2" : ""
+              }`}
+            >
+              <Seat
+                id={seat.id}
+                number={seat.number}
+                status={seat.status}
+                onSeatClick={handleSeatClick}
+                disabled={
+                  isSelectionDisabled &&
+                  !selectedSeats.some((s) => s.id === seat.id)
+                }
+              />
+            </div>
+          ))}
+        </div>
+        <div className="col-span-1">
+          {fourthSection.map((seat, index) => (
+            <div
+              key={seat.id}
+              className={`mb-2 ${
+                index !== fourthSection.length - 1 ? "mb-2" : ""
+              }`}
+            >
+              <Seat
+                id={seat.id}
+                number={seat.number}
+                status={seat.status}
+                onSeatClick={handleSeatClick}
+                disabled={
+                  isSelectionDisabled &&
+                  !selectedSeats.some((s) => s.id === seat.id)
+                }
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="grid grid-cols-5">
+        <div className="col-span-2 h-8 bg-zinc-100 flex items-center justify-center">
+          <div className="text-center text-zinc-600 font-bold text-xs">
+            Baño
+          </div>
+        </div>
+        <div className="col-span-1"></div>
+        <div className="col-span-2 h-8 bg-zinc-100 flex items-center justify-center">
+          <div className="text-center text-zinc-600 font-bold text-xs">
+            Baño
+          </div>
+        </div>
+      </div>
+      <div className="bg-zinc-200 w-full h-2 border-b border-l border-r border-zinc-200 rounded-b-full"></div>{" "}
+    </div>
   );
 };
 

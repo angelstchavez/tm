@@ -8,8 +8,8 @@ import Section from "@/components/ui/Section";
 import ComboBox from "@/components/ui/combobox";
 import { DocumentTypes } from "@/utilities/types";
 import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
 import { FaSearch } from "react-icons/fa";
+import { getToken } from "@/lib/GetToken";
 
 const PassengerFormSchema = z.object({
   names: z.string().nonempty("Introduce un nombre válido."),
@@ -60,21 +60,13 @@ const PassengerForm: React.FC<PassengerFormProps> = ({
   const fetchData = async () => {
     setIsSearching(true);
     try {
-      const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-      const cookieData = JSON.parse(cookieValue);
-      const token = cookieData?.data?.token;
-
-      if (!token) {
-        throw new Error("No se encontró el token en el cookie.");
-      }
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/passenger/get-by-identification-number/${searchIdentificationNumber}`,
         {
           method: "GET",
           headers: {
             Accept: "*/*",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         }
       );

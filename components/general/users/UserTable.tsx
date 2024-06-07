@@ -9,6 +9,7 @@ import Section from "@/components/ui/Section";
 import GeneralReport from "@/components/utils/GeneralReport";
 import ExportCsvButton from "@/components/utils/ExportCsvButton";
 import ActionButtons from "@/components/utils/ActionButtons";
+import { getToken } from "@/lib/GetToken";
 
 interface User {
   id: number;
@@ -35,21 +36,12 @@ const UserTable: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-        const cookieData: { data: { token?: string } } =
-          JSON.parse(cookieValue);
-        const token = cookieData.data.token;
-
-        if (!token) {
-          throw new Error("No se encontró el token en el cookie.");
-        }
-
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/get-all`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
               Accept: "application/json",
             },
           }

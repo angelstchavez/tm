@@ -1,5 +1,3 @@
-import Cookies from "js-cookie";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
+import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
 
 interface PassengersByTripProps {
@@ -38,12 +37,12 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
+    const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
+    const cookieData = cookieValue ? JSON.parse(cookieValue) : null;
+    const token = cookieData?.data?.token;
+
     const fetchData = async () => {
       try {
-        const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
-        const cookieData: { data: { token?: string } } = JSON.parse(cookieValue);
-        const token = cookieData.data.token;
-      
         if (!token) {
           throw new Error("No se encontró el token en el cookie.");
         }
@@ -53,7 +52,7 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer${token}`,
+              Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }
@@ -114,11 +113,6 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
       name: "Número de Asiento",
       sortable: true,
       selector: (row) => row.seatNumber,
-      style: {
-        fontSize: 14,
-        fontWeight: "bold",
-        color: "#134b95",
-      },
     },
   ];
 
@@ -155,7 +149,7 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
                     columns={columns}
                     data={filteredPassengers}
                     pagination
-                    paginationPerPage={5}
+                    paginationPerPage={10}
                     fixedHeader
                     progressPending={loading}
                     progressComponent={<Loading />}
@@ -166,7 +160,7 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="justify-end flex">
-          <Button variant={"default"} onClick={handleDownloadPDF}>
+          <Button variant={"destructive"} onClick={handleDownloadPDF}>
             Descargar PDF
           </Button>
         </DialogFooter>

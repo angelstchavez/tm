@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,7 +13,6 @@ import {
 import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/components/utils/Loading";
-import { getToken } from "@/lib/GetToken";
 
 interface PassengersByTripProps {
   tripId: number;
@@ -39,12 +40,20 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
+        const cookieData: { data: { token?: string } } = JSON.parse(cookieValue);
+        const token = cookieData.data.token;
+      
+        if (!token) {
+          throw new Error("No se encontró el token en el cookie.");
+        }
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/passenger/trip/${tripId}`,
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer${getToken()}`,
+              Authorization: `Bearer${token}`,
               Accept: "application/json",
             },
           }

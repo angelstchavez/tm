@@ -1,7 +1,6 @@
 import { PiSeatFill } from "react-icons/pi";
 import React, { useEffect, useState } from "react";
-import { getToken } from "@/lib/GetToken";
-
+import Cookies from "js-cookie";
 interface SeatStatusCountsProps {
   tripId: number;
 }
@@ -16,13 +15,20 @@ const SeatStatusCounts: React.FC<SeatStatusCountsProps> = ({ tripId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const cookieValue = decodeURIComponent(Cookies.get("authTokens") || "");
+        const cookieData: { data: { token?: string } } = JSON.parse(cookieValue);
+        const token = cookieData.data.token;
+      
+        if (!token) {
+          throw new Error("No se encontró el token en el cookie.");
+        }
         const response = await fetch(
           `http://localhost:90/api/v1/seat/status-counts/${tripId}`, // Se utiliza tripId en la URL del endpoint
           {
             method: "GET",
             headers: {
               Accept: "*/*",
-              Authorization: `Bearer ${getToken}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );

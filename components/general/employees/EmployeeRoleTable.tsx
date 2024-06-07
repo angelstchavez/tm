@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Cookies from "js-cookie";
@@ -43,9 +41,8 @@ const EmployeeRoleTable: React.FC<Props> = ({ role, title }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [originalEmployees, setOriginalEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [, setError] = useState<string>(""); // Removed error assignment
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [reloadData, setReloadData] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,11 +51,9 @@ const EmployeeRoleTable: React.FC<Props> = ({ role, title }) => {
         const cookieData: { data: { token?: string } } =
           JSON.parse(cookieValue);
         const token = cookieData.data.token;
-
         if (!token) {
           throw new Error("No se encontró el token en el cookie.");
         }
-
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/employee/get-all-by-role/${role}`,
           {
@@ -69,17 +64,13 @@ const EmployeeRoleTable: React.FC<Props> = ({ role, title }) => {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error("Error al obtener los empleados.");
         }
-
         const responseData = await response.json();
-
         if (!responseData.success || !responseData.data) {
           throw new Error("La respuesta no contiene datos válidos.");
         }
-
         const fetchedEmployees = responseData.data;
         setEmployees(fetchedEmployees);
         setOriginalEmployees(fetchedEmployees);
@@ -89,9 +80,8 @@ const EmployeeRoleTable: React.FC<Props> = ({ role, title }) => {
         setLoading(false);
       }
     };
-
     fetchData();
-  }, [reloadData, role]);
+  }, [role]);
 
   useEffect(() => {
     if (searchTerm === "") {

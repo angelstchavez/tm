@@ -9,6 +9,7 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import TripSaleMainNavigation from "@/components/general/register-sale/TripSaleMainSection";
 import CustomTitle from "@/components/utils/CustomTitle";
 import Section from "@/components/ui/Section";
+import SearchSeatsButton from "@/components/general/register-sale/SearchSeatsButton";
 
 interface Trip {
   id: number;
@@ -199,13 +200,10 @@ const RegisterSalePage: React.FC = () => {
     {
       name: "Ver Sillas",
       cell: (row) => (
-        <Button
-          variant={"travely"}
+        <SearchSeatsButton
           onClick={() => handleViewSeats(row.id)}
           disabled={!viewSeatsEnabled}
-        >
-          Ver sillas
-        </Button>
+        />
       ),
     },
   ];

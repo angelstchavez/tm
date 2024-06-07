@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 const FormSchema = z.object({
   name: z.string().nonempty("Introduce una marca válida."),
-  createdAt: z.date(), // Agregamos el campo createdAt
+  createdAt: z.date(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -25,25 +25,22 @@ const BrandForm: React.FC = () => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
-      createdAt: new Date(), // Valor inicial para createdAt
+      createdAt: new Date(),
     },
   });
 
   const [formData, setFormData] = useState<FormData | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const onSubmit = (data: FormData) => {
     const dataWithTimestamp = {
       ...data,
-      createdAt: new Date(), 
+      createdAt: new Date(),
     };
     setFormData(dataWithTimestamp);
-    setDialogOpen(true);
   };
 
   const handleOnComplete = () => {
     console.log("Entidad creada con éxito");
-    setDialogOpen(false);
     setFormData(null);
   };
 

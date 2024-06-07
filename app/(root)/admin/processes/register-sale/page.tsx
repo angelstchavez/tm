@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
 import DataTable, { TableColumn } from "react-data-table-component";

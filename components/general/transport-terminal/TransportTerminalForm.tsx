@@ -25,7 +25,7 @@ const FormSchema = z.object({
   departamentoId: z.string().nonempty('Selecciona un departamento.'),
   cityId: z.string().nonempty('Selecciona un municipio.'),
   isActive: z.boolean(),
-  createdAt: z.date() // Agregamos el campo createdAt
+  createdAt: z.date()
 })
 
 interface Departamentos {
@@ -73,8 +73,6 @@ const TransportTerminalForm = () => {
   const handleError = (error: string) => console.log('Ocurrio un error')
   const {
     data: dataDepart,
-    hasError,
-    isLoading
   } = useFetch<Departamentos>('/deparment/get-all')
 
   const opcionDepartamento = dataDepart.map(departamentos => ({
@@ -90,8 +88,6 @@ const TransportTerminalForm = () => {
 
   const {
     data: dataCity,
-    hasError: hasErroCity,
-    isLoading: isLoadingCity
   } = useFetch<Municipio>(`/city/get-cities-by-deparment-id/${selectedCity}`)
 
   const opcionMunicipios = dataCity.map(municipios => ({

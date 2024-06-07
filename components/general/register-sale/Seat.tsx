@@ -16,7 +16,6 @@ const Seat: React.FC<SeatProps> = ({
   disabled,
 }) => {
   const [selected, setSelected] = useState<boolean>(false);
-
   let seatColor = "";
   let textColor = "";
   let hoverColor = "";
@@ -52,13 +51,16 @@ const Seat: React.FC<SeatProps> = ({
   };
 
   return (
-    <div
+    <button
       id={id}
-      className={`border border-gray-300 rounded-md flex items-center justify-center transition-colors duration-200 cursor-pointer ${seatColor} ${hoverColor} h-10`}
+      className={`border border-gray-300 rounded-md flex items-center justify-center transition-colors duration-200 cursor-pointer ${seatColor} ${hoverColor} h-10 ${
+        number < 10 ? "w-12" : "w-12"
+      }`}
       onClick={handleClick}
+      disabled={disabled}
     >
       <span className={`font-bold text-lg ${textColor}`}>{number}</span>
-    </div>
+    </button>
   );
 };
 

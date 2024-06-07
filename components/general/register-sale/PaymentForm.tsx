@@ -119,7 +119,7 @@ const PaymentForm: React.FC<FormProps> = ({
 
   const [ticketPrice, setTicketPrice] = useState<number>(0);
   const [change, setChange] = useState<number>(0);
-  const [isExactAmount, setIsExactAmount] = useState<boolean>(false);
+  const [isExactAmount] = useState<boolean>(false);
 
   const [searchIdentificationNumber, setSearchIdentificationNumber] =
     useState("");

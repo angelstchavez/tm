@@ -81,7 +81,6 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
   const isSelectionDisabled = selectedSeats.length >= 5;
 
   return (
-    <>
       <div className="border rounded-xl">
         <div className="bg-zinc-200 w-full h-2 border-t border-l border-r border-zinc-200 rounded-t-full"></div>{" "}
         <div className="grid grid-cols-5">
@@ -199,7 +198,7 @@ const Bus: React.FC<BusProps> = ({ tripId, onSelectedSeatsChange }) => {
         </div>
         <div className="bg-zinc-200 w-full h-2 border-b border-l border-r border-zinc-200 rounded-b-full"></div>{" "}
       </div>
-    </>
+
   );
 };
 

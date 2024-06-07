@@ -21,7 +21,7 @@ const FormSchema = z
       .string()
       .min(6, "Debe contener 6 caracteres como mínimo.")
       .regex(/[A-Z]/, "Debe contener al menos una letra mayúscula.")
-      .regex(/[0-9]/, "Debe contener al menos un número."),
+      .regex(/\d/, "Debe contener al menos un número."),
     confirmPassword: z
       .string()
       .min(6, "Debe contener 6 caracteres como mínimo."),

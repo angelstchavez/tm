@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import SaleTabSection from "./SaleTabSection";
 import { Button } from "@/components/ui/button";
 import PassengersByTrip from "./PassengersByTrip";

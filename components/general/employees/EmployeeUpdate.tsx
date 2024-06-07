@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import ComboBox from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Section from "@/components/ui/Section";
 import CustomTitle from "@/components/utils/CustomTitle";
 import { DocumentTypes, EmployeeRoles, Genders } from "@/utilities/types";
 import { zodResolver } from "@hookform/resolvers/zod";

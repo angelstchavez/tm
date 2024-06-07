@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useEffect } from "react";
 import { DeleteEntityDialog } from "@/components/api/DeleteEntity";
 import CustomTable from "@/components/utils/CustomTable";

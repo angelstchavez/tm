@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
-import Section from "../ui/Section";
 
 interface GeneralReportProps {
   entity: string;
@@ -47,10 +46,6 @@ const GeneralReport: React.FC<GeneralReportProps> = ({ entity }) => {
       console.error("Error al descargar el PDF:", error);
       setError(error instanceof Error ? error : new Error(String(error)));
     }
-  };
-
-  const handleCloseErrorModal = () => {
-    setError(null);
   };
 
   return (

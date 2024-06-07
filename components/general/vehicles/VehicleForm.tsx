@@ -18,7 +18,7 @@ const FormSchema = z.object({
   plate: z
     .string()
     .regex(
-      /^[A-Za-z]{3}[0-9]{3}$/,
+      /^[A-Za-z]{3}\d{3}$/,
       "La placa debe tener 3 letras seguidas de 3 números."
     ),
   color: z.string().nonempty("Introduce un color válido."),

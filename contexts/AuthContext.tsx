@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   ReactNode,
@@ -16,16 +16,23 @@ type AuthTokens = {
   refresh_token: string;
 };
 
-export const AuthContext = createContext({
+type AuthContextType = {
+  login: (authTokens: AuthTokens) => void;
+  logout: () => void;
+};
+
+export const AuthContext = createContext<AuthContextType>({
   login: (authTokens: AuthTokens) => {},
   logout: () => {},
 });
 
+interface AuthContextProviderProps {
+  children: ReactNode;
+}
+
 export default function AuthContextProvider({
   children,
-}: {
-  children: ReactNode;
-}) {
+}: AuthContextProviderProps) {
   const login = useCallback(function (authTokens: AuthTokens) {
     Cookies.set("authTokens", JSON.stringify(authTokens));
   }, []);

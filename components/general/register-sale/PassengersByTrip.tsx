@@ -12,6 +12,8 @@ import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Cookies from "js-cookie";
 import Loading from "@/components/utils/Loading";
+import ExportCsvButton from "@/components/utils/ExportCsvButton";
+import GeneralReport from "@/components/utils/GeneralReport";
 
 interface PassengersByTripProps {
   tripId: number;
@@ -114,6 +116,11 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
       sortable: true,
       selector: (row) => row.seatNumber,
     },
+    {
+      name: "Fecha de compra",
+      sortable: true,
+      selector: (row) => new Date(row.saleDate).toLocaleDateString("es-ES"),
+    },
   ];
 
   return (
@@ -149,7 +156,7 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
                     columns={columns}
                     data={filteredPassengers}
                     pagination
-                    paginationPerPage={10}
+                    paginationPerPage={5}
                     fixedHeader
                     progressPending={loading}
                     progressComponent={<Loading />}
@@ -160,9 +167,26 @@ const PassengersByTrip: React.FC<PassengersByTripProps> = ({ tripId }) => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="justify-end flex">
-          <Button variant={"destructive"} onClick={handleDownloadPDF}>
-            Descargar PDF
-          </Button>
+          <div className="flex items-center justify-end mt-2">
+            <div className="mr-2">
+              <ExportCsvButton
+                data={passengers.map((model) => ({
+                  Nombre: model.names,
+                  Apellidos: model.surnames,
+                  Documento: model.identificationNumber,
+                  "Tipo de documento": model.identificationType,
+                  "Número de Asiento": model.seatNumber,
+                  "Fecha de compra": new Date(
+                    model.saleDate
+                  ).toLocaleDateString("es-ES"),
+                }))}
+                fileName={"pasajeros.csv"}
+              />
+            </div>
+            <div>
+              <GeneralReport entity={"passenger"} />
+            </div>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

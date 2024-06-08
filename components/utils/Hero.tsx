@@ -76,15 +76,15 @@ const Hero: React.FC = () => {
             icon={
               <AiOutlineWallet className="w-5 h-5 text-primary-600 lg:w-6 lg:h-6 dark:text-primary-300" />
             }
-            title="Control de Costos"
-            description="Mantén tus gastos bajo control y optimiza tu presupuesto con nuestro sistema de control de costos integrado."
+            title="Control de vehículos"
+            description="Mantén tus flota de vehículos  bajo control y optimiza tu p control de asignaciones."
           />
           <BenefitItem
             icon={
               <AiOutlineTeam className="w-5 h-5 text-primary-600 lg:w-6 lg:h-6 dark:text-primary-300" />
             }
-            title="Colaboración Eficiente"
-            description="Fomenta la colaboración entre equipos y maximiza la eficiencia en la gestión de viajes con nuestro sistema integrado."
+            title="Viaje con confianza"
+            description="Fomenta la colaboración entre equipos y maximiza la eficiencia en la gestión de viajes."
           />
         </div>
       </div>
